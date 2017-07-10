@@ -11,7 +11,7 @@ class Core:
         self.bot = bot
 
     def devOnly(ctx):
-        return ctx.message.author.id in ["174918559539920897", "269543926803726336", "186295030388883456", "220568440161697792", "155347730225561600"]
+        return ctx.message.author.id in ["174918559539920897", "269543926803726336", "186295030388883456", "220568440161697792", "155347730225561600", "223814431946178560"]
 
     @commands.command(pass_context=True)
     async def echo(self, ctx, *args):
