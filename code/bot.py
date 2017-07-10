@@ -126,7 +126,6 @@ else:
     f.write(token)
     f.close()
     print("New token saved, resuming boot")
-
 try:
     bot.run(token.replace("\n", ""))
 except discord.errors.LoginFailure:
