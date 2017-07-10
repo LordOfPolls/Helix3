@@ -47,6 +47,20 @@ class Core:
         self.bot.add_cog(Fun(bot))
         await self.bot.edit_message(msg, "Reloaded Fun")
 
+        await self.bot.edit_message(msg, "Reloading Porn")
+        self.bot.remove_cog("Porn")
+        importlib.reload(code.porn)
+        from code.porn import Porn
+        self.bot.add_cog(Porn(bot))
+        await self.bot.edit_message(msg, "Reloaded Porn")
+
+        await self.bot.edit_message(msg, "Reloading Utilities")
+        self.bot.remove_cog("Utilities")
+        importlib.reload(code.utilities)
+        from code.utilities import Utilities
+        self.bot.add_cog(Utilities(bot))
+        await self.bot.edit_message(msg, "Reloaded Utilities")
+
         await self.bot.say('Reload complete')
 
     @commands.command(pass_context=True)
@@ -62,14 +76,20 @@ class Core:
 import code.music
 import code.moderation
 import code.fun
+import code.porn
+import code.utilities
 from code.moderation import Moderation
 from code.music import Music
 from code.fun import Fun
+from code.porn import Porn
+from code.utilities import Utilities
 
 bot.add_cog(Core(bot))
 bot.add_cog(Music(bot))
 bot.add_cog(Moderation(bot))
 bot.add_cog(Fun(bot))
+bot.add_cog(Porn(bot))
+bot.add_cog(Utilities(bot))
 
 @bot.event
 async def on_ready():
