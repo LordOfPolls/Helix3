@@ -1,9 +1,10 @@
 import asyncio
 import discord
 import importlib
+import os
 from discord.ext import commands
 
-async def getPrefix(bot, message):
+def getPrefix(bot, message):
     dir = "data/" + message.server.id + ".json"
     if not os.path.exists("data"):
         os.mkdir("data")
@@ -93,7 +94,7 @@ from code.fun import Fun
 from code.porn import Porn
 from code.utilities import Utilities
 
-bot = commands.Bot(command_prefix=commands.when_mentioned_or(getPrefix), description='Helix3.0', pm_help=True)
+bot = commands.Bot(command_prefix=getPrefix, description='Helix3.0', pm_help=True)
 bot.add_cog(Core(bot))
 bot.add_cog(Music(bot))
 bot.add_cog(Moderation(bot))
@@ -107,14 +108,14 @@ bot.remove_command("help")
 async def on_ready():
     print('Logged in as:\n{0} (ID: {0.id})'.format(bot.user))
 
-@bot.event
-async def on_message(message):
-    if message.content.startswith("."):
-        if message.content.startswith("..."):
-            return
-        else:
-            print("{}|{}|   {}".format(message.server.name, message.author.display_name, message.content))
-    if bot.user.mentioned_in(message):
-        content = message.content.replace("<@{}>".format(bot.user.id), "@Helix3.0")
-        print("{}|{}|   {}".format(message.server.name, message.author.display_name, content))
-bot.run('')
+# @bot.event
+# async def on_message(message):
+#     if message.content.startswith("."):
+#         if message.content.startswith("..."):
+#             return
+#         else:
+#             print("{}|{}|   {}".format(message.server.name, message.author.display_name, message.content))
+#     if bot.user.mentioned_in(message):
+#         content = message.content.replace("<@{}>".format(bot.user.id), "@Helix3.0")
+#         print("{}|{}|   {}".format(message.server.name, message.author.display_name, content))
+bot.run('MzMwOTkxOTk3MzI0MDk5NTg0.DEVvDg.2Zo3-xGEwWFYVMVPQ2NMvOiWlF8')
