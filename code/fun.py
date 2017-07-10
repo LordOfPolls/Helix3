@@ -6,7 +6,6 @@ class Fun:
     def __init__(self, bot):
         self.bot = bot
        
-    @commands.command(pass_context=True)
-    async def panicping(self, ctx, *args):
-        """Panic's dead ass ping command"""
-        await self.bot.say('Pong')
+    @commands.command(pass_context=True, no_pm=False)
+    async def ping(self, ctx):
+       await self.bot.say('Pong!')
