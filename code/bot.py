@@ -14,6 +14,9 @@ def getPrefix(bot, message):
         with open(dir, 'r') as r:
             data = json.load(r)
             prefix = str(data["prefix"])
+    if not prefix in message.content:
+        if "<@{}>".format(bot.user.id) in message.content:
+            prefix = "<@{}> ".format(bot.user.id)
     return prefix
 
 class Core:
@@ -101,8 +104,6 @@ bot.add_cog(Moderation(bot))
 bot.add_cog(Fun(bot))
 bot.add_cog(Porn(bot))
 bot.add_cog(Utilities(bot))
-
-bot.remove_command("help")
 
 @bot.event
 async def on_ready():
