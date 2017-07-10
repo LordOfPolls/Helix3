@@ -91,8 +91,21 @@ bot.add_cog(Fun(bot))
 bot.add_cog(Porn(bot))
 bot.add_cog(Utilities(bot))
 
+bot.remove_command("help")
+
 @bot.event
 async def on_ready():
     print('Logged in as:\n{0} (ID: {0.id})'.format(bot.user))
 
-bot.run('MzMwOTkxOTk3MzI0MDk5NTg0.DEQQbA.d3D1Am_MTPJXcJVBd1iPxI4qpvQ')
+@bot.event
+async def on_message(message):
+    if message.content.startswith("."):
+        if message.content.startswith("..."):
+            return
+        else:
+            print("{}|{}|   {}".format(message.server.name, message.author.display_name, message.content))
+    if bot.user.mentioned_in(message):
+        content = message.content.replace("<@{}>".format(bot.user.id), "@Helix3.0")
+        print("{}|{}|   {}".format(message.server.name, message.author.display_name, content))
+
+bot.run('')
