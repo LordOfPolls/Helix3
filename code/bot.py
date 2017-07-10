@@ -116,6 +116,10 @@ async def on_command(bot, ctx):
 if os.path.isfile("data/token.txt"):
     token = open("data/token.txt", "r").read()
 else:
+    try:
+        os.mkdir("data")
+    except:
+        pass
     print("NO TOKEN Dx")
     token = input("Please input a token: ")
     f = open("data/token.txt", "w")
@@ -123,4 +127,8 @@ else:
     f.close()
     print("New token saved, resuming boot")
 
-bot.run(token.replace("\n", ""))
+try:
+    bot.run(token.replace("\n", ""))
+except discord.errors.LoginFailure:
+    print("Token failed")
+    os.unlink("data/token.txt")
