@@ -40,6 +40,13 @@ class Core:
         self.bot.add_cog(Moderation(bot))
         await self.bot.edit_message(msg, "Reloaded Moderation")
 
+        await self.bot.edit_message(msg, "Reloading Fun")
+        self.bot.remove_cog("Fun")
+        importlib.reload(code.fun)
+        from code.fun import Fun
+        self.bot.add_cog(Fun(bot))
+        await self.bot.edit_message(msg, "Reloaded Fun")
+
         await self.bot.say('Reload complete')
 
     @commands.command(pass_context=True)
@@ -54,12 +61,15 @@ class Core:
 
 import code.music
 import code.moderation
+import code.fun
 from code.moderation import Moderation
 from code.music import Music
+from code.fun import Fun
 
 bot.add_cog(Core(bot))
 bot.add_cog(Music(bot))
 bot.add_cog(Moderation(bot))
+bot.add_cog(Fun(bot))
 
 @bot.event
 async def on_ready():
