@@ -8,5 +8,5 @@ class Fun:
         
  @commands.command(pass_context=True, no_pm=True)
  async def ping(self,ctx):
-     if message.content.startswith('!ping'):
+ """A Ping command made by panic"""
          await self.bot.send_message(ctx.message.channel, "Pong!")
