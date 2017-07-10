@@ -3,8 +3,17 @@ import discord
 import importlib
 from discord.ext import commands
 
-
-bot = commands.Bot(command_prefix=commands.when_mentioned_or('.'), description='Helix3.0', pm_help=True)
+async def getPrefix(bot, message):
+    dir = "data/" + message.server.id + ".json"
+    if not os.path.exists("data"):
+        os.mkdir("data")
+    if not os.path.isfile(dir):
+        prefix = "."
+    else:
+        with open(dir, 'r') as r:
+            data = json.load(r)
+            prefix = str(data["prefix"])
+    return prefix
 
 class Core:
     def __init__(self, bot):
@@ -84,6 +93,7 @@ from code.fun import Fun
 from code.porn import Porn
 from code.utilities import Utilities
 
+bot = commands.Bot(command_prefix=commands.when_mentioned_or(getPrefix), description='Helix3.0', pm_help=True)
 bot.add_cog(Core(bot))
 bot.add_cog(Music(bot))
 bot.add_cog(Moderation(bot))
@@ -107,5 +117,4 @@ async def on_message(message):
     if bot.user.mentioned_in(message):
         content = message.content.replace("<@{}>".format(bot.user.id), "@Helix3.0")
         print("{}|{}|   {}".format(message.server.name, message.author.display_name, content))
-
 bot.run('')
