@@ -112,4 +112,15 @@ async def on_ready():
 @bot.event
 async def on_command(bot, ctx):
     print("{}|{}|   {}".format(ctx.message.server.name, ctx.message.author.display_name, ctx.message.content))
-bot.run('MzMwOTkxOTk3MzI0MDk5NTg0.DEVvDg.2Zo3-xGEwWFYVMVPQ2NMvOiWlF8')
+
+if os.path.isfile("data/token.txt"):
+    token = open("data/token.txt", "r").read()
+else:
+    print("NO TOKEN Dx")
+    token = input("Please input a token: ")
+    f = open("data/token.txt", "w")
+    f.write(token)
+    f.close()
+    print("New token saved, resuming boot")
+
+bot.run(token.replace("\n", ""))
