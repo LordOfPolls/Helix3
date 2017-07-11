@@ -3,6 +3,8 @@ import discord
 import os
 import timeit
 import json
+import aiohttp
+import random
 from discord.ext import commands
 import code.get as get
 
@@ -107,3 +109,36 @@ class Utilities:
         else:
             data += "```"
         await self.bot.send_message(channel, data)
+
+    @commands.command(pass_context=True, no_pm=True)
+    async def urban(self, ctx):
+        """Query Urban Dictionary"""
+        await self.bot.send_typing(ctx.message.channel)
+        prefix = await get.Prefix(ctx.message.server)
+        message = ctx.message.content.strip()
+        message = message.lower()
+        messages = message.replace("urban ", "")
+        messages = messages.replace(prefix, "")
+        terms = messages
+        try:
+            async with aiohttp.get(("http://api.urbandictionary.com/v0/define?term=" + terms)) as r:
+                if not r.status == 200:
+                    await self.bot.say("Unable to connect to Urban Dictionary")
+                else:
+                    j = await r.json()
+                    if j["result_type"] == "no_results":
+                        msg = "No results for "
+                        msg = msg + terms
+                        em = discord.Embed(description=msg, colour=16711680)
+                        em.set_author(name='Urban', icon_url="https://pilotmoon.com/popclip/extensions/icon/ud.png")
+                        await self.bot.say(embed=em)
+                        return
+                    elif j["result_type"] == "exact":
+                        word = j["list"][0]
+                    definerer = (word["definition"])
+                    n = ("%s - Urban Dictionary" % word["word"])
+                    em = discord.Embed(description=definerer, colour=(random.randint(0, 16777215)))
+                    em.set_author(name=n, icon_url="https://pilotmoon.com/popclip/extensions/icon/ud.png")
+                    await self.bot.say(embed=em)
+        except Exception as e:
+            await self.bot.say(("Unable to connect to Urban Dictionary " + str(e)))
