@@ -105,14 +105,34 @@ bot.add_cog(Moderation(bot))
 bot.add_cog(Fun(bot))
 bot.add_cog(Porn(bot))
 bot.add_cog(Utilities(bot))
+global byp
+global staff
+global dev
+byp = bot
+staff = [174918559539920897, 155347730225561600, 269543926803726336, 186295030388883456, 220568440161697792, 266282285861437441, 273724497150869514, 239591008982007808]
+dev = [174918559539920897, 220568440161697792, 196638626925248513, 223814431946178560]
 
 @bot.event
 async def on_ready():
     print('Logged in as:\n{0} (ID: {0.id})'.format(bot.user))
 
 @bot.event
-async def on_command(bot, ctx):
+async def on_command(ctx):
     print("{}|{}|   {}".format(ctx.message.server.name, ctx.message.author.display_name, ctx.message.content))
+    if "help" in ctx.message.content:
+        await byp.send_message(ctx.message.channel, ":mailbox_with_mail:")
+
+
+
+@bot.event
+async def on_member_join(ctx):
+    member = ctx
+    if member.id in str(dev):
+        print("Dev Join| {} joined {}".format(member.display_name, member.server.name))
+        await byp.send_message(member.server, "{}, one of my devs, joined your server".format(member.display_name))
+    if member.id in str(staff):
+        print("Staff Join| {} joined {}".format(member.display_name, member.server.name))
+        await byp.send_message(member.server, "{}, one of my staff members, joined your server".format(member.display_name))
 
 if os.path.isfile("data/token.txt"):
     token = open("data/token.txt", "r").read()

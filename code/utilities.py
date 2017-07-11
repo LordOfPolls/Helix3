@@ -2,15 +2,74 @@ import asyncio
 import discord
 import os
 import timeit
-import json
+import json#
 import aiohttp
 import random
+from urllib.parse import parse_qs
+from lxml import etree
 from discord.ext import commands
 import code.get as get
 
 class Utilities:
     def __init__(self, bot):
         self.bot = bot
+
+    async def get_google_entries(self, query):
+        params = {
+            'q': query,
+            'safe': 'on'
+        }
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 6.3; Win64; x64)'
+        }
+
+        # list of URLs
+        entries = []
+
+        async with aiohttp.get('https://www.google.co.uk/search', params=params, headers=headers) as resp:
+            if resp.status != 200:
+                raise RuntimeError('Google somehow failed to respond.')
+
+            root = etree.fromstring(await resp.text(), etree.HTMLParser())
+
+            """
+            Tree looks like this.. sort of..
+            <div class="g">
+                ...
+                <h3>
+                    <a href="/url?q=<url>" ...>title</a>
+                </h3>
+                ...
+                <span class="st">
+                    <span class="f">date here</span>
+                    summary here, can contain <em>tag</em>
+                </span>
+            </div>
+            """
+
+            search_nodes = root.findall(".//div[@class='g']")
+            for node in search_nodes:
+                url_node = node.find('.//h3/a')
+                if url_node is None:
+                    continue
+
+                url = url_node.attrib['href']
+                if not url.startswith('/url?'):
+                    continue
+
+                url = parse_qs(url[5:])['q'][0]  # get the URL from ?q query string
+
+                # description
+                entries.append(url)
+                short = node.find(".//span[@class='st']")
+                if short is None:
+                    entries.append((url, ''))
+                else:
+                    text = ''.join(short.itertext())
+                    entries.append((str(url), str(text.replace('...', ''))))
+
+        return entries
+
     @commands.command(pass_context=True, no_pm=False)
     async def id(self, ctx):
         """
@@ -189,3 +248,41 @@ class Utilities:
                         await self.bot.send_message(channel, "You've disabled my permission to 'embed links'")
         except:
             pass
+
+    @commands.command(pass_context=True, no_pm=False)
+    async def google(self, ctx):
+        """Searches google and gives you top result."""
+        server = ctx.message.server
+        channel = ctx.message.channel
+        prefix = await get.Prefix(server)
+        message = ctx.message.content.strip()
+        message = message.lower()
+        message = message.replace("google ", "")
+        message = message.replace(prefix, "")
+        query = message
+        try:
+            entries = await self.get_google_entries(query)
+        except RuntimeError as e:
+            await self.bot.say(str(e))
+        else:
+            next_two = entries[3:5]
+            if next_two:
+                formatted = "\n"
+                for item in next_two:
+                    item = str(item)
+                    formatted += "{}\n".format(item.replace("(","").replace("'", "").replace("\\n", "")[:-5] + "...")
+                msg = formatted
+            else:
+                try:
+                    msg = entries[0]
+                except IndexError:
+                    msg = "No results"
+                    em = discord.Embed(description=msg, colour=16711680)
+                    em.set_author(name='Google:',
+                                  icon_url="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/2000px-Google_%22G%22_Logo.svg.png")
+                    await self.bot.send_message(channel, embed=em)
+                    return
+            em = discord.Embed(description=msg, colour=(random.randint(0, 16777215)))
+            em.set_author(name='Google:',
+                          icon_url="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/2000px-Google_%22G%22_Logo.svg.png")
+            await self.bot.send_message(channel, embed=em)
