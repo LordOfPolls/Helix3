@@ -1,6 +1,7 @@
 import asyncio
 import discord
 import os
+import timeit
 import json
 from discord.ext import commands
 import code.get as get
@@ -9,8 +10,21 @@ class Utilities:
     def __init__(self, bot):
         self.bot = bot
 
+    @commands.command(pass_context=True, no_pm=False)
+    async def ping(self, ctx):
+        """Ping the bot"""
+        s = timeit.default_timer()
+        await self.bot.send_typing(ctx.message.channel)
+        elapsed = timeit.default_timer() - s
+        elapsed = elapsed * 1000
+        elapsed = "{0:.0f}".format(elapsed)
+        msg = await self.bot.say('Pong!')
+        await self.bot.edit_message(msg, "Pong!\n\nPing: {}ms".format(str(elapsed)))
+
+
     @commands.command(pass_context=True, no_pm=True)
     async def prefix(self, ctx):
+        """Change the bots prefix for your server"""
         message = ctx.message.content.strip()
         message = message.replace("<@{}> ".format(str(self.bot.user.id)), "")
         length = 6 + int(len(await get.Prefix(ctx.message.server)))
