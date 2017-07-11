@@ -1,4 +1,4 @@
 .idea/
 __pycache__/
 code/__pycache__/
-data/token.txt
+data/
