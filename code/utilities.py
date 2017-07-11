@@ -9,6 +9,19 @@ import code.get as get
 class Utilities:
     def __init__(self, bot):
         self.bot = bot
+    @commands.command(pass_context=True, no_pm=False)
+    async def id(self, ctx):
+        """
+        Tells the user their id or the id of another user.
+        """
+        message = ctx.message
+        author = ctx.message.author
+        user_mentions = list(map(message.server.get_member, message.raw_mentions))
+        if not user_mentions:
+            await self.bot.say('your id is `%s`' % author.id)
+        else:
+            usr = user_mentions[0]
+            await self.bot.say("%s's id is `%s`" % (usr.name, usr.id))
 
     @commands.command(pass_context=True, no_pm=False)
     async def ping(self, ctx):
