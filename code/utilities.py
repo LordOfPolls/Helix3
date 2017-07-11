@@ -36,7 +36,6 @@ class Utilities:
         msg = await self.bot.say('Pong!')
         await self.bot.edit_message(msg, "Pong!\n\nPing: {}ms".format(str(elapsed)))
 
-
     @commands.command(pass_context=True, no_pm=True)
     async def prefix(self, ctx):
         """Change the bots prefix for your server"""
@@ -142,3 +141,51 @@ class Utilities:
                     await self.bot.say(embed=em)
         except Exception as e:
             await self.bot.say(("Unable to connect to Urban Dictionary " + str(e)))
+
+    @commands.command(pass_context=True, no_pm=True)
+    async def whois(self, ctx):
+        """Gets information on a user"""
+        message = ctx.message
+        channel = ctx.message.channel
+        author = ctx.message.author
+        server = ctx.message.author
+        user_mentions = list(map(message.server.get_member, message.raw_mentions))
+
+        def userinf(user, channel):
+            msg = "Information on " + str(user.mention)
+            roles = ""
+            for role in user.roles:
+                if str(role) == "@everyone":
+                    pass
+                else:
+                    roles += str(role) + "\n"
+            em = discord.Embed(description=msg, colour=(random.randint(0, 16777215)))
+            em.set_author(name=user.display_name, icon_url=(user.avatar_url))
+            em.add_field(name="**User name:**", value=str(user.name) , inline=True)
+            if not author.name == author.display_name: #so we dont have useless fields sat around
+                em.add_field(name="**Nickname:**", value=(str(user.display_name)), inline=True)
+            em.add_field(name="**Created on:**", value=str(user.created_at), inline=True)
+            em.add_field(name="**ID:**", value=str(user.id), inline=True)
+            if not roles == "" or roles == " ":
+                em.add_field(name="**Roles**", value=roles, inline=True)
+            if user.bot:
+                em.add_field(name="**Bot**", value="This user is a bot", inline=False)
+            em.set_thumbnail(url=user.avatar_url)
+            return em
+        try:
+            if not user_mentions:
+                user = author #allows us to only use this one script, much cleaner and more efficent
+                em =userinf(user, channel)
+                try:
+                    await self.bot.send_message(channel, embed=em)
+                except:
+                    await self.bot.send_message(channel, "You've disabled my permission to 'embed links'")
+            else:
+                for user in user_mentions:
+                    em = userinf(user, channel)
+                    try:
+                        await self.bot.send_message(channel, embed=em)
+                    except:
+                        await self.bot.send_message(channel, "You've disabled my permission to 'embed links'")
+        except:
+            pass
