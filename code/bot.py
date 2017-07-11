@@ -2,6 +2,7 @@ import asyncio
 import discord
 import importlib
 import os
+import json
 from discord.ext import commands
 
 def getPrefix(bot, message):
