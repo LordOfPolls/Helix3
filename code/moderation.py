@@ -73,3 +73,19 @@ class Moderation:
             await self.bot.send_message(channel, ":fire:**CHAT PURGED**:fire:")
         else:
             return Response("Fuck off")
+
+    @commands.command(pass_context=True, no_pm=True)
+    async def kick(self, ctx, message):
+        """Kickes a mentioned user"""
+        user_mentions = list(map(ctx.message.server.get_member, ctx.message.raw_mentions))
+        for user in user_mentions:
+            await self.bot.kick(user)
+            await self.bot.say("<@{}>, i kicked <@{}>.".format(ctx.message.author.id, user.id))
+
+    @commands.command(pass_context=True, no_pm=True)
+    async def ban(self, ctx, message):
+        """Bans a mentioned user"""
+        user_mentions = list(map(ctx.message.server.get_member, ctx.message.raw_mentions))
+        for user in user_mentions:
+            await self.bot.ban(user)
+            await self.bot.say("<@{}>, I banned <@{}>.".format(ctx.message.author.id, user.id))
