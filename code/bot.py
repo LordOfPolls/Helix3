@@ -92,6 +92,7 @@ from code.fun import Fun
 from code.porn import Porn
 from code.utilities import Utilities
 
+global bot
 bot = commands.Bot(command_prefix=getPrefix, description='Helix3.0', pm_help=True)
 bot.add_cog(Core(bot))
 bot.add_cog(Music(bot))
@@ -118,8 +119,6 @@ async def on_command(bot, ctx):
     if "help" in ctx.message.content:
         await byp.send_message(ctx.message.channel, ":mailbox_with_mail:")
 
-
-
 @bot.event
 async def on_member_join(ctx):
     member = ctx
@@ -130,21 +129,22 @@ async def on_member_join(ctx):
         print("Staff Join| {} joined {}".format(member.display_name, member.server.name))
         await byp.send_message(member.server, "{}, one of my staff members, joined your server".format(member.display_name))
 
-if os.path.isfile("data/token.txt"):
-    token = open("data/token.txt", "r").read()
-else:
+def Helix():
+    if os.path.isfile("data/token.txt"):
+        token = open("data/token.txt", "r").read()
+    else:
+        try:
+            os.mkdir("data")
+        except:
+            pass
+        print("NO TOKEN Dx")
+        token = input("Please input a token: ")
+        f = open("data/token.txt", "w")
+        f.write(token)
+        f.close()
+        print("New token saved, resuming boot")
     try:
-        os.mkdir("data")
-    except:
-        pass
-    print("NO TOKEN Dx")
-    token = input("Please input a token: ")
-    f = open("data/token.txt", "w")
-    f.write(token)
-    f.close()
-    print("New token saved, resuming boot")
-try:
-    bot.run(token.replace("\n", ""))
-except discord.errors.LoginFailure:
-    print("Token failed")
-    os.unlink("data/token.txt")
+        bot.run(token.replace("\n", ""))
+    except discord.errors.LoginFailure:
+        print("Token failed")
+        os.unlink("data/token.txt")
