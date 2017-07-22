@@ -2,7 +2,11 @@ import asyncio
 import discord
 import timeit
 import code.get as get
+import urllib
+import urllib.request as urllib2
+import bs4
 
+from bs4 import BeautifulSoup
 from discord.ext import commands
 from code.savage import savage
 
@@ -41,3 +45,19 @@ class Fun:
         user_mentions = list(map(ctx.message.server.get_member, ctx.message.raw_mentions))
         for user in user_mentions:
             await self.bot.say("<@{}>, i kicked <@{}>.".format(ctx.message.author.id, user.id))
+
+    @commands.command(pass_context = True)
+    async def dog(self):
+        """Sends a dog pic"""
+        def findDog():
+            page = BeautifulSoup(urllib2.urlopen("https://random.dog/"), "lxml")
+            img = page.findAll('img')
+            image = str(img)
+            image = image.replace('[<img id="dog-img" src="', "")
+            image = image.replace('"/>]', "")
+            image = "https://random.dog/{}".format(image)
+
+        while "https://random.dog/[]" in image:
+            findDog()
+                      
+        await self.bot.say(image)
