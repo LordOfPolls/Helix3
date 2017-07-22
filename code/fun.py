@@ -32,3 +32,12 @@ class Fun:
 
         await self.bot.say(message)
         await self.bot.delete_message(ctx.message)
+
+    @commands.command(pass_context = True)
+    async def fakekick(self, ctx):
+        """Fake kicks a user"""
+        await self.bot.send_typing(ctx.message.channel)
+        await self.bot.delete_message(ctx.message)
+        user_mentions = list(map(ctx.message.server.get_member, ctx.message.raw_mentions))
+        for user in user_mentions:
+            await self.bot.say("<@{}>, i kicked <@{}>.".format(ctx.message.author.id, user.id))
