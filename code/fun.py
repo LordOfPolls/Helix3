@@ -10,6 +10,7 @@ import random
 from bs4 import BeautifulSoup
 from discord.ext import commands
 from code.savage import savage
+from code.compliment import compliment
 
 
 
@@ -82,3 +83,18 @@ class Fun:
             findCat()   
                       
         await self.bot.say(image)
+
+    @commands.command(pass_context = True)
+    async def compliment(self, ctx):
+        """Sends compliments"""
+        await self.bot.send_typing(ctx.message.channel)
+        message = compliment()
+        mention = ""
+        user_mentions = list(map(ctx.message.server.get_member, ctx.message.raw_mentions))
+        for user in user_mentions:
+            mention += "<@{}>  ".format(user.id)
+            
+        message = (("%s {}").format(mention) % (message))
+
+        await self.bot.say(message)
+        await self.bot.delete_message(ctx.message)
