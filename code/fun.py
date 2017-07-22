@@ -5,6 +5,7 @@ import code.get as get
 import urllib
 import urllib.request as urllib2
 import bs4
+import random
 
 from bs4 import BeautifulSoup
 from discord.ext import commands
@@ -59,5 +60,25 @@ class Fun:
 
         while "https://random.dog/[]" in image:
             findDog()
+
+        await self.bot.say(image)
+
+    @commands.command(pass_context = True)
+    async def cat(self):
+        """Sends a cat pic"""
+        global image
+        def findCat():
+            global image
+            page = BeautifulSoup(urllib2.urlopen("https://random.cat/view?i={}".format(random.randint(0, 1283))), "lxml")
+            img = page.findAll('img')
+            image = str(img)
+        findCat()
+        image = image.replace('[<img alt="" id="cat" src="', "")
+        image = image.replace("'", "")
+        image = image.replace('" title=""/>, <img alt="veure un altre gat a latzar" id="logo" src="random.cat-logo.png" title="veure un altre gat a latzar"/>, <img alt="like us on facebook!" border="0" src="http://random.cat/facebook.jpg" title="like us on facebook!"/>]', "")
+        image = image.replace(" ", "%20")
+        image = "https://random.cat/{}".format(image)
+        while ("http://random.cat/random.cat-logo.png" or "http://random.cat/facebook.jpg") in image:
+            findCat()   
                       
         await self.bot.say(image)
