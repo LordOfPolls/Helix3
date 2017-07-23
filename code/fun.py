@@ -56,17 +56,20 @@ class Fun:
     async def dog(self):
         """Sends a dog pic"""
         def findDog():
+            global pic
             page = BeautifulSoup(urllib2.urlopen("https://random.dog/"), "lxml")
             img = page.findAll('img')
-            image = str(img)
-            image = image.replace('[<img id="dog-img" src="', "")
-            image = image.replace('"/>]', "")
-            image = "https://random.dog/{}".format(image)
+            pic = str(img)
+            pic = pic.replace('[<img id="dog-img" src="', "")
+            pic = pic.replace('"/>]', "")
+            pic = "https://random.dog/{}".format(pic)
 
-        while "https://random.dog/[]" in image:
+        global pic
+        findDog()
+        while "https://random.dog/[]" in pic:
             findDog()
 
-        await self.bot.say(image)
+        await self.bot.say(pic)
 
     @commands.command(pass_context = True)
     async def cat(self):

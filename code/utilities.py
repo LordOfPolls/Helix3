@@ -351,3 +351,14 @@ class Utilities:
             await self.bot.say(
                 "Use ``{}join`` to join my server and suggest the feature there".format(await get.Prefix(server)))
 
+    @commands.command(pass_context = True)
+    async def join(self, ctx):
+        message = ctx.message
+        author = message.author
+        em = discord.Embed(title="Info", colour=(random.randint(0, 16777215)))
+        em.set_author(name=self.bot.user.display_name, icon_url=self.bot.user.avatar_url)
+        invite = "https://discordapp.com/oauth2/authorize?client_id={}&scope=bot&permissions=1312156871".format(self.bot.user.id)
+        em.add_field(name="Add Helix", value=invite)
+        em.add_field(name="Join the server", value="https://discord.gg/ZYVNxwh")
+        await self.bot.say(embed=em)
+
