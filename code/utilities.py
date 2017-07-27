@@ -2,9 +2,12 @@ import asyncio
 import discord
 import os
 import timeit
-import json#
+import json
 import aiohttp
 import random
+import time
+import math
+import subprocess
 from urllib.parse import parse_qs
 from lxml import etree
 from discord.ext import commands
@@ -71,6 +74,9 @@ class Utilities:
                     entries.append((str(url), str(text.replace('...', ''))))
 
         return entries
+
+    global startTime
+    startTime = time.time()
 
     @commands.command(pass_context=True, no_pm=False)
     async def id(self, ctx):
@@ -362,3 +368,66 @@ class Utilities:
         em.add_field(name="Join the server", value="https://discord.gg/ZYVNxwh")
         await self.bot.say(embed=em)
 
+    @commands.command(pass_context = True)
+    async def info(self,ctx):
+        await self.bot.send_typing(ctx.message.channel)
+        global startTime
+        try:
+            version = os.popen(r'git show -s HEAD --format="%cr|%s|%h"')
+            version = version.read()
+            version = version.split('|')
+            version = str(version[2])
+            version = version.strip()
+            gversion = True
+        except:
+            gversion = False
+        if version == "" or version == None:
+            gversion = False
+        users = len(set(self.bot.get_all_members()))
+        online = sum(1 for m in (set(self.bot.get_all_members())) if m.status != discord.Status.offline)
+        servercount = str(len(self.bot.servers))
+        uptime = time.time() - startTime
+        uptime = math.floor(uptime)
+        seconds = uptime % 60
+        minutes = math.floor((uptime - seconds) / 60)
+        hours = math.floor(minutes / 60)
+        days = math.floor(hours / 24)
+        uptime = "Days: {} , Hours: {} , Minutes: {} , Seconds: {}".format(days, hours, minutes, seconds)
+        uptime = uptime.replace(".0", "")
+        em = discord.Embed(title="Helix Info", colour=(random.randint(0, 16777215)))
+        em.set_thumbnail(url=self.bot.user.avatar_url)
+        em.set_author(name=self.bot.user.display_name, icon_url=self.bot.user.avatar_url)
+        em.add_field(name="Version", value=version, inline=True)
+        em.add_field(name="Users", value=users, inline=True)
+        em.add_field(name="Online Users", value=online, inline=True)
+        em.add_field(name="Servers", value=servercount)
+        em.add_field(name="Bot Uptime", value=uptime)
+        try:
+            await self.bot.say(embed=em)
+        except:
+            await self.bot.say("I need the 'embed links' permission.")
+
+    @commands.command(pass_context = True)
+    async def donate(self, ctx):
+        await self.bot.send_typing(ctx.message.channel)
+        message = "Thanks for considering donating to us, it means a lot. The servers Helix use are expensive and we need all the money we can get."
+        patreon = "https://www.patreon.com/HelixBot"
+        em = discord.Embed(title="Donate", colour=(random.randint(0, 16777215)))
+        em.set_author(name=self.bot.user.display_name, icon_url=self.bot.user.avatar_url)
+        em.add_field(name="Patreon", value=patreon)
+        try:
+            await self.bot.say(embed=em)
+        except:
+            await self.bot.say("I need the 'embed links' permission")
+        author = ctx.message.author
+        await self.bot.send_message(author, message)
+
+    @commands.command(pass_context = True)
+    async def updatelog(self, ctx):
+        channel = ctx.message.channel
+        update = "Bork"
+        subprocess.check_output(['git log --name-status HEAD^..HEAD'])
+        update = str(update)
+        em = discord.Embed(title="Update Log", colour=(random.randint(0, 16777215)))
+        em.add_field(name="", value=update)
+        await self.bot.send_message(channel, embed=em)

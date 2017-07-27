@@ -196,4 +196,6 @@ class Fun:
         await self.bot.send_typing(ctx.message.channel)
         randomint = random.randint(1, 20)
         answer = (("http://www.indra.com/8ball/animatedgifs/c%s.gif") % (randomint))
-        await self.bot.say(answer)
+        em = discord.Embed(colour=0x260068)
+        em.set_image(url=answer)
+        await self.bot.say(embed=em)
