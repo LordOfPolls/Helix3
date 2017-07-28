@@ -431,6 +431,29 @@ class Utilities:
         text = pipe.communicate()[0]
         text = str(text, 'utf8')
         text = text.replace("commit", "Commit ID:")
+        go = True
+        char = 0
+        while go == True:
+            if text[char] != "<":
+                char += 1
+            else:
+                opening = char
+                go = False
+        go = True
+        char = 0
+        while go == True:
+            if text[char] != ">":
+                char += 1
+            else:
+                closing = char
+                go = False
+        char = opening
+        email = ""
+        while char <= closing:
+            email = email + text[char]
+            char += 1            
+
+        text = text.replace(email, "")
         em = discord.Embed(title="", colour=(random.randint(0, 16777215)))
         em.add_field(name="Latest Update", value=text)
         await self.bot.send_message(channel, embed=em)
