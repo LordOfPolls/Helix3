@@ -11,6 +11,7 @@ import subprocess
 from urllib.parse import parse_qs
 from lxml import etree
 from discord.ext import commands
+from subprocess import Popen, PIPE
 import code.get as get
 
 class Utilities:
@@ -425,9 +426,11 @@ class Utilities:
     @commands.command(pass_context = True)
     async def updatelog(self, ctx):
         channel = ctx.message.channel
-        update = "Bork"
-        subprocess.check_output(['git log --name-status HEAD^..HEAD'])
-        update = str(update)
-        em = discord.Embed(title="Update Log", colour=(random.randint(0, 16777215)))
-        em.add_field(name="", value=update)
+        command = 'git log --name-status HEAD^..HEAD'
+        pipe = subprocess.Popen(command, stdout=PIPE)
+        text = pipe.communicate()[0]
+        text = str(text, 'utf8')
+        text = text.replace("commit", "Commit ID:")
+        em = discord.Embed(title="", colour=(random.randint(0, 16777215)))
+        em.add_field(name="Latest Update", value=text)
         await self.bot.send_message(channel, embed=em)
