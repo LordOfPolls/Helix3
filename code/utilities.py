@@ -427,7 +427,7 @@ class Utilities:
     async def updatelog(self, ctx):
         channel = ctx.message.channel
         command = 'git log --name-status HEAD^..HEAD'
-        pipe = subprocess.Popen(command, stdout=PIPE)
+        pipe = subprocess.Popen(command, stdout=PIPE, shell=True)
         text = pipe.communicate()[0]
         text = str(text, 'utf8')
         text = text.replace("commit", "Commit ID:")
