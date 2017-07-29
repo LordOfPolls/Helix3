@@ -392,7 +392,9 @@ class Utilities:
         seconds = uptime % 60
         minutes = math.floor((uptime - seconds) / 60)
         hours = math.floor(minutes / 60)
+        minutes = minutes % hours
         days = math.floor(hours / 24)
+        hours = hours % days
         uptime = "Days: {} , Hours: {} , Minutes: {} , Seconds: {}".format(days, hours, minutes, seconds)
         uptime = uptime.replace(".0", "")
         em = discord.Embed(title="Helix Info", colour=(random.randint(0, 16777215)))

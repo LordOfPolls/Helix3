@@ -194,8 +194,14 @@ class Fun:
     @commands.command(pass_context = True)
     async def eightball(self, ctx, *args):
         await self.bot.send_typing(ctx.message.channel)
+        msg = '{}'.format(' '.join(args))
         randomint = random.randint(1, 20)
-        answer = (("http://www.indra.com/8ball/animatedgifs/c%s.gif") % (randomint))
-        em = discord.Embed(colour=0x260068)
-        em.set_image(url=answer)
+        answer = "https://www.indra.com/8ball/animatedgifs/c{}.gif".format(randomint)
+        answer = str(answer)
+        em = discord.Embed(type="rich", description=msg, colour=0x260068)
+        em.set_author(name="Magic Eightball", icon_url=answer)
+        if len(msg) < 1:
+            em.set_image(url=answer)
+        else:
+            em.set_thumbnail(url=answer)
         await self.bot.say(embed=em)
