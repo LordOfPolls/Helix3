@@ -207,7 +207,7 @@ def Helix():
         f.close()
         print("New token saved, resuming boot")
     try:
-        bot.run(token.replace("\n", ""))
+        bot.run(token.replace("\n", ""), reconnect=True, bot=True)
     except discord.errors.LoginFailure:
         print("Token failed")
         os.unlink("data/token.txt")
