@@ -4,6 +4,7 @@ from discord.ext import commands
 import random
 import youtube_dl
 import code.get as get
+import re
 
 
 ytdl_format_options = {
@@ -162,21 +163,28 @@ class Music:
             if not success:
                 return
         msg = await self.bot.say("Processing... :confused:")
-        ytdl = youtube_dl.YoutubeDL(opts)
-        info = ytdl.extract_info(url=song, download=False, process=True)
-        print(info)
-        for item in info['entries']:
-            song = item['webpage_url']
-            try:
-                player = await state.voice.create_ytdl_player(song, ytdl_options=opts, after=state.toggle_next)
-            except Exception as e:
-                fmt = 'An error occurred while processing this request: ```py\n{}: {}\n```'
-                await self.bot.send_message(ctx.message.channel, fmt.format(type(e).__name__, e))
-            else:
-                player.volume = 0.6
-                entry = VoiceEntry(ctx.message, player)
-                await self.bot.edit_message(msg, 'Added ' + str(entry))
-                await state.songs.put(entry)
+        regex = re.compile(
+            r'^(?:http|ftp)s?://'
+            r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|'
+            r'(?:/?|[/?]\S+)$)', re.IGNORECASE)
+        if not re.match(regex, ctx.message.content.split(" ")[1]):
+            ytdl = youtube_dl.YoutubeDL(opts)
+            info = ytdl.extract_info(url=song, download=False, process=True)
+            print(info)
+            for item in info['entries']:
+                song = item['webpage_url']
+        else:
+            song = ctx.message.content.split(" ")[1]
+        try:
+            player = await state.voice.create_ytdl_player(song, ytdl_options=opts, after=state.toggle_next)
+        except Exception as e:
+            fmt = 'An error occurred while processing this request: ```py\n{}: {}\n```'
+            await self.bot.send_message(ctx.message.channel, fmt.format(type(e).__name__, e))
+        else:
+            player.volume = 0.6
+            entry = VoiceEntry(ctx.message, player)
+            await self.bot.edit_message(msg, 'Added ' + str(entry))
+            await state.songs.put(entry)
 
     @commands.command(pass_context=True, no_pm=True)
     async def volume(self, ctx):
