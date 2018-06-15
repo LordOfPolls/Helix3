@@ -5,7 +5,7 @@ import random
 import youtube_dl
 import code.get as get
 import re
-
+import pprint
 
 ytdl_format_options = {
     'format': 'bestaudio/best',
@@ -81,6 +81,7 @@ class VoiceState:
             em.set_image(url=thumbnail)
             await self.bot.send_message(self.current.channel, embed=em)
             self.current.player.start()
+
             await self.play_next_song.wait()
 
 class Music:
@@ -132,6 +133,19 @@ class Music:
 
         return True
 
+    async def addsong(self, song, msg, opts, ctx):
+        state = self.get_voice_state(ctx.message.server)
+        try:
+            player = await state.voice.create_ytdl_player(song, ytdl_options=opts, after=state.toggle_next)
+        except Exception as e:
+            fmt = 'An error occurred while processing this request: ```py\n{}: {}\n```'
+            await self.bot.send_message(ctx.message.channel, fmt.format(type(e).__name__, e))
+        else:
+            player.volume = 0.6
+            entry = VoiceEntry(ctx.message, player)
+            await self.bot.edit_message(msg, 'Added ' + str(entry))
+            await state.songs.put(entry)
+
     @commands.command(pass_context=True, no_pm=True)
     async def play(self, ctx, *, song : str):
         """Plays a song.
@@ -157,6 +171,9 @@ class Music:
     'default_search': 'auto',
     'source_address': '0.0.0.0'
         }
+        ytdl = youtube_dl.YoutubeDL(opts)
+
+
 
         if state.voice is None:
             success = await ctx.invoke(self.spawn)
@@ -168,23 +185,39 @@ class Music:
             r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|'
             r'(?:/?|[/?]\S+)$)', re.IGNORECASE)
         if not re.match(regex, ctx.message.content.split(" ")[1]):
-            ytdl = youtube_dl.YoutubeDL(opts)
             info = ytdl.extract_info(url=song, download=False, process=True)
-            print(info)
             for item in info['entries']:
-                song = item['webpage_url']
+                await self.addsong(item['webpage_url'], msg, opts, ctx)
         else:
             song = ctx.message.content.split(" ")[1]
+            if "playlist" in song:
+                info = ytdl.extract_info(url=song, download=False, process=False)
+                items = await self.async_process_youtube_playlist(playlist_url=song, channel=ctx.message.channel, author=ctx.message.author, msg=msg, ytdl=ytdl, ctx=ctx, opts=opts)
+            else:
+                await self.addsong(song, msg, opts, ctx)
+
+    async def async_process_youtube_playlist(self, playlist_url, ytdl, msg, ctx, opts, **meta):
+        """
+            Processes youtube playlists links from `playlist_url` in a questionable, async fashion.
+            :param playlist_url: The playlist url to be cut into individual urls and added to the playlist
+            :param meta: Any additional metadata to add to the playlist entry
+        """
+        info = False
         try:
-            player = await state.voice.create_ytdl_player(song, ytdl_options=opts, after=state.toggle_next)
+            # info = await self.downloader.safe_extract_info(self.loop, playlist_url, download=False, process=False)
+            info = ytdl.extract_info(url=playlist_url, download=False, process=False)
+            pprint.pprint(info)
         except Exception as e:
-            fmt = 'An error occurred while processing this request: ```py\n{}: {}\n```'
-            await self.bot.send_message(ctx.message.channel, fmt.format(type(e).__name__, e))
-        else:
-            player.volume = 0.6
-            entry = VoiceEntry(ctx.message, player)
-            await self.bot.edit_message(msg, 'Added ' + str(entry))
-            await state.songs.put(entry)
+            print('Could not extract information from {}\n\n{}'.format(playlist_url, e))
+            return
+        if not info:
+            print('Could not extract information from %s' % playlist_url)
+            return
+        for entry_data in info['entries']:
+            if entry_data:
+                baseurl = info['webpage_url'].split('playlist?list=')[0]
+                song_url = baseurl + 'watch?v=%s' % entry_data['id']
+                await self.addsong(song_url, msg, opts, ctx)
 
     @commands.command(pass_context=True, no_pm=True)
     async def volume(self, ctx):
