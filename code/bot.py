@@ -160,11 +160,21 @@ async def on_command(bot, ctx):
     if "help" in ctx.message.content:
         await byp.send_message(ctx.message.channel, ":mailbox_with_mail:")
 
-async def on_message(bot, message):
+@bot.event
+async def on_message(message):
     # level code can be called in here
     if message.author == bot.user:
         return
-    await bot.process_commands(message)
+    if bot.user.mentioned_in(message):
+        if len(message.content) == 21 or len(message.content) == 22:
+            print("Someone mentioned me, I guess they want some help")
+            message.content = ".help" #jankiest way of doing this but it works reliably
+            await bot.process_commands(message)
+            return
+    try:
+        await bot.process_commands(message)
+    except Exception as e:
+        print("Error:\n\n", e)
 
 @bot.event
 async def on_member_join(ctx):
