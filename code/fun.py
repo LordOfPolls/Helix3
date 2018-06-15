@@ -20,8 +20,9 @@ from code.shitpost import shitpost
 
 
 class Fun:
-    def __init__(self, bot):
+    def __init__(self, bot, perms):
         self.bot = bot
+        self.perms = perms
         
     @commands.command(pass_context=True)
     async def echo(self, ctx, *args):

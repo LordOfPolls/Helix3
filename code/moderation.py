@@ -6,8 +6,9 @@ import time
 
 
 class Moderation:
-    def __init__(self, bot):
+    def __init__(self, bot, perms):
         self.bot = bot
+        self.perms = perms
 
     @commands.command(pass_context=True, no_pm=True)
     async def clean(self, ctx):

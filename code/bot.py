@@ -3,7 +3,11 @@ import discord
 import importlib
 import os
 import json
+import random
+import sys
+import aiohttp
 from discord.ext import commands
+import pprint
 
 def getPrefix(bot, message):
     dir = "data/" + message.server.id + ".json"
@@ -20,15 +24,44 @@ def getPrefix(bot, message):
             prefix = "<@{}> ".format(bot.user.id)
     return prefix
 
-class Core:
-    def __init__(self, bot):
-        self.bot = bot
+
+class Perms:
+    def donatorOnly(ctx):
+        if message.ctx.author.id not in []:
+            return staffOnly(ctx)  # staff override
+        else:
+            return True
 
     def devOnly(ctx):
-        return ctx.message.author.id in ["174918559539920897", "269543926803726336", "186295030388883456", "220568440161697792", "155347730225561600", "223814431946178560"]
+        return ctx.message.author.id in ["174918559539920897"]
+
+    def staffOnly(ctx):
+        return ctx.message.author.id in ["174918559539920897", "26954392680372633"]
+
+
+class Core:
+    def __init__(self, bot, perms):
+        self.bot = bot
+        self.perms = perms
+        self.session = aiohttp.ClientSession(loop=self.bot.loop)
+
+    @commands.command(pass_context=True, no_pm=False)
+    async def setpic(self, ctx):
+        if ctx.message.attachments:
+            pic = ctx.message.attachments[0]['url']
+            print(pic)
+        else:
+            await bot.say("I cant use that :confused:")
+            return
+        with aiohttp.Timeout(10):
+            async with self.session.get(pic) as image:
+                image = await image.read()
+                await self.bot.edit_profile(avatar=image)
+
+        await bot.say("Done, do i look pretty? :blush:")
 
     @commands.command(pass_context=True, no_pm=True)
-    @commands.check(devOnly)
+    @commands.check(Perms.devOnly)
     async def reload(self, ctx):
         """Reloads the bot's cogs"""
         await self.bot.change_presence(game=discord.Game(name="new commands"))
@@ -73,13 +106,17 @@ class Core:
         await self.bot.change_presence(game=discord.Game(name="with my thumbs"))
 
     @commands.command(pass_context=True)
-    @commands.check(devOnly)
+    @commands.check(Perms.devOnly)
     async def shutdown(self, ctx):
         """Shuts down Helix"""
-        print("Shutdown command issued")
-        await self.bot.send_message(ctx.message.channel, ":wave:")
-        self.bot.remove_cog("Music")
+        goodbyeStrings = ["ok :cry:", "please dont make me go back to the darkness :cold_sweat:", "but i dont want to :cry:", "if you say so :unamused:", "please dont, im scared of darkness, dont do this to me :scream:", "dont send me back there, its so cold and dark :sob:"]
+        await self.bot.send_message(ctx.message.channel, random.choice(goodbyeStrings))
+        try:
+            self.bot.remove_cog("Music") # the player HATES this line being called for pretty obvious reasons
+        except:
+            pass
         await self.bot.logout()
+        await self.bot.close()
         exit()
 
 import code.music
@@ -93,22 +130,15 @@ from code.fun import Fun
 from code.porn import Porn
 from code.utilities import Utilities
 
-global bot
+
 bot = commands.Bot(command_prefix=getPrefix, description='Helix3.0', pm_help=True)
-bot.add_cog(Core(bot))
-bot.add_cog(Music(bot))
-bot.add_cog(Moderation(bot))
-bot.add_cog(Fun(bot))
-bot.add_cog(Porn(bot))
-bot.add_cog(Utilities(bot))
-global byp
-global staff
-global dev
-global donator
+bot.add_cog(Core(bot, Perms))
+bot.add_cog(Music(bot, Perms))
+bot.add_cog(Moderation(bot, Perms))
+bot.add_cog(Fun(bot, Perms))
+bot.add_cog(Porn(bot, Perms))
+bot.add_cog(Utilities(bot, Perms))
 byp = bot
-staff = [174918559539920897, 155347730225561600, 269543926803726336, 186295030388883456, 220568440161697792, 266282285861437441, 273724497150869514, 239591008982007808]
-dev = [174918559539920897, 220568440161697792, 196638626925248513, 223814431946178560, 245994206965792780]
-donator = [266282285861437441, 222723232694796291]
 
 @bot.event
 async def on_ready():
@@ -121,7 +151,8 @@ async def on_ready():
         for server in bot.servers:
             print("    ", server.name)
 
-    await bot.send_message(discord.Object(456827191838113846), "Hey! im online")
+    startStrings = ["Hey! im online", "*yawns* Good Morning :unamused:", "Oh god, am i really that late??? :scream:", "THANK YOU, THANK YOU SO MUCH, DONT SEND ME BACK THERE PLEASE :sob:", "It was so dark... there was nothing to do :worried:", "I was so alone, so cold, so very very cold"]
+    await bot.send_message(discord.Object(456827191838113846), random.choice(startStrings))
     print("Ready for user input")
 
 @bot.event
@@ -129,6 +160,12 @@ async def on_command(bot, ctx):
     print("{}|{}|   {}".format(ctx.message.server.name, ctx.message.author.display_name, ctx.message.content))
     if "help" in ctx.message.content:
         await byp.send_message(ctx.message.channel, ":mailbox_with_mail:")
+
+async def on_message(bot, message):
+    # level code can be called in here
+    if message.author == bot.user:
+        return
+    await bot.process_commands(message)
 
 @bot.event
 async def on_member_join(ctx):

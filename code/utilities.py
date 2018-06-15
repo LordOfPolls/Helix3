@@ -15,10 +15,11 @@ from subprocess import Popen, PIPE
 import code.get as get
 
 class Utilities:
-    def __init__(self, bot):
+    def __init__(self, bot, perms):
         self.bot = bot
-        self.bugChannel = discord.Object("334411785597878272")
-        self.featureChannel = discord.Object("334411752651620372")
+        self.bugChannel = discord.Object("457131257898205185")
+        self.featureChannel = discord.Object("457131283680591873")
+        self.perms = perms
 
     async def get_google_entries(self, query):
         params = {
