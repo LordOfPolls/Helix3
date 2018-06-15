@@ -66,44 +66,43 @@ class Core:
         """Reloads the bot's cogs"""
         await self.bot.change_presence(game=discord.Game(name="new commands"))
         print("Reloading all cogs")
-        msg = await self.bot.say('Reloading cogs :thinking')
+        msg = await self.bot.say('Reloading cogs :thinking:')
 
         await self.bot.edit_message(msg, "Reloading Music :thinking:")
         self.bot.remove_cog("Music")
         importlib.reload(code.music)
         from code.music import Music
-        self.bot.add_cog(Music(bot))
+        self.bot.add_cog(Music(bot, self.perms))
         await self.bot.edit_message(msg, "Reloaded Music :slight_smile:")
 
         await self.bot.edit_message(msg, "Reloading Moderation :thinking:")
         self.bot.remove_cog("Moderation")
         importlib.reload(code.moderation)
         from code.moderation import Moderation
-        self.bot.add_cog(Moderation(bot))
+        self.bot.add_cog(Moderation(bot, self.perms))
         await self.bot.edit_message(msg, "Reloaded Moderation :slight_smile:")
 
         await self.bot.edit_message(msg, "Reloading Fun :thinking:")
         self.bot.remove_cog("Fun")
         importlib.reload(code.fun)
         from code.fun import Fun
-        self.bot.add_cog(Fun(bot))
+        self.bot.add_cog(Fun(bot, self.perms))
         await self.bot.edit_message(msg, "Reloaded Fun :slight_smile:")
 
         await self.bot.edit_message(msg, "Reloading Porn :thinking:")
         self.bot.remove_cog("Porn")
         importlib.reload(code.porn)
         from code.porn import Porn
-        self.bot.add_cog(Porn(bot))
+        self.bot.add_cog(Porn(bot, self.perms))
         await self.bot.edit_message(msg, "Reloaded Porn :slight_smile:")
 
         await self.bot.edit_message(msg, "Reloading Utilities :thinking:")
         self.bot.remove_cog("Utilities")
         importlib.reload(code.utilities)
         from code.utilities import Utilities
-        self.bot.add_cog(Utilities(bot))
+        self.bot.add_cog(Utilities(bot, self.perms))
         await self.bot.edit_message(msg, "Reloaded Utilities :slight_smile:")
         await self.bot.edit_message(msg, 'Reload complete :slight_smile:')
-        await self.bot.change_presence(game=discord.Game(name="with my thumbs"))
 
     @commands.command(pass_context=True)
     @commands.check(Perms.devOnly)
