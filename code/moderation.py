@@ -2,6 +2,7 @@ import asyncio
 import discord
 from discord.ext import commands
 import code.get as get
+import time
 
 
 class Moderation:
@@ -43,19 +44,21 @@ class Moderation:
     async def apocalypse(self, ctx):
         """Cleans the entire channel"""
         author = ctx.message.author
-        channel = ctx.message.author
+        channel = ctx.message.channel
         server = ctx.message.server
-
-        perms = author.permissions_in(channel)
-        for role in author.roles:
-            try:
-                if perms.administrator:
-                    usage = True
-                else:
-                    usage = False
-            except:
-                await self.bot.send_message(channel, "Failed to find administrator role")
-                await self.bot.send_message(channel, perms)
+        try:
+            perms = author.permissions_in(channel)
+            for role in author.roles:
+                try:
+                    if perms.administrator:
+                        usage = True
+                    else:
+                        usage = False
+                except:
+                    await self.bot.send_message(channel, "Failed to find administrator role")
+                    await self.bot.send_message(channel, perms)
+        except:
+            pass
         if author.id == "174918559539920897":
             usage = True
         if usage == True:

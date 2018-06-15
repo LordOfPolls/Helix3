@@ -192,6 +192,7 @@ class Music:
             try:
                 value = int(value[1])
             except:
+
                 # if value[0][0] in '+-':
                 #     new_volume = value[0]
                 #     new_volume += (player.volume * 100)

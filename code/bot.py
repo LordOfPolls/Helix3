@@ -31,45 +31,46 @@ class Core:
     @commands.check(devOnly)
     async def reload(self, ctx):
         """Reloads the bot's cogs"""
+        await self.bot.change_presence(game=discord.Game(name="new commands"))
         print("Reloading all cogs")
-        msg = await self.bot.say('Reloading cogs')
+        msg = await self.bot.say('Reloading cogs :thinking')
 
-        await self.bot.edit_message(msg, "Reloading Music")
+        await self.bot.edit_message(msg, "Reloading Music :thinking:")
         self.bot.remove_cog("Music")
         importlib.reload(code.music)
         from code.music import Music
         self.bot.add_cog(Music(bot))
-        await self.bot.edit_message(msg, "Reloaded Music")
+        await self.bot.edit_message(msg, "Reloaded Music :slight_smile:")
 
-        await self.bot.edit_message(msg, "Reloading Moderation")
+        await self.bot.edit_message(msg, "Reloading Moderation :thinking:")
         self.bot.remove_cog("Moderation")
         importlib.reload(code.moderation)
         from code.moderation import Moderation
         self.bot.add_cog(Moderation(bot))
-        await self.bot.edit_message(msg, "Reloaded Moderation")
+        await self.bot.edit_message(msg, "Reloaded Moderation :slight_smile:")
 
-        await self.bot.edit_message(msg, "Reloading Fun")
+        await self.bot.edit_message(msg, "Reloading Fun :thinking:")
         self.bot.remove_cog("Fun")
         importlib.reload(code.fun)
         from code.fun import Fun
         self.bot.add_cog(Fun(bot))
-        await self.bot.edit_message(msg, "Reloaded Fun")
+        await self.bot.edit_message(msg, "Reloaded Fun :slight_smile:")
 
-        await self.bot.edit_message(msg, "Reloading Porn")
+        await self.bot.edit_message(msg, "Reloading Porn :thinking:")
         self.bot.remove_cog("Porn")
         importlib.reload(code.porn)
         from code.porn import Porn
         self.bot.add_cog(Porn(bot))
-        await self.bot.edit_message(msg, "Reloaded Porn")
+        await self.bot.edit_message(msg, "Reloaded Porn :slight_smile:")
 
-        await self.bot.edit_message(msg, "Reloading Utilities")
+        await self.bot.edit_message(msg, "Reloading Utilities :thinking:")
         self.bot.remove_cog("Utilities")
         importlib.reload(code.utilities)
         from code.utilities import Utilities
         self.bot.add_cog(Utilities(bot))
-        await self.bot.edit_message(msg, "Reloaded Utilities")
-
-        await self.bot.say('Reload complete')
+        await self.bot.edit_message(msg, "Reloaded Utilities :slight_smile:")
+        await self.bot.edit_message(msg, 'Reload complete :slight_smile:')
+        await self.bot.change_presence(game=discord.Game(name="with my thumbs"))
 
     @commands.command(pass_context=True)
     @commands.check(devOnly)
@@ -111,7 +112,17 @@ donator = [266282285861437441, 222723232694796291]
 
 @bot.event
 async def on_ready():
+    await bot.change_presence(game=discord.Game(name="with my thumbs"))
     print('Logged in as:\n{0} (ID: {0.id})'.format(bot.user))
+    if len(bot.servers) == 0:
+        print("{} is not in any servers\nInvite link: {}".format(bot.user, discord.utils.oauth_url(bot.user.id, permissions=discord.Permissions(70380544), server=None)))
+    else:
+        print("Servers")
+        for server in bot.servers:
+            print("    ", server.name)
+
+    await bot.send_message(discord.Object(456827191838113846), "Hey! im online")
+    print("Ready for user input")
 
 @bot.event
 async def on_command(bot, ctx):
