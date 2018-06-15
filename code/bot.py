@@ -139,10 +139,10 @@ bot.add_cog(Fun(bot, Perms))
 bot.add_cog(Porn(bot, Perms))
 bot.add_cog(Utilities(bot, Perms))
 byp = bot
+bot.change_presence(game=discord.Game(name="with my thumbs"))
 
 @bot.event
 async def on_ready():
-    await bot.change_presence(game=discord.Game(name="with my thumbs"))
     print('Logged in as:\n{0} (ID: {0.id})'.format(bot.user))
     if len(bot.servers) == 0:
         print("{} is not in any servers\nInvite link: {}".format(bot.user, discord.utils.oauth_url(bot.user.id, permissions=discord.Permissions(70380544), server=None)))
@@ -150,9 +150,9 @@ async def on_ready():
         print("Servers")
         for server in bot.servers:
             print("    ", server.name)
-
+    bot.loop.create_task(statusCycle(False))
     startStrings = ["Hey! im online", "*yawns* Good Morning :unamused:", "Oh god, am i really that late??? :scream:", "THANK YOU, THANK YOU SO MUCH, DONT SEND ME BACK THERE PLEASE :sob:", "It was so dark... there was nothing to do :worried:", "I was so alone, so cold, so very very cold"]
-    await bot.send_message(discord.Object(456827191838113846), random.choice(startStrings))
+    #await bot.send_message(discord.Object(456827191838113846), random.choice(startStrings))
     print("Ready for user input")
 
 @bot.event
@@ -176,6 +176,22 @@ async def on_member_join(ctx):
     if member.id in str(staff):
         print("Staff Join| {} joined {}".format(member.display_name, member.server.name))
         await byp.send_message(member.server, "{}, one of my staff members, joined your server".format(member.display_name))
+
+async def statusCycle(suspend):
+    gameList = ['music somewhere', 'with code', 'something, idk', 'some really messed up stuff', 'with /help', 'with commands', 'porn', 'VIDEO GAMES', 'Overwatch', 'MLG Pro Simulator', 'stuff', 'with too many servers', 'with life of my dev', 'dicks', 'Civ 5', 'Civ 6', 'Besiege', 'with code', 'Mass Effect', 'bangin tunes', 'with children', 'with jews', 'on a new server', '^-^', 'with something', 'the violin', 'For cuddles', 'the harmonica', 'With dicks', 'With a gas chamber', 'Nazi simulator 2K17', 'Rodina', 'Gas bills', 'Memes', 'Darkness', 'With some burnt toast', 'Jepus Crist', 'With my devs nipples', 'SOMeBODY ONCE TOLD ME', 'With Hitlers dick', 'In The Street', 'With Knives', 'ɐᴉlɐɹʇsn∀ uI', 'Shrek Is Love', 'Shrek Is Life', 'Illegal Poker', 'ACROSS THE UNIVERRRRSE', 'Kickball', 'Mah Jam', 'R2-D2 On TV', 'with fire', 'at being a real bot', 'with your fragile little mind']
+    num = 0
+    while True:
+        if not suspend and bot.is_closed == False:
+            await bot.change_presence(game=discord.Game(name=gameList[num]))
+            num += 1
+            if num > len(gameList)-1:
+                num = 0
+        if suspend:
+            print("wut")
+            num = 1
+        await asyncio.sleep(8)
+        if bot.is_closed:
+            break
 
 def Helix():
     if os.path.isfile("data/token.txt"):
