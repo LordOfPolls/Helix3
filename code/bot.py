@@ -86,43 +86,53 @@ class Core:
     async def reload(self, ctx):
         """Reloads the bot's cogs"""
         await self.bot.change_presence(game=discord.Game(name="new commands"))
-        log.info("Reloading all cogs")
-        msg = await self.bot.say('Reloading cogs :thinking:')
-
-        await self.bot.edit_message(msg, "Reloading Music :thinking:")
-        self.bot.remove_cog("Music")
-        importlib.reload(code.music)
-        from code.music import Music
-        self.bot.add_cog(Music(bot, self.perms))
-        await self.bot.edit_message(msg, "Reloaded Music :slight_smile:")
-
-        await self.bot.edit_message(msg, "Reloading Moderation :thinking:")
-        self.bot.remove_cog("Moderation")
-        importlib.reload(code.moderation)
-        from code.moderation import Moderation
-        self.bot.add_cog(Moderation(bot, self.perms))
-        await self.bot.edit_message(msg, "Reloaded Moderation :slight_smile:")
-
-        await self.bot.edit_message(msg, "Reloading Fun :thinking:")
-        self.bot.remove_cog("Fun")
-        importlib.reload(code.fun)
-        from code.fun import Fun
-        self.bot.add_cog(Fun(bot, self.perms))
-        await self.bot.edit_message(msg, "Reloaded Fun :slight_smile:")
-
-        await self.bot.edit_message(msg, "Reloading Porn :thinking:")
-        self.bot.remove_cog("Porn")
-        importlib.reload(code.porn)
-        from code.porn import Porn
-        self.bot.add_cog(Porn(bot, self.perms))
-        await self.bot.edit_message(msg, "Reloaded Porn :slight_smile:")
-
-        await self.bot.edit_message(msg, "Reloading Utilities :thinking:")
-        self.bot.remove_cog("Utilities")
-        importlib.reload(code.utilities)
-        from code.utilities import Utilities
-        self.bot.add_cog(Utilities(bot, self.perms))
-        await self.bot.edit_message(msg, "Reloaded Utilities :slight_smile:")
+        messageX = ctx.message.content.replace(getPrefix(bot, ctx.message), "").lower()
+        select = False
+        msg = await self.bot.say("Ok :slight_smile:")
+        if len(messageX) >= 7:
+            select = True
+        else:
+            log.info("Reloading all cogs")
+        if "music" in messageX or not select:
+            log.debug("Reloading Music")
+            await self.bot.edit_message(msg, "Reloading Music :thinking:")
+            self.bot.remove_cog("Music")
+            importlib.reload(code.music)
+            from code.music import Music
+            self.bot.add_cog(Music(bot, self.perms))
+            await self.bot.edit_message(msg, "Reloaded Music :slight_smile:")
+        if "mod" in messageX or not select:
+            log.debug("Reloading Moderation")
+            await self.bot.edit_message(msg, "Reloading Moderation :thinking:")
+            self.bot.remove_cog("Moderation")
+            importlib.reload(code.moderation)
+            from code.moderation import Moderation
+            self.bot.add_cog(Moderation(bot, self.perms))
+            await self.bot.edit_message(msg, "Reloaded Moderation :slight_smile:")
+        if "fun" in messageX or not select:
+            log.debug("Reloading Fun")
+            await self.bot.edit_message(msg, "Reloading Fun :thinking:")
+            self.bot.remove_cog("Fun")
+            importlib.reload(code.fun)
+            from code.fun import Fun
+            self.bot.add_cog(Fun(bot, self.perms))
+            await self.bot.edit_message(msg, "Reloaded Fun :slight_smile:")
+        if "porn" in messageX or not select:
+            log.debug("Reloading Porn")
+            await self.bot.edit_message(msg, "Reloading Porn :thinking:")
+            self.bot.remove_cog("Porn")
+            importlib.reload(code.porn)
+            from code.porn import Porn
+            self.bot.add_cog(Porn(bot, self.perms))
+            await self.bot.edit_message(msg, "Reloaded Porn :slight_smile:")
+        if "utilities" in messageX or not select:
+            log.debug("Reloading Utilites")
+            await self.bot.edit_message(msg, "Reloading Utilities :thinking:")
+            self.bot.remove_cog("Utilities")
+            importlib.reload(code.utilities)
+            from code.utilities import Utilities
+            self.bot.add_cog(Utilities(bot, self.perms))
+            await self.bot.edit_message(msg, "Reloaded Utilities :slight_smile:")
         await self.bot.edit_message(msg, 'Reload complete :slight_smile:')
 
     @commands.command(pass_context=True)
