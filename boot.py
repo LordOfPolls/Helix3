@@ -11,7 +11,7 @@ import subprocess
 import discord
 
 tmpfile = tempfile.TemporaryFile('w+', encoding='utf8')
-log = logging.getLogger('launcher')
+log = logging.getLogger('bootScript')
 log.setLevel(logging.DEBUG)
 
 sh = logging.StreamHandler(stream=sys.stdout)
@@ -82,9 +82,12 @@ def main():
     h = Helix()
 
 if __name__ == '__main__':
-    # try:
-    main()
-    # except Exception as e:
-    #     log.fatal("Bot runtime has been terminated")
-    #     log.fatal(e)
-        #os.execl(sys.executable, sys.executable, *sys.argv)
+    ver = os.popen(r'git show -s HEAD --format="%cr|%s|%h"')
+    ver = str(ver.read().split('|')[2]).strip()
+    log.info("HELIX3 {}".format(ver))
+    try:
+        main()
+    except Exception as e:
+        log.fatal("Bot runtime has been terminated")
+        log.fatal(e)
+        os.execl(sys.executable, sys.executable, *sys.argv)
