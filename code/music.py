@@ -6,6 +6,11 @@ import youtube_dl
 import code.get as get
 import re
 import pprint
+import logging
+from code import bot
+
+log = logging.getLogger(__name__)
+# bot._setup_logging(log)
 
 ytdl_format_options = {
     'format': 'bestaudio/best',
@@ -127,9 +132,11 @@ class Music:
         if state.voice is None:
             state.voice = await self.bot.join_voice_channel(summoned_channel)
             await self.bot.edit_message(msg, 'Joined... ``{}``'.format(summoned_channel.name))
+            log.info('Joined "{}"|"{}"'.format(ctx.message.server, summoned_channel))
         else:
             await state.voice.move_to(summoned_channel)
             await self.bot.edit_message(msg, 'Moved to... ``{}``'.format(summoned_channel.name))
+            log.info('{} moved me to {}'.format(ctx.message.author, summoned_channel.name))
 
         return True
 
@@ -137,6 +144,7 @@ class Music:
         state = self.get_voice_state(ctx.message.server)
         try:
             player = await state.voice.create_ytdl_player(song, ytdl_options=opts, after=state.toggle_next)
+            log.debug('{} was added to {}\'s playlist'.format(song, ctx.message.server))
         except Exception as e:
             fmt = 'An error occurred while processing this request: ```py\n{}: {}\n```'
             await self.bot.send_message(ctx.message.channel, fmt.format(type(e).__name__, e))
@@ -191,6 +199,7 @@ class Music:
         else:
             song = ctx.message.content.split(" ")[1]
             if "playlist" in song:
+                log.debug('{}| playlist detected in due to command: {}'.format(ctx.message.server, ctx.message.content))
                 info = ytdl.extract_info(url=song, download=False, process=False)
                 items = await self.async_process_youtube_playlist(playlist_url=song, channel=ctx.message.channel, author=ctx.message.author, msg=msg, ytdl=ytdl, ctx=ctx, opts=opts)
             else:
@@ -206,17 +215,17 @@ class Music:
         try:
             # info = await self.downloader.safe_extract_info(self.loop, playlist_url, download=False, process=False)
             info = ytdl.extract_info(url=playlist_url, download=False, process=False)
-            pprint.pprint(info)
         except Exception as e:
-            print('Could not extract information from {}\n\n{}'.format(playlist_url, e))
+            log.error('Could not extract information from {}\n\n{}'.format(playlist_url, e))
             return
         if not info:
-            print('Could not extract information from %s' % playlist_url)
+            log.error('Could not extract information from %s' % playlist_url)
             return
         for entry_data in info['entries']:
             if entry_data:
                 baseurl = info['webpage_url'].split('playlist?list=')[0]
                 song_url = baseurl + 'watch?v=%s' % entry_data['id']
+                log.debug("Adding {} from playlist".format(entry_data['title']))
                 await self.addsong(song_url, msg, opts, ctx)
 
     @commands.command(pass_context=True, no_pm=True)
@@ -334,6 +343,5 @@ class Music:
             em = discord.Embed(description="**{}**",
                                colour=(random.randint(0, 16777215)))
             em.set_footer(text=state.player.url)
-            print(state.player.url)
             em.set_image(url=thumbnail)
             await self.bot.send_message(ctx.message.channel, embed=em)

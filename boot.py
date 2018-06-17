@@ -15,10 +15,14 @@ log = logging.getLogger('launcher')
 log.setLevel(logging.DEBUG)
 
 sh = logging.StreamHandler(stream=sys.stdout)
-sh.setFormatter(logging.Formatter(
-    fmt="[%(levelname)s] %(name)s: %(message)s"
-))
 
+fmt = "%(log_color)s[%(levelname)s] %(name)s: %(message)s"
+date_format = '%Y-%m-%d %H:%M:%S'
+fmt = colorlog.ColoredFormatter(fmt, date_format,
+                                log_colors={'DEBUG': 'cyan', 'INFO': 'reset',
+                                            'WARNING': 'bold_yellow', 'ERROR': 'bold_red',
+                                            'CRITICAL': 'bold_red'})
+sh.setFormatter(fmt)
 sh.setLevel(logging.INFO)
 log.addHandler(sh)
 

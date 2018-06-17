@@ -10,7 +10,7 @@ from discord.ext import commands
 import pprint
 import logging
 
-def _setup_logging():
+def _setup_logging(log):
     if len(logging.getLogger(__package__).handlers) > 1:
         log.debug("Skipping logger setup, already set up")
         return
@@ -27,7 +27,9 @@ def _setup_logging():
     logging.getLogger("FFMPEG").setLevel(logging.ERROR)
     logging.getLogger("player").setLevel(logging.ERROR)
     logging.getLogger("discord.gateway ").setLevel(logging.ERROR)
+    logging.getLogger("discord").setLevel(logging.FATAL)
     logging.getLogger(__package__).setLevel(logging.DEBUG)
+
 
 def getPrefix(bot, message):
     dir = "data/" + message.server.id + ".json"
@@ -69,7 +71,6 @@ class Core:
     async def setpic(self, ctx):
         if ctx.message.attachments:
             pic = ctx.message.attachments[0]['url']
-            print(pic)
         else:
             await bot.say("I cant use that :confused:")
             return
@@ -85,7 +86,7 @@ class Core:
     async def reload(self, ctx):
         """Reloads the bot's cogs"""
         await self.bot.change_presence(game=discord.Game(name="new commands"))
-        print("Reloading all cogs")
+        log.info("Reloading all cogs")
         msg = await self.bot.say('Reloading cogs :thinking:')
 
         await self.bot.edit_message(msg, "Reloading Music :thinking:")
@@ -154,7 +155,7 @@ log = logging.getLogger(__name__)
 # log.setLevel(logging.DEBUG)
 bot = commands.Bot(command_prefix=getPrefix, description='Helix3.0', pm_help=True)
 def Helix():
-    _setup_logging()
+    _setup_logging(log)
 
     log.debug("Loading cogs")
     bot.add_cog(Core(bot, Perms))
@@ -204,12 +205,10 @@ async def on_ready():
     startStrings = ["Hey! im online", "*yawns* Good Morning :unamused:", "Oh god, am i really that late??? :scream:", "THANK YOU, THANK YOU SO MUCH, DONT SEND ME BACK THERE PLEASE :sob:", "It was so dark... there was nothing to do :worried:", "I was so alone, so cold, so very very cold"]
     #await bot.send_message(discord.Object(456827191838113846), random.choice(startStrings))
     log.info("Ready for user input")
-    log.error("This is what an error looks like")
-    log.warning("This is what a warning looks like")
 
 @bot.event
 async def on_command(bot, ctx):
-    log.info("{}|{}|   {}".format(ctx.message.server.name, ctx.message.author.display_name, ctx.message.content))
+    log.info('{}|{}| "{}"'.format(ctx.message.server.name, ctx.message.author.display_name, ctx.message.content.replace(getPrefix(bot, ctx.message), "")))
     if "help" in ctx.message.content:
         await byp.send_message(ctx.message.channel, ":mailbox_with_mail:")
 
@@ -220,23 +219,25 @@ async def on_message(message):
         return
     if bot.user.mentioned_in(message):
         if len(message.content) == 21 or len(message.content) == 22:
-            print("Someone mentioned me, I guess they want some help")
+            log.info("{} mentioned me, I guess they want some help".format(message.author.name))
             message.content = ".help" #jankiest way of doing this but it works reliably
             await bot.process_commands(message)
             return
     try:
         await bot.process_commands(message)
     except Exception as e:
-        print("Error:\n\n", e)
+        log.error("Error:\n\n", e)
+        fmt = 'An error occurred while processing that request: ```py\n{}: {}\n```'
+        await self.bot.send_message(ctx.message.channel, fmt.format(type(e).__name__, e))
 
 @bot.event
 async def on_member_join(ctx):
     member = ctx
     if member.id in str(dev):
-        print("Dev Join| {} joined {}".format(member.display_name, member.server.name))
+        log.info("Dev Join| {} joined {}".format(member.display_name, member.server.name))
         await byp.send_message(member.server, "{}, one of my devs, joined your server".format(member.display_name))
     if member.id in str(staff):
-        print("Staff Join| {} joined {}".format(member.display_name, member.server.name))
+        log.info("Staff Join| {} joined {}".format(member.display_name, member.server.name))
         await byp.send_message(member.server, "{}, one of my staff members, joined your server".format(member.display_name))
 
 async def statusCycle(suspend):
@@ -249,7 +250,7 @@ async def statusCycle(suspend):
             if num > len(gameList)-1:
                 num = 0
         if suspend:
-            print("wut")
+            log.fatal("wut")
             num = 1
         await asyncio.sleep(8)
         if bot.is_closed:
