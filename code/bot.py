@@ -8,6 +8,26 @@ import sys
 import aiohttp
 from discord.ext import commands
 import pprint
+import logging
+
+def _setup_logging():
+    if len(logging.getLogger(__package__).handlers) > 1:
+        log.debug("Skipping logger setup, already set up")
+        return
+    import colorlog
+    shandler = logging.StreamHandler(stream=sys.stdout)
+    fmt = "%(log_color)s[%(levelname)s] %(name)s: %(message)s"
+    date_format = '%Y-%m-%d %H:%M:%S'
+    fmt = colorlog.ColoredFormatter(fmt, date_format,
+                                  log_colors={'DEBUG': 'cyan', 'INFO': 'reset',
+                                              'WARNING': 'bold_yellow', 'ERROR': 'bold_red',
+                                              'CRITICAL': 'bold_red'})
+    shandler.setFormatter(fmt)
+    logging.getLogger(__package__).addHandler(shandler)
+    logging.getLogger("FFMPEG").setLevel(logging.ERROR)
+    logging.getLogger("player").setLevel(logging.ERROR)
+    logging.getLogger("discord.gateway ").setLevel(logging.ERROR)
+    logging.getLogger(__package__).setLevel(logging.DEBUG)
 
 def getPrefix(bot, message):
     dir = "data/" + message.server.id + ".json"
@@ -130,33 +150,66 @@ from code.porn import Porn
 from code.utilities import Utilities
 
 
+log = logging.getLogger(__name__)
+# log.setLevel(logging.DEBUG)
 bot = commands.Bot(command_prefix=getPrefix, description='Helix3.0', pm_help=True)
-bot.add_cog(Core(bot, Perms))
-bot.add_cog(Music(bot, Perms))
-bot.add_cog(Moderation(bot, Perms))
-bot.add_cog(Fun(bot, Perms))
-bot.add_cog(Porn(bot, Perms))
-bot.add_cog(Utilities(bot, Perms))
-byp = bot
-bot.change_presence(game=discord.Game(name="with my thumbs"))
+def Helix():
+    _setup_logging()
+
+    log.debug("Loading cogs")
+    bot.add_cog(Core(bot, Perms))
+    bot.add_cog(Music(bot, Perms))
+    bot.add_cog(Moderation(bot, Perms))
+    bot.add_cog(Fun(bot, Perms))
+    bot.add_cog(Porn(bot, Perms))
+    bot.add_cog(Utilities(bot, Perms))
+    log.debug("Cogs loaded")
+
+    if os.path.isfile("data/token.txt"):
+        token = open("data/token.txt", "r").read()
+    else:
+        try:
+            os.mkdir("data")
+        except:
+            pass
+        log.error("NO TOKEN Dx")
+        token = input("Please input a token: ")
+        f = open("data/token.txt", "w")
+        f.write(token)
+        f.close()
+        log.info("New token saved, resuming boot")
+    try:
+        log.info("Connecting...")
+        bot.run(token.replace("\n", ""), reconnect=True, bot=True)
+    except discord.errors.LoginFailure:
+        log.fatal("Token failed")
+        os.unlink("data/token.txt")
+    except Exception as e:
+        log.fatal("Bot runtime failed")
+        log.fatal(e)
+
+
 
 @bot.event
 async def on_ready():
-    print('Logged in as:\n{0} (ID: {0.id})'.format(bot.user))
+    log.info('Logged in as:    {0} (ID: {0.id})'.format(bot.user))
     if len(bot.servers) == 0:
-        print("{} is not in any servers\nInvite link: {}".format(bot.user, discord.utils.oauth_url(bot.user.id, permissions=discord.Permissions(70380544), server=None)))
+        log.warning("{} is not in any servers\nInvite link: {}".format(bot.user, discord.utils.oauth_url(bot.user.id, permissions=discord.Permissions(70380544), server=None)))
     else:
-        print("Servers")
+        string = "Servers:"
         for server in bot.servers:
-            print("    ", server.name)
+            string += "\n                 -{}".format(server.name)
+        log.info(string)
     bot.loop.create_task(statusCycle(False))
     startStrings = ["Hey! im online", "*yawns* Good Morning :unamused:", "Oh god, am i really that late??? :scream:", "THANK YOU, THANK YOU SO MUCH, DONT SEND ME BACK THERE PLEASE :sob:", "It was so dark... there was nothing to do :worried:", "I was so alone, so cold, so very very cold"]
     #await bot.send_message(discord.Object(456827191838113846), random.choice(startStrings))
-    print("Ready for user input")
+    log.info("Ready for user input")
+    log.error("This is what an error looks like")
+    log.warning("This is what a warning looks like")
 
 @bot.event
 async def on_command(bot, ctx):
-    print("{}|{}|   {}".format(ctx.message.server.name, ctx.message.author.display_name, ctx.message.content))
+    log.info("{}|{}|   {}".format(ctx.message.server.name, ctx.message.author.display_name, ctx.message.content))
     if "help" in ctx.message.content:
         await byp.send_message(ctx.message.channel, ":mailbox_with_mail:")
 
@@ -201,23 +254,3 @@ async def statusCycle(suspend):
         await asyncio.sleep(8)
         if bot.is_closed:
             break
-
-def Helix():
-    if os.path.isfile("data/token.txt"):
-        token = open("data/token.txt", "r").read()
-    else:
-        try:
-            os.mkdir("data")
-        except:
-            pass
-        print("NO TOKEN Dx")
-        token = input("Please input a token: ")
-        f = open("data/token.txt", "w")
-        f.write(token)
-        f.close()
-        print("New token saved, resuming boot")
-    try:
-        bot.run(token.replace("\n", ""), reconnect=True, bot=True)
-    except discord.errors.LoginFailure:
-        print("Token failed")
-        os.unlink("data/token.txt")

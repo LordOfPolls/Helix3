@@ -74,14 +74,13 @@ def restart(*args):
 
 def main():
     from code import Helix
-    log.info("Connecting\n")
+    log.info("=======STARTING BOT PROCESS=======\n")
     h = Helix()
-    log.info("All done.")
 
 if __name__ == '__main__':
-    try:
-        main()
-    except Exception as e:
-        log.fatal("Bot runtime has been terminated")
-        log.fatal(e)
+    # try:
+    main()
+    # except Exception as e:
+    #     log.fatal("Bot runtime has been terminated")
+    #     log.fatal(e)
         #os.execl(sys.executable, sys.executable, *sys.argv)
