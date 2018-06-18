@@ -9,6 +9,7 @@ import colorlog
 import traceback
 import subprocess
 import discord
+from time import sleep
 
 tmpfile = tempfile.TemporaryFile('w+', encoding='utf8')
 log = logging.getLogger('bootScript')
@@ -22,8 +23,9 @@ fmt = colorlog.ColoredFormatter(fmt, date_format,
                                 log_colors={'DEBUG': 'cyan', 'INFO': 'reset',
                                             'WARNING': 'bold_yellow', 'ERROR': 'bold_red',
                                             'CRITICAL': 'bold_red'})
+
 sh.setFormatter(fmt)
-sh.setLevel(logging.INFO)
+sh.setLevel(logging.DEBUG)
 log.addHandler(sh)
 
 tfh = logging.StreamHandler(stream=tmpfile)
@@ -36,23 +38,49 @@ log.addHandler(tfh)
 
 def finalize_logging():
     pass
+    logLocation = "data/logs"
 
-    with open("logs/bot.log", 'w', encoding='utf8') as f:
+    # archive old logs
+    log.debug("Attempting to archive old log")
+    if not os.path.exists(logLocation):
+        # technically should never happen, but error handling
+        log.warning("Logging folder somehow doesnt exist... creating")
+        os.mkdir(logLocation)
+    if os.path.isfile("{}/bot.log".format(logLocation)):
+        log.debug("Moving old bot log")
+        try:
+            if not os.path.exists("{}/archive".format(logLocation)):
+                log.warning("Archive folder doesnt exist... creating")
+                os.mkdir("{}/archive".format(logLocation))
+            if os.path.exists("{}/archive".format(logLocation)):
+                # i know what youre thinking, urmergurd Dan, just use an else statement
+                # but trust me, this way prevents errors in the future
+                name = "{}/archive/{}.log".format(logLocation, str(strftime("%Y-%m-%d  %H%M%S", gmtime())))
+                sleep(1)
+                try:
+                    os.rename("{}/bot.log".format(logLocation), name)
+                    log.debug("Log successfully archived")
+                except Exception as e:
+                    fmt = 'Failed to archive old bot.log: \n{}: {}\n'
+                    log.critical((fmt.format(type(e).__name__, e)))
+
+        except Exception as e:
+            fmt = 'Logging archive failed: \n{}: {}\n'
+            log.critical((fmt.format(type(e).__name__, e)))
+
+    with open("{}/bot.log".format(logLocation), 'w', encoding='utf8') as f:
         tmpfile.seek(0)
         f.write(tmpfile.read())
         tmpfile.close()
-
-        f.write('\n')
-        f.write(" PRE-RUN SANITY CHECKS PASSED ".center(80, '#'))
-        f.write('\n\n\n')
-
+        f.write("\n")
     global tfh
     log.removeHandler(tfh)
     del tfh
 
-    fh = logging.FileHandler("logs/bot.log", mode='a')
+    fh = logging.FileHandler("data/logs/bot.log", mode='a')
+
     fh.setFormatter(logging.Formatter(
-        fmt="[%(levelname)s]: %(message)s"
+        fmt="[%(levelname)s] %(name)s: %(message)s"
     ))
     fh.setLevel(logging.DEBUG)
     log.addHandler(fh)
@@ -63,9 +91,11 @@ def finalize_logging():
     dlog.setLevel(logging.WARNING)
     dlh = logging.StreamHandler(stream=sys.stdout)
     dlh.terminator = ''
-    dlh.setFormatter(logging.Formatter('.'))
+    dlh.setFormatter(logging.Formatter(
+        fmt="[%(levelname)s] %(name)s: %(message)s"
+    ))
     dlog.addHandler(dlh)
-
+    log.debug("Log setup complete")
 
 def pyexec(pycom, *args, pycom2=None):
     pycom2 = pycom2 or pycom
@@ -77,8 +107,9 @@ def restart(*args):
 
 
 def main():
+    finalize_logging()
+    log.info("STARTING BOT PROCESS".center(20, "="))
     from code import Helix
-    log.info("=======STARTING BOT PROCESS=======\n")
     h = Helix()
 
 if __name__ == '__main__':
