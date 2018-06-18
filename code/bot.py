@@ -216,6 +216,7 @@ async def on_ready():
     #await bot.send_message(discord.Object(456827191838113846), random.choice(startStrings))
     log.info("Ready for user input")
 
+byp = bot
 @bot.event
 async def on_command(bot, ctx):
     log.info('{}|{}| "{}"'.format(ctx.message.server.name, ctx.message.author.display_name, ctx.message.content.replace(getPrefix(bot, ctx.message), "")))
@@ -239,6 +240,9 @@ async def on_message(message):
         log.error("Error:\n\n", e)
         fmt = 'An error occurred while processing that request: ```py\n{}: {}\n```'
         await self.bot.send_message(ctx.message.channel, fmt.format(type(e).__name__, e))
+@bot.event
+async def on_server_join(server):
+    log.info("Joined server {}".format(server.name))
 
 @bot.event
 async def on_member_join(ctx):
