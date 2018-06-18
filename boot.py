@@ -84,7 +84,7 @@ def finalize_logging():
 
     # opens log file with writing permission
     with open("{}/bot.log".format(logLocation), 'w', encoding='utf8') as f:
-        # ??
+        # position tmpfile at first position
         tmpfile.seek(0)
 
         # writes content of tempfile into log
@@ -96,12 +96,13 @@ def finalize_logging():
         # formatting
         f.write("\n")
 
-    # ??
+    # get the temp file handler from global
     global tfh
+    # remove it
     log.removeHandler(tfh)
     del tfh
 
-    # ??
+    # init file handler, output to dir, only append permissions
     fh = logging.FileHandler("data/logs/bot.log", mode='a')
 
     fh.setFormatter(logging.Formatter(
