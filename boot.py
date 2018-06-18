@@ -42,6 +42,9 @@ def finalize_logging():
 
     # archive old logs
     log.debug("Attempting to archive old log")
+    if not os.path.exists("data"):
+        log.warning("No data folder... creating")
+        os.mkdir("data")
     if not os.path.exists(logLocation):
         # technically should never happen, but error handling
         log.warning("Logging folder somehow doesnt exist... creating")
