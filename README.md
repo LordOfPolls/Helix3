@@ -44,7 +44,13 @@ Go to the appropriate cog file, go into the class and use the following:
     async def [command name](self, ctx): # use ctx, if pass_context is true
         [code for your command]
  ```
-     
+
+### Extra dependencies
+- `youtube_dl`
+- `colorlog`
+- `lxml`
+- `discord`
+
 ### For anything else, use the following:
 standard discord.py stuff: http://discordpy.readthedocs.io/en/latest/
 
