@@ -113,9 +113,12 @@ def main():
     h = Helix()
 
 if __name__ == '__main__':
-    ver = os.popen(r'git show -s HEAD --format="%cr|%s|%h"')
-    ver = str(ver.read().split('|')[2]).strip()
-    log.info("HELIX3 {}".format(ver))
+    try:
+        ver = os.popen(r'git show -s HEAD --format="%cr|%s|%h"')
+        ver = str(ver.read().split('|')[2]).strip()
+        log.info("HELIX3 {}".format(ver))
+    except:
+        log.info("HELIX3")
     try:
         main()
     except Exception as e:
