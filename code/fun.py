@@ -12,10 +12,10 @@ import requests
 from bs4 import BeautifulSoup
 from discord.ext import commands
 
-from code.savage import savage
-from code.compliment import compliment
-from code.pickup import pickup
-from code.shitpost import shitpost
+from code.misc_savage import savage
+from code.misc_compliment import compliment
+from code.misc_pickup import pickup
+from code.misc_shitpost import shitpost
 
 
 
