@@ -105,22 +105,23 @@ def finalize_logging():
     # init file handler, output to dir, only append permissions
     fh = logging.FileHandler("data/logs/bot.log", mode='a')
 
-    fh.setFormatter(logging.Formatter(
+    fh.setFormatter(logging.Formatter( # format the file handlers log output
         fmt="[%(levelname)s] %(name)s: %(message)s"
+        # levelname = what level of log it is (i.e debug, info, warning, etc.)
+        # name = the file that threw the log message
+        # message = the message sent via the log
     ))
-    fh.setLevel(logging.DEBUG)
-    log.addHandler(fh)
+    fh.setLevel(logging.DEBUG) # https://docs.python.org/2/library/logging.html#logging.Logger.setLevel
+    log.addHandler(fh) # add file handler (fh) to the active log, so it gets used when someone uses logging
 
-    sh.setLevel(logging.INFO)
-
-    dlog = logging.getLogger('discord')
-    dlog.setLevel(logging.WARNING)
-    dlh = logging.StreamHandler(stream=sys.stdout)
+    dlog = logging.getLogger('discord') # get discords logger
+    dlog.setLevel(logging.WARNING) # set it to only show warnings and higher
+    dlh = logging.StreamHandler(stream=sys.stdout) # set its output to the scripts stream
     dlh.terminator = ''
-    dlh.setFormatter(logging.Formatter(
+    dlh.setFormatter(logging.Formatter(  #sets discord's logs format
         fmt="[%(levelname)s] %(name)s: %(message)s"
     ))
-    dlog.addHandler(dlh)
+    dlog.addHandler(dlh) # adds this handler to discords logging
     log.debug("Log setup complete")
 
 def pyexec(pycom, *args, pycom2=None):
