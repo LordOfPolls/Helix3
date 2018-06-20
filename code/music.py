@@ -147,27 +147,6 @@ class VoiceState:
 
         await self.bot.send_message(self.current.channel, embed=em)
 
-    async def getColour(self, url):
-        def getImage(url):
-            return urllib.request.urlretrieve(URL, filename)
-
-        def floor(x):
-            return int(x)
-
-        # saves image (somehow doesnt work nested into `.imread()`
-        filename = getImage(url)
-        # gets img
-        img = cv2.imread(filename)
-        # avg color in one row
-        avgColorRow = numpy.mean(img, axis=0)
-        # averaging it for the whole image (saved in arr)
-        avgColorRGBArr = numpy.mean(avgColorRow, axis=0)
-        # turning it into a triplet
-        avgColorRGB = (floor(avgColorRGBArr[0]), floor(avgColorRGBArr[1]), floor(avgColorRGBArr[2]))
-        # convert RGB to hex
-        avgColor = b16encode(bytes(avgColorRGB)).decode("utf-8")
-        return avgColor
-
 
 class Music:
     """Voice related commands.
@@ -194,6 +173,18 @@ class Music:
         }
         self.thread_pool = ThreadPoolExecutor(max_workers=2)
 
+    def __unload(self):
+        """Called when the cog is unloaded"""
+        for state in self.voice_states.values():
+            try:
+                state.audio_player.cancel()
+                if state.voice:
+                    self.bot.loop.create_task(state.voice.disconnect())
+            except:
+                pass
+
+    #### UTIL FUNCTIONS ####
+
     def get_voice_state(self, server):
         """"Gets the current voice state for a specified server"""
         state = self.voice_states.get(server.id)
@@ -208,15 +199,71 @@ class Music:
         state = self.get_voice_state(channel.server)
         state.voice = voice
 
-    def __unload(self):
-        """Called when the cog is unloaded"""
-        for state in self.voice_states.values():
-            try:
-                state.audio_player.cancel()
-                if state.voice:
-                    self.bot.loop.create_task(state.voice.disconnect())
-            except:
-                pass
+    async def addsong(self, songData, ctx=None, playlist=False):
+        state = self.get_voice_state(songData.server)
+        # await self.create_voice_client(ctx.message.author.voice_channel)
+        try:
+            await self.bot.edit_message(songData.npmessage, 'Added ' + songData.title)
+        except:
+            songData.npmessage = await self.bot.send_message(songData.channel, 'Added ' + songData.title)
+        await state.songs.put(songData)
+        log.debug("{} was added to the {}'s queue by {}".format(songData.title,
+                                                                songData.server.name,
+                                                                songData.invoker.name))
+
+    async def async_process_youtube_playlist(self, info, ctx, msg, **meta):
+        """
+            Processes youtube playlists links from `playlist_url` in a questionable, async fashion.
+            :param playlist_url: The playlist url to be cut into individual urls and added to the playlist
+            :param meta: Any additional metadata to add to the playlist entry
+            :param ytdl: Youtube_dl object created in .play
+            :param ctx: context
+        """
+        for entry_data in info['entries']:
+            if entry_data:
+                baseurl = info['webpage_url'].split('playlist?list=')[0]
+                song_url = baseurl + 'watch?v=%s' % entry_data['id']
+                data = await self.extract_info(url=song_url, download=False, process=True)
+                song = await self.parseSong(data, ctx, msg)
+                await self.addsong(song, ctx, playlist=True)
+
+    async def async_process_sc_playlist(self, info, ctx, msg):
+        """
+            Processes soundcloud set and bancdamp album links from `playlist_url` in a questionable, async fashion.
+            :param playlist_url: The playlist url to be cut into individual urls and added to the playlist
+            :param meta: Any additional metadata to add to the playlist entry
+        """
+        for entry_data in info['entries']:
+            if entry_data:
+                data = await self.extract_info(url=entry_data['url'], download=False, process=True)
+                songData = Song(url=entry_data['url'], title=data['title'], channel=ctx.message.channel,
+                                server=ctx.message.server, author=ctx.message.author, thumbnail=data['thumbnail'],
+                                webURL=entry_data['url'], length=data['duration'], msg=msg)
+
+                try:
+                    self.addsong(songData)
+                except Exception as e:
+                    log.error("Error adding entry {}".format(entry_data['id']), exc_info=e)
+
+    async def extract_info(self, *args, **kwargs):
+        """
+            Runs ytdl.extract_info within a threadpool to avoid blocking the bot's loop
+        """
+        loop = self.bot.loop
+        ytdl = youtube_dl.YoutubeDL(self.opts)
+        return await loop.run_in_executor(self.thread_pool, functools.partial(ytdl.extract_info, *args, **kwargs))
+
+    @staticmethod
+    async def parseSong(data, ctx, msg):
+        """For the sake of better code this is a function. It takes all the data out of youtube_dl's extracted
+        info and stores it in the song class"""
+        return Song(url=data['url'], title=data['title'], channel=ctx.message.channel,
+                   server=ctx.message.server, author=ctx.message.author,
+                   thumbnail=data['thumbnail'], webURL=data['webpage_url'], length=data['duration'],
+                   msg=msg, id=data['id'], rating=data['average_rating'], is_live=data['is_live'],
+                   extractor=data['extractor'])
+
+    #### COMMANDS ###
 
     @commands.command(pass_context=True, no_pm=True)
     async def spawn(self, ctx):
@@ -238,17 +285,6 @@ class Music:
 
         return True
 
-    async def addsong(self, songData, ctx, playlist=False):
-        state = self.get_voice_state(songData.server)
-        # await self.create_voice_client(ctx.message.author.voice_channel)
-        try:
-            await self.bot.edit_message(songData.npmessage, 'Added ' + songData.title)
-        except:
-            songData.npmessage = await self.bot.send_message(songData.channel, 'Added ' + songData.title)
-        await state.songs.put(songData)
-        log.debug("{} was added to the {}'s queue by {}".format(songData.title,
-                                                                songData.server.name,
-                                                                songData.invoker.name))
     @commands.command(pass_context=True, no_pm=True)
     async def play(self, ctx, *, song:str):
         """Plays a song.
@@ -289,58 +325,6 @@ class Music:
                 await self.addsong(songData, ctx)
             else:
                 await self.bot.send_message(ctx.message.channel, "Sorry, i cant play that yet")
-
-    async def parseSong(self, data, ctx, msg):
-        """For the sake of better code this is a function. It takes all the data out of youtube_dl's extracted
-        info and stores it in the song class"""
-        return Song(url=data['url'], title=data['title'], channel=ctx.message.channel,
-                   server=ctx.message.server, author=ctx.message.author,
-                   thumbnail=data['thumbnail'], webURL=data['webpage_url'], length=data['duration'],
-                   msg=msg, id=data['id'], rating=data['average_rating'], is_live=data['is_live'],
-                   extractor=data['extractor'])
-
-    async def async_process_youtube_playlist(self, info, ctx, msg, **meta):
-        """
-            Processes youtube playlists links from `playlist_url` in a questionable, async fashion.
-            :param playlist_url: The playlist url to be cut into individual urls and added to the playlist
-            :param meta: Any additional metadata to add to the playlist entry
-            :param ytdl: Youtube_dl object created in .play
-            :param ctx: context
-        """
-        for entry_data in info['entries']:
-            if entry_data:
-                baseurl = info['webpage_url'].split('playlist?list=')[0]
-                song_url = baseurl + 'watch?v=%s' % entry_data['id']
-                data = await self.extract_info(url=song_url, download=False, process=True)
-                song = await self.parseSong(data, ctx, msg)
-                await self.addsong(song, ctx, playlist=True)
-
-    async def async_process_sc_playlist(self, info, ctx, msg):
-        """
-            Processes soundcloud set and bancdamp album links from `playlist_url` in a questionable, async fashion.
-            :param playlist_url: The playlist url to be cut into individual urls and added to the playlist
-            :param meta: Any additional metadata to add to the playlist entry
-        """
-
-        for entry_data in info['entries']:
-            if entry_data:
-                data = await self.extract_info(url=entry_data['url'], download=False, process=True)
-                songData = Song(url=entry_data['url'], title=data['title'], channel=ctx.message.channel,
-                                server=ctx.message.server, author=ctx.message.author, thumbnail=data['thumbnail'],
-                                webURL=entry_data['url'], length=data['duration'], msg=msg)
-
-                try:
-                    self.addsong(songData)
-                except Exception as e:
-                    log.error("Error adding entry {}".format(entry_data['id']), exc_info=e)
-
-    async def extract_info(self, *args, **kwargs):
-        """
-            Runs ytdl.extract_info within a threadpool to avoid blocking the bot's loop
-        """
-        loop = self.bot.loop
-        ytdl = youtube_dl.YoutubeDL(self.opts)
-        return await loop.run_in_executor(self.thread_pool, functools.partial(ytdl.extract_info, *args, **kwargs))
 
     @commands.command(pass_context=True, no_pm=True)
     async def volume(self, ctx):
