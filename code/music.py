@@ -416,6 +416,24 @@ class Music:
 
 
     @commands.command(pass_context=True, no_pm=True)
+    async def playlist(self, ctx):
+        state = self.get_voice_state(ctx.message.server)
+        queue = state.songs
+        songs = list(queue._queue)
+        await self.bot.send_message(ctx.message.channel, "There are {} songs in the queue".format(len(songs)))
+        lines = []
+        lines.append("Playing: **{}** added by **{}**".format(state.current.title, state.current.invoker.name))
+        for song in songs:
+            newline = '`{}.` **{}** added by **{}**'.format(len(lines), song.title, song.invoker.name).strip()
+            lines.append(newline)
+
+        message = str('\n'.join(lines))
+        em = discord.Embed(description=message, colour=(random.randint(0, 16777215)))
+        em.set_author(name='Playlist:',
+                      icon_url=self.bot.user.avatar_url)
+        await self.bot.send_message(ctx.message.channel, embed=em)
+
+    @commands.command(pass_context=True, no_pm=True)
     async def skip(self, ctx):
         """Vote to skip a song. The song requester can automatically skip.
         skip votes are needed for the song to be skipped.
