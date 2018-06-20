@@ -277,11 +277,18 @@ class Music:
                 await self.addsong(song, ctx)
         else:
             song = ctx.message.content.split(" ")[1]
-            if "playlist" in song:
-                info = await self.extract_info(url=song, download=False, process=True)
-                items = await self.async_process_youtube_playlist(playlist_url=song, channel=ctx.message.channel, author=ctx.message.author, msg=msg, ytdl=ytdl, ctx=ctx)
+            info = await self.extract_info(url=song, download=False, process=True)
+            if info['extractor'] == 'youtube:playlist':
+                await self.async_process_youtube_playlist(info=info, channel=ctx.message.channel, author=ctx.message.author, msg=msg, ytdl=ytdl, ctx=ctx)
+            elif info['extractor'] == 'soundcloud:set':
+                await self.async_process_sc_playlist(info, ctx, msg)
+            elif info['extractor'] == 'soundcloud':
+                songData = Song(url=info['url'], title=info['title'], channel=ctx.message.channel,
+                                server=ctx.message.server, author=ctx.message.author, thumbnail=info['thumbnail'],
+                                webURL=info['webpage_url'], length=info['duration'], msg=msg)
+                await self.addsong(songData, ctx)
             else:
-                await self.addsong(song, ctx)
+                await self.bot.send_message(ctx.message.channel, "Sorry, i cant play that yet")
 
     async def parseSong(self, data, ctx, msg):
         """For the sake of better code this is a function. It takes all the data out of youtube_dl's extracted
@@ -292,7 +299,7 @@ class Music:
                    msg=msg, id=data['id'], rating=data['average_rating'], is_live=data['is_live'],
                    extractor=data['extractor'])
 
-    async def async_process_youtube_playlist(self, playlist_url, ytdl, ctx, msg, **meta):
+    async def async_process_youtube_playlist(self, info, ctx, msg, **meta):
         """
             Processes youtube playlists links from `playlist_url` in a questionable, async fashion.
             :param playlist_url: The playlist url to be cut into individual urls and added to the playlist
@@ -300,15 +307,6 @@ class Music:
             :param ytdl: Youtube_dl object created in .play
             :param ctx: context
         """
-        info = False
-        try:
-            info = await self.extract_info(url=playlist_url, download=False, process=True)
-        except Exception as e:
-            log.error('Could not extract information from {}\n\n{}'.format(playlist_url, e))
-            return
-        if not info:
-            log.error('Could not extract information from %s' % playlist_url)
-            return
         for entry_data in info['entries']:
             if entry_data:
                 baseurl = info['webpage_url'].split('playlist?list=')[0]
@@ -316,6 +314,25 @@ class Music:
                 data = await self.extract_info(url=song_url, download=False, process=True)
                 song = await self.parseSong(data, ctx, msg)
                 await self.addsong(song, ctx, playlist=True)
+
+    async def async_process_sc_playlist(self, info, ctx, msg):
+        """
+            Processes soundcloud set and bancdamp album links from `playlist_url` in a questionable, async fashion.
+            :param playlist_url: The playlist url to be cut into individual urls and added to the playlist
+            :param meta: Any additional metadata to add to the playlist entry
+        """
+
+        for entry_data in info['entries']:
+            if entry_data:
+                data = await self.extract_info(url=entry_data['url'], download=False, process=True)
+                songData = Song(url=entry_data['url'], title=data['title'], channel=ctx.message.channel,
+                                server=ctx.message.server, author=ctx.message.author, thumbnail=data['thumbnail'],
+                                webURL=entry_data['url'], length=data['duration'], msg=msg)
+
+                try:
+                    self.addsong(songData)
+                except Exception as e:
+                    log.error("Error adding entry {}".format(entry_data['id']), exc_info=e)
 
     async def extract_info(self, *args, **kwargs):
         """
