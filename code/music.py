@@ -12,6 +12,7 @@ import numpy
 import cv2
 import math
 import functools
+import time
 from base64 import b16encode
 import urllib.request
 from code import bot
@@ -40,18 +41,27 @@ class VoiceEntry:
 
 class Song:
     def __init__(self, url, title, channel, server, author,
-                 file=None, thumbnail=None, player=None, webURL=None, length=None, msg=None):
+                 file=None, thumbnail=None, player=None, webURL=None, length=None, msg=None,
+                 rating=None, is_live=None, id=None, extractor=None):
+        ### Song data ###
         self.url = url  # url of the video itself
         self.webURL = webURL  # url of the youtube page
         self.length = length  # length of the video
         self.title = title  # title of the video
+        self.thumbnail = thumbnail  # thumbnail of the video
+        self.file = file  # cache file, not used rn
+        self.rating = rating # rating out of 5 of the video based on like:dislike
+        self.is_live = is_live # is this a live stream?
+        self.id = id # The video ID
+        self.source = extractor # where is this video from
+
+        ### Discord Data ###
         self.channel = channel  # channel command was used in
         self.server = server  # server command was used in
         self.invoker = author  # person who asked for the song
-        self.file = file  # cache file, not used rn
-        self.thumbnail = thumbnail  # thumbnail of the video
         self.player = player  # the audio player itself (the thing that streams music from youtube to discord)
-        self.npmessage = msg
+        self.npmessage = msg # The last now playing message, used by playlists
+
 
 class VoiceState:
     def __init__(self, bot):
@@ -103,28 +113,36 @@ class VoiceState:
         while True:
 
             self.play_next_song.clear()
+            self.current = await self.songs.get()
             try:
-                self.current = await self.songs.get()
-                try:
-                    player = await self.voice.create_ytdl_player(self.current.url, ytdl_options=self.opts,
-                                                                  after=self.toggle_next)
-                    self.current.player = player
-                except Exception as e:
-                    fmt = 'An error occurred while processing this request: ```py\n{}: {}\n```'
-                    await self.bot.send_message(self.current.channel, fmt.format(type(e).__name__, e))
-                    log.error("Error in addsong:\n{}".format(fmt.format(type(e).__name__, e)))
-                    return
-                player.start()
+                player = await self.voice.create_ytdl_player(self.current.url, ytdl_options=self.opts,
+                                                              after=self.toggle_next)
+                self.current.player = player
+            except Exception as e:
+                fmt = 'An error occurred while processing this request: ```py\n{}: {}\n```'
+                await self.bot.send_message(self.current.channel, fmt.format(type(e).__name__, e))
+                log.error("Error in addsong:\n{}".format(fmt.format(type(e).__name__, e)))
+                return
+            player.start()
+            try:
                 await self.announceNowPlaying()
-                await self.play_next_song.wait()
-            except:
-                log.error("This should never happen, somehow the audio task has failed")
+            except Exception as e:
+                log.error(e)
+            await self.play_next_song.wait()
 
     async def announceNowPlaying(self):
         song = self.current
         log.debug("Playing {} in {}".format(song.title, song.server))
         em = discord.Embed(description="Playing **{}** from **{}**".format(song.title, song.invoker),
                            colour=(random.randint(0, 16777215)))
+        if song.is_live is None:
+            sec = int(song.length)
+            mins = sec / 60
+            sec -= 60 * mins
+            em.add_field(name="Duration:", value=str(time.strftime("%M:%S", time.gmtime(int(song.length)))), inline=True)
+        if song.rating is not None:
+            em.add_field(name="Rating:", value="%.2f" %song.rating, inline=True)
+        em.set_footer(text=song.webURL)
         em.set_image(url=song.thumbnail)
 
         await self.bot.send_message(self.current.channel, embed=em)
@@ -253,17 +271,26 @@ class Music:
             r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|'
             r'(?:/?|[/?]\S+)$)', re.IGNORECASE)
         if not re.match(regex, ctx.message.content.split(" ")[1]):
-            info = ytdl.extract_info(url=song, download=False, process=True)
+            info = await self.extract_info(url=song, download=False, process=True)
             for item in info['entries']:
-                song = Song(url=item['url'], title=item['title'], channel=ctx.message.channel, server=ctx.message.server, author=ctx.message.author, thumbnail=item['thumbnail'], msg=msg)
+                song = await self.parseSong(item, ctx, msg)
                 await self.addsong(song, ctx)
         else:
             song = ctx.message.content.split(" ")[1]
             if "playlist" in song:
-                info = ytdl.extract_info(url=song, download=False, process=False)
+                info = await self.extract_info(url=song, download=False, process=True)
                 items = await self.async_process_youtube_playlist(playlist_url=song, channel=ctx.message.channel, author=ctx.message.author, msg=msg, ytdl=ytdl, ctx=ctx)
             else:
-                await self.addsong(songInfo, ctx)
+                await self.addsong(song, ctx)
+
+    async def parseSong(self, data, ctx, msg):
+        """For the sake of better code this is a function. It takes all the data out of youtube_dl's extracted
+        info and stores it in the song class"""
+        return Song(url=data['url'], title=data['title'], channel=ctx.message.channel,
+                   server=ctx.message.server, author=ctx.message.author,
+                   thumbnail=data['thumbnail'], webURL=data['webpage_url'], length=data['duration'],
+                   msg=msg, id=data['id'], rating=data['average_rating'], is_live=data['is_live'],
+                   extractor=data['extractor'])
 
     async def async_process_youtube_playlist(self, playlist_url, ytdl, ctx, msg, **meta):
         """
@@ -275,7 +302,7 @@ class Music:
         """
         info = False
         try:
-            info = ytdl.extract_info(url=playlist_url, download=False, process=False)
+            info = await self.extract_info(url=playlist_url, download=False, process=True)
         except Exception as e:
             log.error('Could not extract information from {}\n\n{}'.format(playlist_url, e))
             return
@@ -287,8 +314,7 @@ class Music:
                 baseurl = info['webpage_url'].split('playlist?list=')[0]
                 song_url = baseurl + 'watch?v=%s' % entry_data['id']
                 data = await self.extract_info(url=song_url, download=False, process=True)
-                song = Song(url=data['url'], title=data['title'], channel=ctx.message.channel,
-                            server=ctx.message.server, author=ctx.message.author, thumbnail=data['thumbnail'], msg=msg)
+                song = await self.parseSong(data, ctx, msg)
                 await self.addsong(song, ctx, playlist=True)
 
     async def extract_info(self, *args, **kwargs):
@@ -364,6 +390,9 @@ class Music:
         if state.is_playing():
             player = state.player
             player.stop()
+            state.songs._queue.clear()
+            state.songs._finished.set()
+            state.songs._unfinished_tasks =0
             await self.bot.say(":stop_button:")
 
         try:
@@ -372,6 +401,19 @@ class Music:
             await state.voice.disconnect()
         except:
             pass
+
+    @commands.command(pass_context=True, no_pm=True)
+    async def clear(self, ctx):
+        state = self.get_voice_state(ctx.message.server)
+        if state.is_playing():
+            if not state.songs.empty():
+                state.songs._queue.clear()
+                await self.bot.send_message(ctx.message.channel, ":thumbsup:")
+            else:
+                await self.bot.send_message(ctx.message.channel, "There are no songs to clear :confused:")
+        else:
+            await self.bot.send_message(ctx.message.channel, "But im not playing anything :confused:")
+
 
     @commands.command(pass_context=True, no_pm=True)
     async def skip(self, ctx):
@@ -386,7 +428,7 @@ class Music:
         if voter.id in ['174918559539920897']: # placeholder dev override until perms system finished
             await self.bot.say('``Dev Override``:track_next:')
             state.skip()
-        elif voter == state.current.requester:
+        elif voter == state.current.invoker:
             await self.bot.say(':track_next:')
             state.skip()
         elif voter.id not in state.skip_votes:
