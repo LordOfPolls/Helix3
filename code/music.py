@@ -11,10 +11,12 @@ import logging
 import numpy
 import cv2
 import math
+import functools
 from base64 import b16encode
 import urllib.request
 from code import bot
 from PIL import Image
+from concurrent.futures import ThreadPoolExecutor
 
 log = logging.getLogger(__name__)
 # bot._setup_logging(log)
@@ -37,28 +39,46 @@ class VoiceEntry:
 
 
 class Song:
-    def __init__(self, url, title, channel, server, author, file=None, thumbnail=None):
-        self.url = url
-        self.title = title
-        self.channel = channel
-        self.server = server
-        self.invoker = author
-        if file != None:
-            self.file = file
-        if thumbnail != None:
-            self.thumbnail = thumbnail
-
+    def __init__(self, url, title, channel, server, author,
+                 file=None, thumbnail=None, player=None, webURL=None, length=None, msg=None):
+        self.url = url  # url of the video itself
+        self.webURL = webURL  # url of the youtube page
+        self.length = length  # length of the video
+        self.title = title  # title of the video
+        self.channel = channel  # channel command was used in
+        self.server = server  # server command was used in
+        self.invoker = author  # person who asked for the song
+        self.file = file  # cache file, not used rn
+        self.thumbnail = thumbnail  # thumbnail of the video
+        self.player = player  # the audio player itself (the thing that streams music from youtube to discord)
+        self.npmessage = msg
 
 class VoiceState:
     def __init__(self, bot):
         self.current = None
         self.voice = None
         self.bot = bot
+        self.server = None
         self.play_next_song = asyncio.Event()
         self.songs = asyncio.Queue()
         self.skip_votes = set() # a set of user_ids that voted
         self.audio_player = self.bot.loop.create_task(self.audio_player_task())
         self.autoplaylist = open("autoplaylist.txt", "r")
+        self.opts = {
+            'format': 'bestaudio/best',
+            'extractaudio': True,
+            'audioformat': 'mp3',
+            'outtmpl': '%(extractor)s-%(id)s-%(title)s.%(ext)s',
+            'restrictfilenames': True,
+            'noplaylist': False,
+            'nocheckcertificate': True,
+            'ignoreerrors': False,
+            'logtostderr': False,
+            'quiet': True,
+            'no_warnings': True,
+            'default_search': 'auto',
+            'source_address': '0.0.0.0'
+        }
 
     def is_playing(self):
         if self.voice is None or self.current is None:
@@ -81,18 +101,32 @@ class VoiceState:
 
     async def audio_player_task(self):
         while True:
+
             self.play_next_song.clear()
-            self.current = await self.songs.get()
-            await self.announceNowPlaying()
-            self.current.player.start()
-            await self.play_next_song.wait()
+            try:
+                self.current = await self.songs.get()
+                try:
+                    player = await self.voice.create_ytdl_player(self.current.url, ytdl_options=self.opts,
+                                                                  after=self.toggle_next)
+                    self.current.player = player
+                except Exception as e:
+                    fmt = 'An error occurred while processing this request: ```py\n{}: {}\n```'
+                    await self.bot.send_message(self.current.channel, fmt.format(type(e).__name__, e))
+                    log.error("Error in addsong:\n{}".format(fmt.format(type(e).__name__, e)))
+                    return
+                player.start()
+                await self.announceNowPlaying()
+                await self.play_next_song.wait()
+            except:
+                log.error("This should never happen, somehow the audio task has failed")
 
     async def announceNowPlaying(self):
-        song = self.current.song
+        song = self.current
         log.debug("Playing {} in {}".format(song.title, song.server))
         em = discord.Embed(description="Playing **{}** from **{}**".format(song.title, song.invoker),
                            colour=(random.randint(0, 16777215)))
         em.set_image(url=song.thumbnail)
+
         await self.bot.send_message(self.current.channel, embed=em)
 
     async def getColour(self, url):
@@ -140,6 +174,7 @@ class Music:
             'default_search': 'auto',
             'source_address': '0.0.0.0'
         }
+        self.thread_pool = ThreadPoolExecutor(max_workers=2)
 
     def get_voice_state(self, server):
         """"Gets the current voice state for a specified server"""
@@ -185,26 +220,19 @@ class Music:
 
         return True
 
-    async def addsong(self, songData, ctx):
+    async def addsong(self, songData, ctx, playlist=False):
         state = self.get_voice_state(songData.server)
+        # await self.create_voice_client(ctx.message.author.voice_channel)
         try:
-            player = await state.voice.create_ytdl_player(songData.url, ytdl_options=self.opts, after=state.toggle_next)
-        except Exception as e:
-            fmt = 'An error occurred while processing this request: ```py\n{}: {}\n```'
-            await self.bot.send_message(ctx.message.channel, fmt.format(type(e).__name__, e))
-            log.error("Error in addsong:\n{}".format(fmt.format(type(e).__name__, e)))
-            return
-        else:
-            if player.volume == 0 or player.volume is None:
-                player.volume = 0.6
-            entry = VoiceEntry(ctx.message, player, songData)
-            await self.bot.send_message(songData.channel, 'Added ' + songData.title)
-            await state.songs.put(entry)
-            log.debug("{} was added to the {}'s queue by {}".format(songData.title,
-                                                                    songData.server.name,
-                                                                    songData.invoker.name))
+            await self.bot.edit_message(songData.npmessage, 'Added ' + songData.title)
+        except:
+            songData.npmessage = await self.bot.send_message(songData.channel, 'Added ' + songData.title)
+        await state.songs.put(songData)
+        log.debug("{} was added to the {}'s queue by {}".format(songData.title,
+                                                                songData.server.name,
+                                                                songData.invoker.name))
     @commands.command(pass_context=True, no_pm=True)
-    async def play(self, ctx, *, song : str):
+    async def play(self, ctx, *, song:str):
         """Plays a song.
         If there is a song currently in the queue, then it is
         queued until the next song is done playing.
@@ -214,8 +242,6 @@ class Music:
         """
         state = self.get_voice_state(ctx.message.server)
         ytdl = youtube_dl.YoutubeDL(self.opts)
-
-
 
         if state.voice is None:
             success = await ctx.invoke(self.spawn)
@@ -229,26 +255,26 @@ class Music:
         if not re.match(regex, ctx.message.content.split(" ")[1]):
             info = ytdl.extract_info(url=song, download=False, process=True)
             for item in info['entries']:
-                song = Song(url=item['url'], title=item['title'], channel=ctx.message.channel, server=ctx.message.server, author=ctx.message.author, thumbnail=item['thumbnail'])
+                song = Song(url=item['url'], title=item['title'], channel=ctx.message.channel, server=ctx.message.server, author=ctx.message.author, thumbnail=item['thumbnail'], msg=msg)
                 await self.addsong(song, ctx)
         else:
             song = ctx.message.content.split(" ")[1]
             if "playlist" in song:
-                log.debug('{}| playlist detected in due to command: {}'.format(ctx.message.server, ctx.message.content))
                 info = ytdl.extract_info(url=song, download=False, process=False)
                 items = await self.async_process_youtube_playlist(playlist_url=song, channel=ctx.message.channel, author=ctx.message.author, msg=msg, ytdl=ytdl, ctx=ctx)
             else:
-                await self.addsong(songInfo, msg, ctx)
+                await self.addsong(songInfo, ctx)
 
-    async def async_process_youtube_playlist(self, playlist_url, ytdl, msg, ctx, **meta):
+    async def async_process_youtube_playlist(self, playlist_url, ytdl, ctx, msg, **meta):
         """
             Processes youtube playlists links from `playlist_url` in a questionable, async fashion.
             :param playlist_url: The playlist url to be cut into individual urls and added to the playlist
             :param meta: Any additional metadata to add to the playlist entry
+            :param ytdl: Youtube_dl object created in .play
+            :param ctx: context
         """
         info = False
         try:
-            # info = await self.downloader.safe_extract_info(self.loop, playlist_url, download=False, process=False)
             info = ytdl.extract_info(url=playlist_url, download=False, process=False)
         except Exception as e:
             log.error('Could not extract information from {}\n\n{}'.format(playlist_url, e))
@@ -258,19 +284,20 @@ class Music:
             return
         for entry_data in info['entries']:
             if entry_data:
-                pprint.pprint(entry_data)
-
                 baseurl = info['webpage_url'].split('playlist?list=')[0]
                 song_url = baseurl + 'watch?v=%s' % entry_data['id']
-                log.debug("Adding {} from playlist".format(entry_data['title']))
+                data = await self.extract_info(url=song_url, download=False, process=True)
+                song = Song(url=data['url'], title=data['title'], channel=ctx.message.channel,
+                            server=ctx.message.server, author=ctx.message.author, thumbnail=data['thumbnail'], msg=msg)
+                await self.addsong(song, ctx, playlist=True)
 
-                thumbnail = song_url
-                thumbnail = thumbnail.replace("www.", "")
-                thumbnail = thumbnail.replace("https://youtube.com/watch?v=", "http://img.youtube.com/vi/")
-                thumbnail = thumbnail + "/mqdefault.jpg"
-                song = Song(url=song_url, title=entry_data['title'], channel=ctx.message.channel,
-                            server=ctx.message.server, author=ctx.message.author, thumbnail=thumbnail)
-                await self.addsong(song, ctx)
+    async def extract_info(self, *args, **kwargs):
+        """
+            Runs ytdl.extract_info within a threadpool to avoid blocking the bot's loop
+        """
+        loop = self.bot.loop
+        ytdl = youtube_dl.YoutubeDL(self.opts)
+        return await loop.run_in_executor(self.thread_pool, functools.partial(ytdl.extract_info, *args, **kwargs))
 
     @commands.command(pass_context=True, no_pm=True)
     async def volume(self, ctx):
@@ -349,9 +376,8 @@ class Music:
     @commands.command(pass_context=True, no_pm=True)
     async def skip(self, ctx):
         """Vote to skip a song. The song requester can automatically skip.
-        3 skip votes are needed for the song to be skipped.
+        skip votes are needed for the song to be skipped.
         """
-
         state = self.get_voice_state(ctx.message.server)
         if not state.is_playing():
             await self.bot.say('But im not playing anything ;-;')
@@ -363,7 +389,6 @@ class Music:
         elif voter == state.current.requester:
             await self.bot.say(':track_next:')
             state.skip()
-
         elif voter.id not in state.skip_votes:
             numInChannel = sum(1 for m in state.voice.channel.voice_members if not(
                 m.deaf or m.self_deaf or m.bot
