@@ -192,6 +192,7 @@ def Helix():
     try:
         log.info("Connecting...")
         bot.run(token.replace("\n", ""), reconnect=True, bot=True)
+        bot.add_listener(Music.on_voice_state_update, 'on_voice_state_update')
     except discord.errors.LoginFailure:
         log.fatal("Token failed")
         os.unlink("data/token.txt")
