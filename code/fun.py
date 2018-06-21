@@ -190,7 +190,7 @@ class Fun:
         url = ("http://romtypo.com/helix/doge/{}".format(text))
         await self.bot.say(url)
 
-    @commands.command(pass_context = True)
+    '''@commands.command(pass_context = True)
     async def eightball(self, ctx, *args):
         await self.bot.send_typing(ctx.message.channel)
         msg = '{}'.format(' '.join(args))
@@ -203,4 +203,60 @@ class Fun:
             em.set_image(url=answer)
         else:
             em.set_thumbnail(url=answer)
-        await self.bot.say(embed=em)
+        await self.bot.say(embed=em)'''
+    @commands.command(pass_context = True)   
+    async def eightball(self, ctx, message):
+        channel = ctx.message.channel
+        choice = "123"
+        choice = random.choice(choice)
+        length = int(len(message))
+        if length < 3:
+            await self.bot.say("You didn't ask a question")
+        else:
+            if choice == "1":
+                minichoice = random.randint(1, 10)
+                if minichoice == 1:
+                    await self.bot.send_message(channel, "It is certain")
+                if minichoice == 2:
+                    await self.bot.send_message(channel, "It is decidedly so")
+                if minichoice == 3:
+                    await self.bot.send_message(channel, "Without a doubt")
+                if minichoice == 4:
+                    await self.bot.send_message(channel, "Yes, definitely")
+                if minichoice == 5:
+                    await self.bot.send_message(channel, "You may rely on it")
+                if minichoice == 6:
+                    await self.bot.send_message(channel, "As I see it, yes")
+                if minichoice == 7:
+                    await self.bot.send_message(channel, "Most likely")
+                if minichoice == 8:
+                    await self.bot.send_message(channel, "Outlook good")
+                if minichoice == 9:
+                    await self.bot.send_message(channel, "Yes")
+                if minichoice == 10:
+                    await self.bot.send_message(channel, "Signs point to yes")
+            if choice == "2":
+                minichoice = random.randint(1, 5)
+                if minichoice == 1:
+                    await self.bot.send_message(channel, "Reply hazy try again")
+                if minichoice == 2:
+                    await self.bot.send_message(channel, "Ask again later")
+                if minichoice == 3:
+                    await self.bot.send_message(channel, "Better not tell you now")
+                if minichoice == 4:
+                    await self.bot.send_message(channel, "Cannot predict now")
+                if minichoice == 5:
+                    await self.bot.send_message(channel, "Concentrate and ask again")
+            if choice == "3":
+                minichoice = random.randint(1, 5)
+                if minichoice == 1:
+                    await self.bot.send_message(channel, "Don't count on it")
+                if minichoice == 2:
+                    await self.bot.send_message(channel, "My reply is no")
+                if minichoice == 3:
+                    await self.bot.send_message(channel, "My sources say no")
+                if minichoice == 4:
+                    await self.bot.send_message(channel, "Outlook not so good")
+                if minichoice == 5:
+                    await self.bot.send_message(channel, "Very doubtful")
+
