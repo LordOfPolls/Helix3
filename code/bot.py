@@ -9,6 +9,8 @@ import aiohttp
 from discord.ext import commands
 import pprint
 import logging
+import json
+import math
 
 def _setup_logging(log):
     if len(logging.getLogger(__package__).handlers) > 1:
@@ -201,6 +203,55 @@ def Helix():
         log.fatal(e)
 
 
+async def rankUpdate(message):
+    try:
+        if message.author == bot.user or message.author == None or message.author.bot:
+            return
+        # elif str(message.server.id) in open('level_blck.txt').read():
+        #     return
+    except Exception as e:
+        log.error("Error in rankUpdate:\n{}".format(e))
+        return
+
+    directory = "data/{}/ranking.json".format(message.server.id)
+    if not os.path.exists(directory):
+        os.mkdir("data/" +str(message.server.id))
+        with open(directory, 'w') as file:
+            entry = {message.author.id: {'Rank': 'User', 'XP': '0', 'Level': '1', 'LastMSG': ''}}
+            json.dump(entry, file)
+            file.seek(0)
+            file.write(json.dumps(entry))
+            file.truncate()
+            return
+    # try:
+    with open(directory, 'r+') as file:
+        lvldata = json.load(file)
+        if message.author.id in lvldata:
+            score = math.floor(len(message.content.split(' '))/2)
+            if score >= 100:
+                score = score/2
+            if lvldata[message.author.id]['LastMSG'] == message.content:
+                score = 0
+            else:
+                lvldata[message.author.id]['LastMSG'] = message.content
+            log.debug('Awarding {} points'.format(score))
+            lvldata[message.author.id]['XP'] = int(lvldata[message.author.id]['XP']) +score
+            if lvldata[message.author.id]['XP'] >= int(lvldata[message.author.id]['Level']) *40:
+                lvldata[message.author.id]['Level'] = str(int(lvldata[message.author.id]['Level'])+1)
+                lvldata[message.author.id]['XP'] = "0"
+                await bot.send_message(message.channel, "Congrats {}, you're level {} now :smile:".format(message.author.mention, lvldata[message.author.id]['Level']))
+        else:
+            entry = {message.author.id: {'Rank': 'User', 'XP': '0', 'Level': '1', 'LastMSG': ''}}
+            lvldata.update(entry)
+        file.seek(0)
+        file.write(json.dumps(lvldata))
+        file.truncate()
+    # except Exception as e:
+    #     log.error("Error in rankUpdate:\n{}".format(e))
+
+
+
+
 
 @bot.event
 async def on_ready():
@@ -229,6 +280,7 @@ async def on_message(message):
     # level code can be called in here
     if message.author == bot.user:
         return
+    await rankUpdate(message)
     if bot.user.mentioned_in(message):
         if len(message.content) == 21 or len(message.content) == 22:
             log.info("{} mentioned me, I guess they want some help".format(message.author.name))
