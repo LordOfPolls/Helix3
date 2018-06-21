@@ -35,20 +35,22 @@ def _setup_logging(log):
 
 
 def getPrefix(bot, message):
-    dir = "data/" + message.server.id + ".json"
-    if not os.path.exists("data"):
-        os.mkdir("data")
-    if not os.path.isfile(dir):
-        prefix = "."
-    else:
-        with open(dir, 'r') as r:
-            data = json.load(r)
-            prefix = str(data["prefix"])
-    if not prefix in message.content:
-        if "<@{}>".format(bot.user.id) in message.content:
-            prefix = "<@{}> ".format(bot.user.id)
-    return prefix
-
+    try:
+        dir = "data/" + message.server.id + ".json"
+        if not os.path.exists("data"):
+            os.mkdir("data")
+        if not os.path.isfile(dir):
+            prefix = "."
+        else:
+            with open(dir, 'r') as r:
+                data = json.load(r)
+                prefix = str(data["prefix"])
+        if not prefix in message.content:
+            if "<@{}>".format(bot.user.id) in message.content:
+                prefix = "<@{}> ".format(bot.user.id)
+        return prefix
+    except:
+        return "."
 
 class Perms:
     def donatorOnly(ctx):
@@ -190,15 +192,16 @@ class Core:
     @commands.command(pass_context=True, np_pm=True)
     async def rank(self, ctx):
         """
-        Usage:
-            {command_prefix}rank
-        Displays your rank
+        Rank details or options (.help rank for more info)
+        Rank enable = enable ranking
+        Rank disable = disable ranking
+        Ranking is simple, you get XP for messaging. The more you message the higher your level")
+        The bigger your message the more XP you earn, however if you spam, you wont earn anything
         """
         message = ctx.message
         channel = message.channel
         author = message.author
         server = message.server
-
         perm = author.permissions_in(channel)
         if perm.administrator:
             usage = True
@@ -210,6 +213,10 @@ class Core:
         prefix = getPrefix(bot, message)
         msg = msg.replace("rank ", "")
         msg = msg.replace(prefix, "")
+        if msg == "about" or msg == "help":
+            await self.bot.send_message(channel, "Ranking is simple, you get XP for messaging. The more you message the higher your level")
+            await self.bot.send_message(channel, "The bigger your message the more XP you earn, however if you spam, you wont earn anything")
+            return
         if msg == "enable":
             if usage == True:
                 pass
@@ -422,16 +429,23 @@ async def on_ready():
 byp = bot
 @bot.event
 async def on_command(bot, ctx):
-    log.info('{}|{}| "{}"'.format(ctx.message.server.name, ctx.message.author.display_name, ctx.message.content.replace(getPrefix(bot, ctx.message), "")))
-    if "help" in ctx.message.content:
-        await byp.send_message(ctx.message.channel, ":mailbox_with_mail:")
+    try:
+        log.info('{}|{}| "{}"'.format(ctx.message.server.name, ctx.message.author.display_name, ctx.message.content.replace(getPrefix(bot, ctx.message), "")))
+        if "help" in ctx.message.content:
+            await byp.send_message(ctx.message.channel, ":mailbox_with_mail:")
+    except:
+        log.info('DM|{}| "{}"'.format(ctx.message.author.display_name, ctx.message.content))
+
 
 @bot.event
 async def on_message(message):
     # level code can be called in here
     if message.author == bot.user:
         return
-    await rankUpdate(message)
+    try:
+        await rankUpdate(message)
+    except:
+        pass
     if bot.user.mentioned_in(message):
         if len(message.content) == 21 or len(message.content) == 22:
             log.info("{} mentioned me, I guess they want some help".format(message.author.name))
@@ -443,7 +457,7 @@ async def on_message(message):
     except Exception as e:
         log.error("Error:\n\n", e)
         fmt = 'An error occurred while processing that request: ```py\n{}: {}\n```'
-        await self.bot.send_message(ctx.message.channel, fmt.format(type(e).__name__, e))
+        await bot.send_message(message.channel, fmt.format(type(e).__name__, e))
 @bot.event
 async def on_server_join(server):
     log.info("Joined server {}".format(server.name))
