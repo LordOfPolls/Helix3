@@ -11,6 +11,7 @@ import pprint
 import logging
 import json
 import math
+import time
 
 def _setup_logging(log):
     if len(logging.getLogger(__package__).handlers) > 1:
@@ -151,6 +152,150 @@ class Core:
         await self.bot.close()
         exit()
 
+    @commands.command(pass_context=True, no_pm=True)
+    async def leaderboard(self, ctx):
+        # if str(ctx.message.server.id) in open('level_blck.txt').read():
+        #     return Response("Leveling has been disabled in this server by your admin")
+
+        with open("data/" + ctx.message.server.id + '/ranking.json', 'r+') as f:
+            lvldb = json.load(f)
+        data = "["
+        for member in ctx.message.server.members:
+            try:
+                if not member.bot:
+                    lvl = int(lvldb[member.id]['Level'])
+                    xp = lvldb[member.id]['XP']
+                    raw = str({"ID": member.id, "Level": lvl, "XP": xp})
+                    raw += ","
+                    data += raw
+            except:
+                pass
+        data = data[:-1]
+        data += "]"
+        data = data
+        data = json.loads(data.replace("'", '"'))
+        data = sorted(data, key=lambda items: items['Level'], reverse=True)
+        msg = "(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧ **Leaderboard** ✧ﾟ･: *ヽ(◕ヮ◕ヽ)\n\n"
+        num = 1
+        for item in data:
+            if num != 11:
+                for member in ctx.message.server.members:
+                    if member.id == item['ID']:
+                        name = member.display_name
+                        msg += "{}. **Name:** {}, **Level:** {}\n".format(str(num), name, str(item['Level']))
+                        num += 1
+
+        await self.bot.send_message(ctx.message.channel, msg)
+
+    @commands.command(pass_context=True, np_pm=True)
+    async def rank(self, ctx):
+        """
+        Usage:
+            {command_prefix}rank
+        Displays your rank
+        """
+        message = ctx.message
+        channel = message.channel
+        author = message.author
+        server = message.server
+
+        perm = author.permissions_in(channel)
+        if perm.administrator:
+            usage = True
+        else:
+            usage = False
+
+        msg = message.content.strip()
+        msg = msg.lower()
+        prefix = getPrefix(bot, message)
+        msg = msg.replace("rank ", "")
+        msg = msg.replace(prefix, "")
+        if msg == "enable":
+            if usage == True:
+                pass
+            else:
+                await self.bot.send_message(channel, "You need to be server admin to disable commands")
+                return
+            f = open('level_blck.txt', 'r+')
+            filedata = f.read()
+            f.close()
+
+            newdata = filedata.replace(server.id, "")
+
+            f = open('level_blck.txt', 'w')
+            f.write(newdata)
+            f.close()
+            await self.bot.send_message(channel, "**Ranking enabled**")
+            return
+        if msg == "disable":
+            if usage == True:
+                pass
+            else:
+                await self.bot.send_message(channel, "You need to be server admin to disable commands")
+                return
+            try:
+                f = open('level_blck.txt', 'a')
+            except:
+                f = open('level_blck.txt', 'w')
+            sid = str(server.id) + " "
+            f.write(sid)
+            f.close()
+            await self.bot.send_message(channel, "**Ranking disabled**")
+            return
+        else:
+            if os.path.isfile('level_blck.txt'):
+                if str(server.id) in open('level_blck.txt').read():
+                    await self.bot.send_message(channel, "Leveling has been disabled in this server by your admin")
+                    return
+            with open("data/" + message.server.id + '/ranking.json', 'r+') as f:
+                lvldb = json.load(f)
+
+                data = "["
+                for member in server.members:
+                    try:
+                        lvl = int(lvldb[member.id]['Level'])
+                        xp = lvldb[member.id]['XP']
+                        raw = str({"ID": member.id, "Level": lvl, "XP": xp})
+                        raw += ","
+                        data += raw
+                    except:
+                        pass
+                data = data[:-1]
+                data += "]"
+                data = data
+                data = json.loads(data.replace("'", '"'))
+                data = sorted(data, key=lambda items: items['Level'], reverse=True)
+                num = 1
+                position = 0
+                for item in data:
+                    if item['ID'] == author.id:
+                        position = num
+                    num += 1
+                em = discord.Embed(colour=(random.randint(0, 16777215)))
+                em.add_field(name="XP", value=str(lvldb[message.author.id]['XP']) + "/" + str(
+                    int(lvldb[message.author.id]['Level']) * 40), inline=True)
+                em.add_field(name="Level", value=str(lvldb[message.author.id]['Level']), inline=True)
+                # try:
+                prog_bar_str = ''
+                percentage = int(lvldb[message.author.id]['XP']) / (int(lvldb[message.author.id]['Level'])*40)
+                progress_bar_length = 10
+                for i in range(progress_bar_length):
+                    if (percentage < 1 / progress_bar_length * i):
+                        prog_bar_str += '□'
+                    else:
+                        prog_bar_str += '■'
+                em.add_field(name="Progress", value=prog_bar_str)
+                # except:
+                #     pass
+                try:
+                    if position == 0:
+                        pass
+                    else:
+                        em.add_field(name="Leaderboard Rank", value="#" + str(position), inline=True)
+                except:
+                    pass
+                await self.bot.send_message(channel, embed=em)
+
 import code.music
 import code.moderation
 import code.fun
@@ -203,6 +348,7 @@ def Helix():
         log.fatal(e)
 
 
+
 async def rankUpdate(message):
     try:
         if message.author == bot.user or message.author == None or message.author.bot:
@@ -217,7 +363,7 @@ async def rankUpdate(message):
     if not os.path.exists(directory):
         os.mkdir("data/" +str(message.server.id))
         with open(directory, 'w') as file:
-            entry = {message.author.id: {'Rank': 'User', 'XP': '0', 'Level': '1', 'LastMSG': ''}}
+            entry = {message.author.id: {'Rank': 'User', 'XP': '0', 'Level': '1', 'LastMSG': '', 'LastMSGTime':' '}}
             json.dump(entry, file)
             file.seek(0)
             file.write(json.dumps(entry))
@@ -234,6 +380,11 @@ async def rankUpdate(message):
                 score = 0
             else:
                 lvldata[message.author.id]['LastMSG'] = message.content
+            if lvldata[message.author.id]['LastMSGTime'] != ' ':
+                diff = int(time.time()) - int(lvldata[message.author.id]['LastMSGTime'])
+                if diff < 4:
+                    score = 0
+            lvldata[message.author.id]['LastMSGTime'] = int(time.time())
             log.debug('Awarding {} points'.format(score))
             lvldata[message.author.id]['XP'] = int(lvldata[message.author.id]['XP']) +score
             if lvldata[message.author.id]['XP'] >= int(lvldata[message.author.id]['Level']) *40:
@@ -241,7 +392,7 @@ async def rankUpdate(message):
                 lvldata[message.author.id]['XP'] = "0"
                 await bot.send_message(message.channel, "Congrats {}, you're level {} now :smile:".format(message.author.mention, lvldata[message.author.id]['Level']))
         else:
-            entry = {message.author.id: {'Rank': 'User', 'XP': '0', 'Level': '1', 'LastMSG': ''}}
+            entry = {message.author.id: {'Rank': 'User', 'XP': '0', 'Level': '1', 'LastMSG': '', 'LastMSGTime':' '}}
             lvldata.update(entry)
         file.seek(0)
         file.write(json.dumps(lvldata))
