@@ -6,7 +6,9 @@ import pprint
 import random
 import re
 import time
+import urllib.request
 from concurrent.futures import ThreadPoolExecutor
+from PIL import Image
 
 import discord
 import youtube_dl
@@ -44,6 +46,20 @@ class Song:
         self.npmessage = msg  # The last added message, used by playlists
         self.lastnp = np  # the last now playing message
 
+        ### getting dominant colors
+        urllib.request.urlretrieve(self.thumbnail, "thumbnail.png") 
+        image = Image.open("thumbnail.png")
+
+        image = image.resize((150, 150))
+        result = image.convert('P', palette=Image.ADAPTIVE, colors=1)
+        result.putalpha(1)
+        colors = result.getcolors(150*150)
+
+        for i, col in colors:
+            rgb = col[:3]
+            hex = '%02x%02x%02x' % (rgb)
+            self.colour = (discord.Colour(int(hex, 16))) # look, switched to UK english just for you. youre welcome
+            #maybe add exception after timeout: self.colour = random.randint(0, 16777215)        
 
 class VoiceState:
     """The servers voice state
@@ -128,7 +144,7 @@ class VoiceState:
         log.debug("Playing {} in {}".format(song.title, song.server))
         # Create an embed for **FANCY** outputs
         em = discord.Embed(description="Playing **{}** from **{}**".format(song.title, song.invoker),
-                           colour=(random.randint(0, 16777215)))
+                           colour=song.colour)
         if song.is_live is None:  # trying to do this with a livestream would be Very bad
             # Make a human readable duration
             sec = int(song.length)
@@ -536,7 +552,7 @@ class Music:
             thumbnail = thumbnail.replace("https://youtube.com/watch?v=", "http://img.youtube.com/vi/")
             thumbnail = thumbnail + "/mqdefault.jpg"
             em = discord.Embed(description="**"+state.current.title+"**",
-                               colour=(random.randint(0, 16777215)))
+                               colour=song.colour)
             em.set_footer(text=song.webURL)
             em.set_image(url=song.thumbnail)
             await self.bot.send_message(ctx.message.channel, embed=em)
@@ -571,9 +587,3 @@ class Music:
         if membersInChannel >= 1 and state.is_playing:
             await asyncio.sleep(2) # gives the user time to join
             state.player.resume()
-
-
-
-
-
-
