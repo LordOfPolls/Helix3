@@ -63,7 +63,7 @@ class Perms:
         return ctx.message.author.id in ["174918559539920897"]
 
     def staffOnly(ctx):
-        return ctx.message.author.id in ["174918559539920897", "26954392680372633"]
+        return ctx.message.author.id in ["174918559539920897", "269543926803726336"]
 
 
 class Core:
