@@ -1,40 +1,32 @@
 import asyncio
-import discord
-from discord.ext import commands
-import random
-import youtube_dl
-import code.get as get
-import re
-import aiohttp
-import pprint
-import logging
-import numpy
-import cv2
-import math
 import functools
+import logging
+import math
+import pprint
+import random
+import re
 import time
-from base64 import b16encode
-import urllib.request
-from code import bot
-from PIL import Image
 from concurrent.futures import ThreadPoolExecutor
-import warnings
-import json
 
+import discord
+import youtube_dl
+from discord.ext import commands
+
+# loads the bot's logging stuff
 log = logging.getLogger(__name__)
-# bot._setup_logging(log)
-
 if not discord.opus.is_loaded():
     discord.opus.load_opus('opus')
 
 
 class Song:
+    """Song Data class
+    Holds all the data for the selected song, including where it was requested"""
     def __init__(self, url, title, channel, server, author,
                  file=None, thumbnail=None, player=None, webURL=None, length=None, msg=None,
                  rating=None, is_live=None, id=None, extractor=None, np=None):
         ### Song data ###
-        self.url = url  # url of the video itself
-        self.webURL = webURL  # url of the youtube page
+        self.url = url  # url of the video itself (used by player)
+        self.webURL = webURL  # url of the youtube page (used by everything else)
         self.length = length  # length of the video
         self.title = title  # title of the video
         self.thumbnail = thumbnail  # thumbnail of the video
@@ -49,21 +41,23 @@ class Song:
         self.server = server  # server command was used in
         self.invoker = author  # person who asked for the song
         self.player = player  # the audio player itself (the thing that streams music from youtube to discord)
-        self.npmessage = msg # The last added message, used by playlists
-        self.lastnp = np # the last now playing message
+        self.npmessage = msg  # The last added message, used by playlists
+        self.lastnp = np  # the last now playing message
 
 
 class VoiceState:
+    """The servers voice state
+    Handles the player and the now playing announcements """
     def __init__(self, bot):
-        self.current = None
-        self.voice = None
-        self.bot = bot
-        self.server = None
-        self.play_next_song = asyncio.Event()
-        self.songs = asyncio.Queue()
-        self.skip_votes = set() # a set of user_ids that voted
-        self.audio_player = self.bot.loop.create_task(self.audio_player_task())
-        self.autoplaylist = open("autoplaylist.txt", "r")
+        self.current = None  # The current playing song (Class Song)
+        self.voice = None  # Discord.VoiceClient
+        self.bot = bot  # The bot itself
+        self.server = None  # What server this state is for
+        self.play_next_song = asyncio.Event()  # take a wild guess
+        self.songs = asyncio.Queue()  # The playlist for said server
+        self.skip_votes = set()  # A set of user_ids that voted
+        self.audio_player = self.bot.loop.create_task(self.audio_player_task())   # The audio player
+        self.autoplaylist = open("autoplaylist.txt", "r")   # Unused, ignore me for now ;)
         self.opts = {
             'format': 'bestaudio/best',
             'extractaudio': True,
@@ -78,35 +72,41 @@ class VoiceState:
             'no_warnings': True,
             'default_search': 'auto',
             'source_address': '0.0.0.0'
-        }
-        self.lastnp = None
-        self.lastaddedmsg = None
+        }  # yrdl's options
+        self.lastnp = None  # The last now playing message
+        self.lastaddedmsg = None # The last added message
 
     def is_playing(self):
+        """Is the player active?"""
         if self.voice is None or self.current is None:
-            return False
+            return False  # if there is no voice channel, or no current song
 
         player = self.current.player
         return not player.is_done()
 
     @property
     def player(self):
+        """The player"""
         return self.current.player
 
     def skip(self):
+        """Skips the current song"""
         self.skip_votes.clear()
         if self.is_playing():
             self.player.stop()
 
     def toggle_next(self):
+        """Plays the next song"""
         self.bot.loop.call_soon_threadsafe(self.play_next_song.set)
 
     async def audio_player_task(self):
+        """The function that handles music playback for the current server
+        This basically does all the heavy lifting"""
         while True:
-
-            self.play_next_song.clear()
-            self.current = await self.songs.get()
+            self.play_next_song.clear()  # each loop, clean up after the last loop
+            self.current = await self.songs.get()  # get the current song
             try:
+                # Try and create a player
                 player = await self.voice.create_ytdl_player(self.current.url, ytdl_options=self.opts,
                                                            after=self.toggle_next)
                 self.current.player = player
@@ -115,34 +115,39 @@ class VoiceState:
                 await self.bot.send_message(self.current.channel, fmt.format(type(e).__name__, e))
                 log.error("Error in addsong:\n{}".format(fmt.format(type(e).__name__, e)))
                 return
-            player.start()
+            player.start()  # start playback
             try:
-                await self.announceNowPlaying()
+                await self.announceNowPlaying()  # Try and announce the new song
             except Exception as e:
                 log.error(e)
-            await self.play_next_song.wait()
+            await self.play_next_song.wait()  # Wait for the next song to be ready
 
     async def announceNowPlaying(self):
+        """Announces the current song in chat"""
         song = self.current
         log.debug("Playing {} in {}".format(song.title, song.server))
+        # Create an embed for **FANCY** outputs
         em = discord.Embed(description="Playing **{}** from **{}**".format(song.title, song.invoker),
                            colour=(random.randint(0, 16777215)))
-        if song.is_live is None:
+        if song.is_live is None:  # trying to do this with a livestream would be Very bad
+            # Make a human readable duration
             sec = int(song.length)
             mins = sec / 60
             sec -= 60 * mins
             em.add_field(name="Duration:", value=str(time.strftime("%M:%S", time.gmtime(int(song.length)))), inline=True)
-        if song.rating is not None:
+        if song.rating is not None:  # sometimes youtube doesnt give a rating
+            # Basically, as far as im aware, a rating is based on the like:dislike ratio of a video
+            # im assuming this was left over from when youtube had a 5* rating system
             em.add_field(name="Rating:", value="%.2f" %song.rating, inline=True)
-        em.set_footer(text=song.webURL)
-        em.set_image(url=song.thumbnail)
+        em.set_footer(text=song.webURL)  # maybe they want to see the source of the song
+        em.set_image(url=song.thumbnail)   # add a thumbnail
 
-        if self.lastnp is None:
-            self.lastnp = await self.bot.send_message(self.current.channel, embed=em)
+        # Ok so the following code cleans up after the last now playing message
+        if self.lastnp is None:   # why do this if its the first one we've ever sent
+            self.lastnp = await self.bot.send_message(self.current.channel, embed=em)  # send a np message and assign it to the var
         else:
             try:
-                data = dict(self.lastnp.embeds[0])
-                pprint.pprint(data)
+                data = dict(self.lastnp.embeds[0])   # get the lastnp's embed data
                 title = str(data['description']).replace("Playing", "Played").replace("from", "for")
                 emB = discord.Embed(description=title, colour=data['color'])
                 emB.set_footer(text=str(data['footer']['text']))
@@ -150,7 +155,8 @@ class VoiceState:
             except Exception as e:
                 log.error(e)
                 try:
-                    await self.bot.delete_message(self.lastnp)
+                    await self.bot.delete_message(self.lastnp)  # if we couldnt edit for whatever reason
+                    #just delete it
                 except:
                     pass
             self.lastnp = await self.bot.send_message(self.current.channel, embed=em)
@@ -160,9 +166,9 @@ class Music:
     Works in multiple servers at once.
     """
     def __init__(self, bot, perms):
-        self.bot = bot
-        self.voice_states = {}
-        self.perms = perms
+        self.bot = bot  # the bot
+        self.voice_states = {}  # all the active voice states
+        self.perms = perms  # deprecated. do an ignore
         self.opts = {
             'format': 'bestaudio/best',
             'extractaudio': True,
@@ -177,8 +183,8 @@ class Music:
             'no_warnings': True,
             'default_search': 'auto',
             'source_address': '0.0.0.0'
-        }
-        self.thread_pool = ThreadPoolExecutor(max_workers=2)
+        }  # ytdl options
+        self.thread_pool = ThreadPoolExecutor(max_workers=2)  # threading stuff. shhhh
 
     def __unload(self):
         """Called when the cog is unloaded"""
@@ -227,21 +233,21 @@ class Music:
             :param ytdl: Youtube_dl object created in .play
             :param ctx: context
         """
-        data = []
-        totalSongs = 0
-        songsProcessed = 1
+        data = []  # creating a list simply so i can len() it
+        totalSongs = 0   # how many songs are in this playlist
+        songsProcessed = 1   # how mnay songs have we processed
         for entry_data in info['entries']:
             totalSongs += 1
-            data.append(entry_data)
-        state = self.get_voice_state(ctx.message.server)
+            data.append(entry_data)   # so we dont do useless processing
+        state = self.get_voice_state(ctx.message.server)  # get the current voice_state
         await self.bot.edit_message(msg, "Processing {} songs :thinking:".format(totalSongs))
         for entry_data in data:
-            if entry_data:
+            if entry_data:  # is this data even usable?
                 baseurl = info['webpage_url'].split('playlist?list=')[0]
-                song_url = baseurl + 'watch?v=%s' % entry_data['id']
-                data = await self.extract_info(url=song_url, download=False, process=True)
-                song = await self.parseSong(data, ctx, msg)
-                await self.addsong(song, ctx, playlist=True, totalSongs=totalSongs, songsProcessed=songsProcessed)
+                song_url = baseurl + 'watch?v=%s' % entry_data['id']   # get a useful link instead of the stupid playlist link
+                data = await self.extract_info(url=song_url, download=False, process=True)   # get the data of this video
+                song = await self.parseSong(data, ctx, msg)   # assign its data to the song class
+                await self.addsong(song, ctx, playlist=True, totalSongs=totalSongs, songsProcessed=songsProcessed)  # add it
                 songsProcessed += 1
         try:
             await self.bot.edit_message(state.lastaddedmsg, "Added {} songs ^-^".format(totalSongs))
@@ -270,8 +276,10 @@ class Music:
         """
             Runs ytdl.extract_info within a threadpool to avoid blocking the bot's loop
         """
-        loop = self.bot.loop
-        ytdl = youtube_dl.YoutubeDL(self.opts)
+        loop = self.bot.loop  # get the bot's event loop
+        ytdl = youtube_dl.YoutubeDL(self.opts)  # get ytdl ready
+
+        # add the ytdl task to the event loop in a seperate thread to avoid blocking
         return await loop.run_in_executor(self.thread_pool, functools.partial(ytdl.extract_info, *args, **kwargs))
 
     @staticmethod
@@ -290,17 +298,17 @@ class Music:
     async def spawn(self, ctx):
         """Summons the bot to join your voice channel."""
         summoned_channel = ctx.message.author.voice_channel
-        if summoned_channel is None:
+        if summoned_channel is None:  # is the user even in a channel?
             await self.bot.say('You are not in a voice channel.')
             return False
-        msg = await self.bot.say('Joining... ``{}``'.format(summoned_channel.name))
-        state = self.get_voice_state(ctx.message.server)
+        msg = await self.bot.say('Joining... ``{}``'.format(summoned_channel.name))  # UI
+        state = self.get_voice_state(ctx.message.server)  # get the current voice_state
         if state.voice is None:
-            state.voice = await self.bot.join_voice_channel(summoned_channel)
+            state.voice = await self.bot.join_voice_channel(summoned_channel)  # join the vc
             await self.bot.edit_message(msg, 'Joined... ``{}``'.format(summoned_channel.name))
             log.info('Joined "{}"|"{}"'.format(ctx.message.server, summoned_channel))
         else:
-            await state.voice.move_to(summoned_channel)
+            await state.voice.move_to(summoned_channel)  # move to the new vc if we were already in another
             await self.bot.edit_message(msg, 'Moved to... ``{}``'.format(summoned_channel.name))
             log.info('{} moved me to {}'.format(ctx.message.author, summoned_channel.name))
 
@@ -318,9 +326,10 @@ class Music:
         state = self.get_voice_state(ctx.message.server)
         ytdl = youtube_dl.YoutubeDL(self.opts)
 
-        if state.voice is None:
+        if state.voice is None:  # auto spawn if not already in a vc
             success = await ctx.invoke(self.spawn)
             if not success:
+                # how on earth did this happen
                 return
 
         state.lastaddedmsg = await self.bot.say("Processing... :confused:")
@@ -328,15 +337,19 @@ class Music:
             r'^(?:http|ftp)s?://'
             r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|'
             r'(?:/?|[/?]\S+)$)', re.IGNORECASE)
+        # that magical RE statement is used to check if there is a URL in this link without any real processing
         if not re.match(regex, ctx.message.content.split(" ")[1]):
-            info = await self.extract_info(url=song, download=False, process=True)
+            # if there is no url
+            info = await self.extract_info(url=song, download=False, process=True) # search youtube for the query and add it
             for item in info['entries']:
                 song = await self.parseSong(item, ctx, state.lastaddedmsg)
                 await self.addsong(song, ctx)
         else:
-            song = ctx.message.content.split(" ")[1]
+            song = ctx.message.content.split(" ")[1]  # get the value after the command
             info = await self.extract_info(url=song, download=False, process=False)
             log.debug('Processing {}'.format(info['title']))
+
+            # find the appropriate way to handle the link, be it a youtube video, soundcloud song or playlist
             if info['extractor'] == 'youtube:playlist':
                 await self.async_process_youtube_playlist(info=info, channel=ctx.message.channel, author=ctx.message.author, msg=state.lastaddedmsg, ytdl=ytdl, ctx=ctx)
             elif info['extractor'] == 'soundcloud:set':
@@ -348,6 +361,7 @@ class Music:
                 await self.addsong(songData, ctx)
             elif info['extractor'] == 'youtube':
                 if info['is_live']:
+                    # uh oh we have a live stream
                     await self.bot.edit_message(state.lastaddedmsg, "Sorry live streams dont play properly right now :cry:")
                     return
                 else:
@@ -437,6 +451,7 @@ class Music:
 
     @commands.command(pass_context=True, no_pm=True)
     async def clear(self, ctx):
+        """Clears the current playlist"""
         state = self.get_voice_state(ctx.message.server)
         if state.is_playing():
             if not state.songs.empty():
@@ -450,6 +465,7 @@ class Music:
 
     @commands.command(pass_context=True, no_pm=True)
     async def playlist(self, ctx):
+        """Lists the current playlist"""
         unlisted = 0
         discord_char_limit = 2000
         state = self.get_voice_state(ctx.message.server)
@@ -526,6 +542,7 @@ class Music:
             await self.bot.send_message(ctx.message.channel, embed=em)
 
     async def on_voice_state_update(self, before, after):
+        """Event to handle voice changes"""
         if after is None:
             return
         if after.server.id not in self.voice_states:
