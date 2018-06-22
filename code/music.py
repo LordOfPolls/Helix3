@@ -526,8 +526,8 @@ class Music:
     @commands.command(pass_context=True, no_pm=True)
     async def np(self, ctx):
         """Shows info about the currently played song."""
-
         state = self.get_voice_state(ctx.message.server)
+        song = state.current
         if state.current is None:
             await self.bot.say('Not playing anything.')
         else:
@@ -535,10 +535,10 @@ class Music:
             thumbnail = thumbnail.replace("www.", "")
             thumbnail = thumbnail.replace("https://youtube.com/watch?v=", "http://img.youtube.com/vi/")
             thumbnail = thumbnail + "/mqdefault.jpg"
-            em = discord.Embed(description="**{}**",
+            em = discord.Embed(description="**"+state.current.title+"**",
                                colour=(random.randint(0, 16777215)))
-            em.set_footer(text=state.player.url)
-            em.set_image(url=thumbnail)
+            em.set_footer(text=song.webURL)
+            em.set_image(url=song.thumbnail)
             await self.bot.send_message(ctx.message.channel, embed=em)
 
     async def on_voice_state_update(self, before, after):
