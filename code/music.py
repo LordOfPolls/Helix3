@@ -18,25 +18,14 @@ import urllib.request
 from code import bot
 from PIL import Image
 from concurrent.futures import ThreadPoolExecutor
+import warnings
+import json
 
 log = logging.getLogger(__name__)
 # bot._setup_logging(log)
 
 if not discord.opus.is_loaded():
     discord.opus.load_opus('opus')
-
-
-class VoiceEntry:
-    def __init__(self, message, player, song):
-        self.requester = message.author
-        self.channel = message.channel
-        self.player = player
-        self.song = song
-
-    def __str__(self):
-        fmt = '**{}** from **{}**\n{}'
-        duration = self.player.duration
-        return fmt.format(self.song.title, self.requester, self.song.thumbnail)
 
 
 class Song:
@@ -152,9 +141,18 @@ class VoiceState:
             self.lastnp = await self.bot.send_message(self.current.channel, embed=em)
         else:
             try:
-                await self.bot.delete_message(self.lastnp)
-            except:
-                pass
+                data = dict(self.lastnp.embeds[0])
+                pprint.pprint(data)
+                title = str(data['description']).replace("Playing", "Played").replace("from", "for")
+                emB = discord.Embed(description=title, colour=data['color'])
+                emB.set_footer(text=str(data['footer']['text']))
+                await self.bot.edit_message(self.lastnp, embed=emB)
+            except Exception as e:
+                log.error(e)
+                try:
+                    await self.bot.delete_message(self.lastnp)
+                except:
+                    pass
             self.lastnp = await self.bot.send_message(self.current.channel, embed=em)
 
 class Music:
