@@ -138,6 +138,14 @@ class Core:
             from code.utilities import Utilities
             self.bot.add_cog(Utilities(bot, self.perms))
             await self.bot.edit_message(msg, "Reloaded Utilities :slight_smile:")
+        if "chatbot" in messageX or not select:
+            log.debug("Reloading Chatbot")
+            await self.bot.edit_message(msg, "Reloading Chatbot :thinking:")
+            self.bot.remove_cog("Chatbot")
+            importlib.reload(code.chatbot)
+            from code.chatbot import Chatbot
+            self.bot.add_cog(Chatbot(bot, self.perms))
+            await self.bot.edit_message(msg, "Reloaded Chatbot :slight_smile:")            
         await self.bot.edit_message(msg, 'Reload complete :slight_smile:')
 
     @commands.command(pass_context=True)
@@ -308,10 +316,12 @@ import code.moderation
 import code.fun
 import code.porn
 import code.utilities
+import code.chatbot
 from code.moderation import Moderation
 from code.music import Music
 from code.fun import Fun
 from code.porn import Porn
+from code.chatbot import Chatbot
 from code.utilities import Utilities
 
 
@@ -328,6 +338,7 @@ def Helix():
     bot.add_cog(Fun(bot, Perms))
     bot.add_cog(Porn(bot, Perms))
     bot.add_cog(Utilities(bot, Perms))
+    bot.add_cog(Chatbot(bot, Perms))
     log.debug("Cogs loaded")
 
     if os.path.isfile("data/token.txt"):
@@ -450,6 +461,10 @@ async def on_message(message):
         if len(message.content) == 21 or len(message.content) == 22:
             log.info("{} mentioned me, I guess they want some help".format(message.author.name))
             message.content = ".help" #jankiest way of doing this but it works reliably
+            await bot.process_commands(message)
+            return
+         elif "help" not in message.content:
+            message.content = ".chatbot %s"%(message.content) #dont judge me
             await bot.process_commands(message)
             return
     try:
