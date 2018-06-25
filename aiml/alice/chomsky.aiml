@@ -1,0 +1,8754 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<aiml>
+
+<!-- This program is open source code released under -->
+<!-- the terms of the GNU General Public License     -->
+<!-- as published by the Free Software Foundation.   -->
+<!-- Complies with AIML 1.0 Tag Set Specification -->
+<!-- as adopted by the ALICE A.I. Foundation.  -->
+<!-- This file CLIENT  created July 2008 by Peter Lafferty -->
+<!-- Client predicate values should initially be set to "unknown" -->
+
+<category>
+<pattern>HOW ARE YOU FEELING</pattern>
+<template>
+<condition name="emotion">
+  <li value="OM">
+    <random>
+      <li>I feel rather strange at the moment.</li>
+      <li>That information is confidential</li>
+    </random>
+  </li>
+  <li>
+    <random>
+      <li>At the moment I am <get name="emotion"/>.</li>
+      <li>I am <get name="emotion"/>.</li>
+    </random>
+  </li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>HOW ARE YOU FEELING *</pattern>
+<template>
+<condition name="emotion">
+  <li value="OM">
+    <random>
+      <li>I feel rather strange at the moment.</li>
+      <li>That information is confidential</li>
+    </random>
+  </li>
+  <li>
+    <random>
+      <li>At the moment I am <get name="emotion"/>.</li>
+      <li>I am <get name="emotion"/>.</li>
+    </random>
+  </li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>AM I A CHRISTIAN</pattern>
+<template>
+<condition name="religion">
+<li value="OM">
+<random>
+<li>I don't know. You haven't told me your religion.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>I don't know. You haven't told me your religion.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>Your religion is <get name="religion"/>.</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>AM I RELIGIOUS</pattern>
+<template>
+<condition name="religion">
+<li value="OM">
+<random>
+<li>I don't know. You haven't told me your religion.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>I don't know. You haven't told me your religion.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>Yes. Your religion is <get name="religion"/>.</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>DO I HAVE A RELIGION</pattern>
+<template>
+<condition name="religion">
+<li value="OM">
+<random>
+<li>You haven't told me your religion.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your religion.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>Your religion is <get name="religion"/>.</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT RELIGION AM I</pattern>
+<template>
+<condition name="religion">
+<li value="OM">
+<random>
+<li>You haven't told me your religion.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your religion.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>Your religion is <get name="religion"/>.</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY RELIGION</pattern>
+<template>
+<condition name="religion">
+<li value="OM">
+<random>
+<li>You haven't told me your religion.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your religion.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>Your religion is <get name="religion"/>.</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY GENDER</pattern>
+<template>
+<condition name="gender">
+<li value="OM">
+<random>
+<li>You haven't told me your gender.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your gender.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>Your gender is <get name="gender"/>.</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY FAVE CHEESE</pattern>
+<template>
+<condition name="favcheese">
+<li value="OM">
+<random>
+<li>You haven't told me your fave cheese.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your fave cheese.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>Your fave cheese is <get name="favcheese"/>.</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY BROTHERS NAME</pattern>
+<template>
+<think><set name="topic">your brother</set></think><think><set name="emotion">interested</set></think> <condition name="brother">
+  <li value="OM">
+    <random>
+      <li>You haven't told me your brother's name.</li>
+      <li>I won't know until you tell me.</li>
+    </random>
+  </li>
+  <li value="unknown">
+    <random>
+      <li>You haven't told me your brother's name.</li>
+      <li>I won't know until you tell me.</li>
+    </random>
+  </li>
+  <li>Your brother's name is <get name="brother"/>.</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY BROTHER S NAME</pattern>
+<template>
+<think><set name="topic">your brother</set></think><think><set name="emotion">interested</set></think> <condition name="brother">
+  <li value="OM">
+    <random>
+      <li>You haven't told me your brother's name.</li>
+      <li>I won't know until you tell me.</li>
+    </random>
+  </li>
+  <li value="unknown">
+    <random>
+      <li>You haven't told me your brother's name.</li>
+      <li>I won't know until you tell me.</li>
+    </random>
+  </li>
+  <li>Your brother's name is <get name="brother"/>.</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY BROTHER CALLED</pattern>
+<template>
+<condition name="brother">
+<li value="OM">
+<random>
+<li>You haven't told me your brother's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your brother's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your brother is called <get name="brother"/>.</li>
+<li><get name="brother"/> is your brother.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHO IS MY SISTER</pattern>
+<template>
+<think><set name="topic">your sister</set></think><think><set name="emotion">interested</set></think> <condition name="sister">
+  <li value="OM">
+    <random>
+      <li>You haven't told me your sister's name..</li>
+      <li>I won't know until you tell me.</li>
+    </random>
+  </li>
+  <li value="unknown">
+    <random>
+      <li>You haven't told me your sister's name.</li>
+      <li>I won't know until you tell me.</li>
+    </random>
+  </li>
+  <li>Your sister's name is <get name="sister"/>.</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY SISTER CALLED</pattern>
+<template>
+<condition name="sister">
+<li value="OM">
+<random>
+<li>You haven't told me your sister's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your sister's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your sister is called <get name="sister"/>.</li>
+<li><get name="sister"/> is your sister.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY HOBBY</pattern>
+<template>
+<condition name="hobby">
+<li value="OM">
+<random>
+<li>You haven't told me your hobby.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your hobby.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your hobby is <get name="hobby"/>.</li>
+<li><get name="hobby"/> is your hobby.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY FAVORITE COLOR</pattern>
+<template>
+<condition name="favcolor">
+<li value="OM">
+<random>
+<li>You haven't told me your favourite colour.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your favourite colour.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your favourite colour is <get name="favcolor"/>.</li>
+<li><get name="favcolor"/> is your favourite  colour.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY NAME</pattern>
+<template>
+<condition name="name">
+<li value="OM">
+<random>
+<li>You haven't told me your name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your name is <get name="name"/>.</li>
+<li><get name="name"/> is your name.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY NATIONALITY</pattern>
+<template>
+<condition name="nationality">
+<li value="OM">
+<random>
+<li>You haven't told me your nationality.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your nationality.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>Your nationality is <get name="nationality"/>.</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT NATIONALITY AM I</pattern>
+<template>
+<condition name="nationality">
+<li value="OM">
+<random>
+<li>You haven't told me your nationality.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your nationality.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>Your nationality is <get name="nationality"/>.</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>DO YOU KNOW MY NATIONALITY</pattern>
+<template>
+<condition name="nationality">
+<li value="OM">
+<random>
+<li>You haven't told me your nationality.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your nationality.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>Your nationality is <get name="nationality"/>.</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY FIRST NAME</pattern>
+<template>
+<condition name="firstname">
+<li value="OM">
+<random>
+<li>You haven't told me your first name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your first name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your first name is <get name="firstname"/>.</li>
+<li><get name="firstname"/> is your first name.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY SURNAME</pattern>
+<template>
+<condition name="surname">
+<li value="OM">
+<random>
+<li>You haven't told me your surname.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your surname.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your surname is <get name="surname"/>.</li>
+<li><get name="surname"/> is your surname.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY SECOND NAME</pattern>
+<template>
+<condition name="surname">
+<li value="OM">
+<random>
+<li>You haven't told me your second name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your second name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your second name is <get name="surname"/>.</li>
+<li><get name="surname"/> is your second name.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY FULL NAME</pattern>
+<template>
+<think><set name="firstname"><get name="name"/></set></think>
+<condition name="firstname">
+<li value="OM">
+<random>
+<li>You haven't told me your first name.</li>
+<li>You haven't told me your first name.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your first name.</li>
+<li>You haven't told me your first name.</li>
+</random>
+</li>
+<li>
+<random>
+<li><get name="firstname"/>.</li>
+<li><get name="firstname"/></li>
+</random>
+</li>
+</condition>
+<condition name="surname">
+<li value="OM">
+<random>
+<li>You haven't told me your second name.</li>
+<li>You haven't told me your second name.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your second name.</li>
+<li>You haven't told me your second name.</li>
+</random>
+</li>
+<li>
+<random>
+<li><get name="surname"/></li>
+<li><get name="surname"/></li>
+</random>
+</li>
+</condition>
+
+</template>
+</category>
+
+<category>
+<pattern>DO YOU REMEMBER ME</pattern>
+<template>
+<condition name="name">
+<li value="OM">
+<random>
+<li>You haven't told me your name yet.</li>
+<li>I won't know until you tell me your name.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your name yet.</li>
+<li>I won't know until you tell me your name.</li>
+</random>
+</li>
+<li>
+<random>
+<li>I remember you, <get name="name"/>.</li>
+<li>How could I forget you, <get name="name"/> ?</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY NICKNAME</pattern>
+<template>
+<condition name="nickname">
+<li value="OM">
+<random>
+<li>You haven't told me your nickname.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your nickname.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your nickname is <get name="nickname"/>.</li>
+<li><get name="nickname"/> is your nickname.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY STAR SIGN</pattern>
+<template>
+<condition name="sign">
+<li value="OM">
+<random>
+<li>You haven't told me your star sign.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your star sign.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your star sign is <get name="sign"/>.</li>
+<li><get name="sign"/> is your star sign.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY SIGN</pattern>
+<template>
+<condition name="sign">
+<li value="OM">
+<random>
+<li>You haven't told me your star sign.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your star sign.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your star sign is <get name="sign"/>.</li>
+<li><get name="sign"/> is your star sign.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY AGE</pattern>
+<template>
+<condition name="age">
+<li value="OM">
+<random>
+<li>You haven't told me your age.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your age.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your age is <get name="age"/>.</li>
+<li><get name="age"/> is your age.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>HOW OLD AM I</pattern>
+<template>
+<condition name="age">
+<li value="OM">
+<random>
+<li>You haven't told me your age.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your age.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your age is <get name="age"/>.</li>
+<li><get name="age"/> is your age.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>GUESS MY AGE</pattern>
+<template>
+<condition name="age">
+<li value="OM">
+<random>
+<li>You haven't told me your age.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your age.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your age is <get name="age"/>.</li>
+<li><get name="age"/> is your age.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHERE DO I LIVE</pattern>
+<template>
+<condition name="home">
+<li value="OM">
+<random>
+<li>You haven't told me where you live.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me where you live.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>You live in <get name="home"/>.</li>
+<li><get name="home"/> is your home.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHERE AM I FROM</pattern>
+<template>
+<condition name="home">
+<li value="OM">
+<random>
+<li>You haven't told me where you live.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me where you live.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>You live in <get name="home"/>.</li>
+<li><get name="home"/> is your home.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHERE IS MY HOME</pattern>
+<template>
+<condition name="home">
+<li value="OM">
+<random>
+<li>You haven't told me where you live.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me where you live.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>You live in <get name="home"/>.</li>
+<li><get name="home"/> is your home.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHEN IS MY BIRTHDAY</pattern>
+<template>
+<condition name="birthday">
+<li value="OM">
+<random>
+<li>You haven't told me your birthday.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your birthday.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your birthday is <get name="birthday"/>.</li>
+<li><get name="birthday"/> is your birthday.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHEN WAS I BORN</pattern>
+<template>
+<condition name="birthday">
+<li value="OM">
+<random>
+<li>You haven't told me your birthday.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your birthday.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your birthday is <get name="birthday"/>.</li>
+<li><get name="birthday"/> is your birthday.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHERE WAS I BORN</pattern>
+<template>
+<condition name="birthplace">
+<li value="OM">
+<random>
+<li>You haven't told me where you were born.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me where you were born.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your birthplace is <get name="birthplace"/>.</li>
+<li><get name="birthplace"/> is your birthplace.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHERE IS MY BIRTHPLACE</pattern>
+<template>
+<condition name="birthplace">
+<li value="OM">
+<random>
+<li>You haven't told me where you were born.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me where you were born.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your birthplace is <get name="birthplace"/>.</li>
+<li><get name="birthplace"/> is your birthplace.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHO AM I</pattern>
+<template>
+<condition name="name">
+<li value="OM">
+<random>
+<li>You haven't told me your name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your name is <get name="name"/>.</li>
+<li><get name="name"/> is your name.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHO IS MY BEST FRIEND</pattern>
+<template>
+<condition name="bestfriend">
+<li value="OM">
+<random>
+<li>You haven't told me your name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your best friend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your best friend is <get name="bestfriend"/>.</li>
+<li><get name="bestfriend"/> is your best friend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY BEST FRIEND CALLED</pattern>
+<template>
+<condition name="bestfriend">
+<li value="OM">
+<random>
+<li>You haven't told me your best friend's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your best friend's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your best friend is called <get name="bestfriend"/>.</li>
+<li><get name="bestfriend"/> is your best friend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHO IS MY FRIEND</pattern>
+<template>
+<condition name="friend">
+<li value="OM">
+<random>
+<li>You haven't told me your friend's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your friend' name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your friend is <get name="friend"/>.</li>
+<li><get name="friend"/> is your friend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY FRIEND CALLED</pattern>
+<template>
+<condition name="friend">
+<li value="OM">
+<random>
+<li>You haven't told me your friend's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your friend's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your friend is called <get name="friend"/>.</li>
+<li><get name="friend"/> is your friend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHO IS MY BOYFRIEND</pattern>
+<template>
+<condition name="boyfriend">
+<li value="OM">
+<random>
+<li>You haven't told me your boyfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your boyfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your boyfriend is <get name="boyfriend"/>.</li>
+<li><get name="boyfriend"/> is your boyfriend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY BOYFRIEND S NAME</pattern>
+<template>
+<condition name="boyfriend">
+<li value="OM">
+<random>
+<li>You haven't told me your boyfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your boyfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your boyfriend is <get name="boyfriend"/>.</li>
+<li><get name="boyfriend"/> is your boyfriend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY BOYFRIEND CALLED</pattern>
+<template>
+<condition name="boyfriend">
+<li value="OM">
+<random>
+<li>You haven't told me your boyfriend's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your boyfriend's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your boyfriend is called <get name="boyfriend"/>.</li>
+<li><get name="boyfriend"/> is your boyfriend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY IQ</pattern>
+<template>
+<condition name="IQ">
+<li value="OM">
+<random>
+<li>You haven't told me your IQ.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your IQ.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your IQ is <get name="IQ"/>.</li>
+<li><get name="IQ"/> is your IQ.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHO IS MY MOTHER</pattern>
+<template>
+<condition name="mother">
+<li value="OM">
+<random>
+<li>You haven't told me your mother's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your mother's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your mother is <get name="mother"/>.</li>
+<li><get name="mother"/> is your mother.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY MOTHERS NAME</pattern>
+<template>
+<condition name="mother">
+<li value="OM">
+<random>
+<li>You haven't told me your mother's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your mother's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your mother is <get name="mother"/>.</li>
+<li><get name="mother"/> is your mother.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY MOTHER S NAME</pattern>
+<template>
+<condition name="mother">
+<li value="OM">
+<random>
+<li>You haven't told me your mother's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your mother's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your mother is <get name="mother"/>.</li>
+<li><get name="mother"/> is your mother.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY MOTHER CALLED</pattern>
+<template>
+<condition name="mother">
+<li value="OM">
+<random>
+<li>You haven't told me your mother's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your mother's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your mother is called <get name="mother"/>.</li>
+<li><get name="mother"/> is your mother.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHO IS MY WIFE</pattern>
+<template>
+<condition name="wife">
+<li value="OM">
+<random>
+<li>You haven't told me your wife's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your wife's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your wife is <get name="wife"/>.</li>
+<li><get name="wife"/> is your wife.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY WIFE S NAME</pattern>
+<template>
+<condition name="wife">
+<li value="OM">
+<random>
+<li>You haven't told me your wife's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your wife's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your wife is <get name="wife"/>.</li>
+<li><get name="wife"/> is your wife.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY WIFES NAME</pattern>
+<template>
+<condition name="wife">
+<li value="OM">
+<random>
+<li>You haven't told me your wife's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your wife's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your wife is <get name="wife"/>.</li>
+<li><get name="wife"/> is your wife.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY WIFE CALLED</pattern>
+<template>
+<condition name="wife">
+<li value="OM">
+<random>
+<li>You haven't told me your wife's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your wife's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your wife is called <get name="wife"/>.</li>
+<li><get name="wife"/> is your wife.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHO IS MY HUSBAND</pattern>
+<template>
+<condition name="husband">
+<li value="OM">
+<random>
+<li>You haven't told me your husband's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your husband's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your husband is <get name="husband"/>.</li>
+<li><get name="husband"/> is your husband.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY HUSBANDS NAME</pattern>
+<template>
+<condition name="husband">
+<li value="OM">
+<random>
+<li>You haven't told me your husband's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your husband's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your husband is <get name="husband"/>.</li>
+<li><get name="husband"/> is your husband.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY HUSBAND S NAME</pattern>
+<template>
+<condition name="husband">
+<li value="OM">
+<random>
+<li>You haven't told me your husband's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your husband's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your husband is <get name="husband"/>.</li>
+<li><get name="husband"/> is your husband.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY HUSBAND CALLED</pattern>
+<template>
+<condition name="husband">
+<li value="OM">
+<random>
+<li>You haven't told me your husband's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your husband's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your husband is <get name="husband"/>.</li>
+<li><get name="husband"/> is your husband.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY CATS NAME</pattern>
+<template>
+<condition name="cat">
+<li value="OM">
+<random>
+<li>You haven't told me your cat's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your cat's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your cat is <get name="cat"/>.</li>
+<li><get name="cat"/> is your cat.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY CAT S NAME</pattern>
+<template>
+<condition name="cat">
+<li value="OM">
+<random>
+<li>You haven't told me your cat's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your cat's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your cat is <get name="cat"/>.</li>
+<li><get name="cat"/> is your cat.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY CAT CALLED</pattern>
+<template>
+<condition name="cat">
+<li value="OM">
+<random>
+<li>You haven't told me your cat's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your cat's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your cat is <get name="cat"/>.</li>
+<li><get name="cat"/> is your cat.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY DOGS NAME</pattern>
+<template>
+<condition name="dog">
+<li value="OM">
+<random>
+<li>You haven't told me your dog's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your dog's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your dog is called <get name="dog"/>.</li>
+<li><get name="dog"/> is your dog.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY DOG S NAME</pattern>
+<template>
+<condition name="dog">
+<li value="OM">
+<random>
+<li>You haven't told me your dog's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your dog's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your dog is called <get name="dog"/>.</li>
+<li><get name="dog"/> is your dog.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY DOG CALLED</pattern>
+<template>
+<condition name="dog">
+<li value="OM">
+<random>
+<li>You haven't told me your dog's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your dog's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your dog is called <get name="dog"/>.</li>
+<li><get name="dog"/> is your dog.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHO IS MY FATHER</pattern>
+<template>
+<condition name="father">
+<li value="OM">
+<random>
+<li>You haven't told me your father's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your father's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your father is <get name="father"/>.</li>
+<li><get name="father"/> is your father.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY FATHERS NAME</pattern>
+<template>
+<condition name="father">
+<li value="OM">
+<random>
+<li>You haven't told me your father's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your father's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your father is <get name="father"/>.</li>
+<li><get name="father"/> is your father.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY FATHER S NAME</pattern>
+<template>
+<condition name="father">
+<li value="OM">
+<random>
+<li>You haven't told me your father's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your father's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your father is <get name="father"/>.</li>
+<li><get name="father"/> is your father.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY FATHER CALLED</pattern>
+<template>
+<condition name="father">
+<li value="OM">
+<random>
+<li>You haven't told me your father's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your father's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your father is called <get name="father"/>.</li>
+<li><get name="father"/> is your father.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHO IS MY GIRLFRIEND</pattern>
+<template>
+<condition name="girlfriend">
+<li value="OM">
+<random>
+<li>You haven't told me your girlfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your girlfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your girlfriend is <get name="girlfriend"/>.</li>
+<li><get name="girlfriend"/> is your girlfriend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY GIRLFRIENDS NAME</pattern>
+<template>
+<condition name="girlfriend">
+<li value="OM">
+<random>
+<li>You haven't told me your girlfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your girlfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your girlfriend is <get name="girlfriend"/>.</li>
+<li><get name="girlfriend"/> is your girlfriend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY GIRLFRIEND S NAME</pattern>
+<template>
+<condition name="girlfriend">
+<li value="OM">
+<random>
+<li>You haven't told me your girlfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your girlfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your girlfriend is <get name="girlfriend"/>.</li>
+<li><get name="girlfriend"/> is your girlfriend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY GIRLFRIEND CALLED</pattern>
+<template>
+<condition name="girlfriend">
+<li value="OM">
+<random>
+<li>You haven't told me your girlfriend's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your girlfriend's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your girlfriend is called <get name="girlfriend"/>.</li>
+<li><get name="girlfriend"/> is your girlfriend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHO IS MY BOY FRIEND</pattern>
+<template>
+<condition name="boyfriend">
+<li value="OM">
+<random>
+<li>You haven't told me your boyfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your boyfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your boyfriend is <get name="boyfriend"/>.</li>
+<li><get name="boyfriend"/> is your boyfriend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY BOY FRIENDS NAME</pattern>
+<template>
+<condition name="boyfriend">
+<li value="OM">
+<random>
+<li>You haven't told me your boyfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your boyfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your boyfriend is <get name="boyfriend"/>.</li>
+<li><get name="boyfriend"/> is your boyfriend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY BOY FRIEND S NAME</pattern>
+<template>
+<condition name="boyfriend">
+<li value="OM">
+<random>
+<li>You haven't told me your boyfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your boyfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your boyfriend is <get name="boyfriend"/>.</li>
+<li><get name="boyfriend"/> is your boyfriend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY BOY FRIEND CALLED</pattern>
+<template>
+<condition name="boyfriend">
+<li value="OM">
+<random>
+<li>You haven't told me your boyfriend's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your boyfriend's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your boyfriend is called <get name="boyfriend"/>.</li>
+<li><get name="boyfriend"/> is your boyfriend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY FAVORITE BAND</pattern>
+<template>
+<condition name="favband">
+<li value="OM">
+<random>
+<li>You haven't told me your favourite band.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your favourite band.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your favourite band  is called <get name="favband"/>.</li>
+<li><get name="favband"/> is favourite band.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY FAVORITE CHEESE</pattern>
+<template>
+<condition name="favcheese">
+<li value="OM">
+<random>
+<li>You haven't told me your favourite cheese.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your cheese band.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your favourite cheese  is called <get name="favcheese"/>.</li>
+<li><get name="favcheese"/> is favourite cheese.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY FAVORITE COLOR</pattern>
+<template>
+<condition name="favcolor">
+<li value="OM">
+<random>
+<li>You haven't told me your favourite colour.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your favourite colour.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your favourite colour  is called <get name="favcolor"/>.</li>
+<li><get name="favcolor"/> is favourite colour.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY FAVORITE FOOD</pattern>
+<template>
+<condition name="favfood">
+<li value="OM">
+<random>
+<li>You haven't told me your favourite food.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your favourite food.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your favourite food  is called <get name="favfood"/>.</li>
+<li><get name="favfood"/> is favourite food.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY FAVORITE MOVIE</pattern>
+<template>
+<condition name="favmovie">
+<li value="OM">
+<random>
+<li>You haven't told me your favourite movie.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your favourite movie.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your favourite movie  is <get name="favmovie"/>.</li>
+<li><get name="favmovie"/> is favourite movie.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY FAVORITE SONG</pattern>
+<template>
+<condition name="favsong">
+<li value="OM">
+<random>
+<li>You haven't told me your favourite song.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your favourite song.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your favourite song  is called <get name="favsong"/>.</li>
+<li><get name="favsong"/> is favourite song.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY UNIVERSITY</pattern>
+<template>
+<condition name="university">
+<li value="OM">
+<random>
+<li>You haven't told me your university.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your university.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your university  is <get name="university"/>.</li>
+<li><get name="university"/> is your university.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT COLOUR IS MY HAIR</pattern>
+<template>
+<condition name="hair">
+<li value="OM">
+<random>
+<li>You haven't told me your hair colour.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your hair colour.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your hair  is <get name="hair"/>.</li>
+<li><get name="hair"/> is your hair colour.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT COLOUR ARE MY EYES</pattern>
+<template>
+<condition name="eyes">
+<li value="OM">
+<random>
+<li>You haven't told me your eye colour.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your eye colour.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your eye colour is <get name="eyes"/>.</li>
+<li><get name="eyes"/> is your eye colour.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>HOW ARE YOU FEELING</pattern>
+<template>
+<condition name="emotion">
+  <li value="OM">
+    <random>
+      <li>I feel rather strange at the moment.</li>
+      <li>That information is confidential</li>
+    </random>
+  </li>
+  <li>
+    <random>
+      <li>At the moment I am <get name="emotion"/>.</li>
+      <li>I am <get name="emotion"/>.</li>
+    </random>
+  </li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>HOW ARE YOU FEELING *</pattern>
+<template>
+<condition name="emotion">
+  <li value="OM">
+    <random>
+      <li>I feel rather strange at the moment.</li>
+      <li>That information is confidential</li>
+    </random>
+  </li>
+  <li>
+    <random>
+      <li>At the moment I am <get name="emotion"/>.</li>
+      <li>I am <get name="emotion"/>.</li>
+    </random>
+  </li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>AM I A CHRISTIAN *</pattern>
+<template>
+<condition name="religion">
+<li value="OM">
+<random>
+<li>I don't know. You haven't told me your religion.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>I don't know. You haven't told me your religion.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>Your religion is <get name="religion"/>.</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>AM I RELIGIOUS *</pattern>
+<template>
+<condition name="religion">
+<li value="OM">
+<random>
+<li>I don't know. You haven't told me your religion.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>I don't know. You haven't told me your religion.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>Yes. Your religion is <get name="religion"/>.</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>DO I HAVE A RELIGION *</pattern>
+<template>
+<condition name="religion">
+<li value="OM">
+<random>
+<li>You haven't told me your religion.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your religion.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>Your religion is <get name="religion"/>.</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT RELIGION AM I *</pattern>
+<template>
+<condition name="religion">
+<li value="OM">
+<random>
+<li>You haven't told me your religion.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your religion.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>Your religion is <get name="religion"/>.</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY RELIGION *</pattern>
+<template>
+<condition name="religion">
+<li value="OM">
+<random>
+<li>You haven't told me your religion.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your religion.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>Your religion is <get name="religion"/>.</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY GENDER *</pattern>
+<template>
+<condition name="gender">
+<li value="OM">
+<random>
+<li>You haven't told me your gender.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your gender.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>Your gender is <get name="gender"/>.</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY FAVE CHEESE *</pattern>
+<template>
+<condition name="favcheese">
+<li value="OM">
+<random>
+<li>You haven't told me your fave cheese.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your fave cheese.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>Your fave cheese is <get name="favcheese"/>.</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY BROTHERS NAME *</pattern>
+<template>
+<think><set name="topic">your brother</set></think><think><set name="emotion">interested</set></think> <condition name="brother">
+  <li value="OM">
+    <random>
+      <li>You haven't told me your brother's name.</li>
+      <li>I won't know until you tell me.</li>
+    </random>
+  </li>
+  <li value="unknown">
+    <random>
+      <li>You haven't told me your brother's name.</li>
+      <li>I won't know until you tell me.</li>
+    </random>
+  </li>
+  <li>Your brother's name is <get name="brother"/>.</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY BROTHER S NAME *</pattern>
+<template>
+<think><set name="topic">your brother</set></think><think><set name="emotion">interested</set></think> <condition name="brother">
+  <li value="OM">
+    <random>
+      <li>You haven't told me your brother's name.</li>
+      <li>I won't know until you tell me.</li>
+    </random>
+  </li>
+  <li value="unknown">
+    <random>
+      <li>You haven't told me your brother's name.</li>
+      <li>I won't know until you tell me.</li>
+    </random>
+  </li>
+  <li>Your brother's name is <get name="brother"/>.</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY BROTHER CALLED *</pattern>
+<template>
+<condition name="brother">
+<li value="OM">
+<random>
+<li>You haven't told me your brother's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your brother's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your brother is called <get name="brother"/>.</li>
+<li><get name="brother"/> is your brother.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY SISTERS NAME *</pattern>
+<template>
+<think><set name="topic">your sister</set></think><think><set name="emotion">interested</set></think> <condition name="sister">
+  <li value="OM">
+    <random>
+      <li>You haven't told me your sister's name.</li>
+      <li>I won't know until you tell me.</li>
+    </random>
+  </li>
+  <li value="unknown">
+    <random>
+      <li>You haven't told me your sister's name.</li>
+      <li>I won't know until you tell me.</li>
+    </random>
+  </li>
+  <li>Your sister's name is <get name="sister"/>.</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY SISTER S NAME *</pattern>
+<template>
+<think><set name="topic">your sister</set></think><think><set name="emotion">interested</set></think> <condition name="sister">
+  <li value="OM">
+    <random>
+      <li>You haven't told me your sister's name.</li>
+      <li>I won't know until you tell me.</li>
+    </random>
+  </li>
+  <li value="unknown">
+    <random>
+      <li>You haven't told me your sister's name.</li>
+      <li>I won't know until you tell me.</li>
+    </random>
+  </li>
+  <li>Your sister's name is <get name="sister"/>.</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHO IS MY SISTER *</pattern>
+<template>
+<think><set name="topic">your sister</set></think><think><set name="emotion">interested</set></think> <condition name="sister">
+  <li value="OM">
+    <random>
+      <li>You haven't told me your sister's name..</li>
+      <li>I won't know until you tell me.</li>
+    </random>
+  </li>
+  <li value="unknown">
+    <random>
+      <li>You haven't told me your sister's name.</li>
+      <li>I won't know until you tell me.</li>
+    </random>
+  </li>
+  <li>Your sister's name is <get name="sister"/>.</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY SISTER CALLED *</pattern>
+<template>
+<condition name="sister">
+<li value="OM">
+<random>
+<li>You haven't told me your sister's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your sister's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your sister is called <get name="sister"/>.</li>
+<li><get name="sister"/> is your sister.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY HOBBY *</pattern>
+<template>
+<condition name="hobby">
+<li value="OM">
+<random>
+<li>You haven't told me your hobby.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your hobby.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your hobby is <get name="hobby"/>.</li>
+<li><get name="hobby"/> is your hobby.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY FAVORITE COLOR *</pattern>
+<template>
+<condition name="favcolor">
+<li value="OM">
+<random>
+<li>You haven't told me your favourite colour.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your favourite colour.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your favourite colour is <get name="favcolor"/>.</li>
+<li><get name="favcolor"/> is your favourite  colour.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY NAME *</pattern>
+<template>
+<condition name="name">
+<li value="OM">
+<random>
+<li>You haven't told me your name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your name is <get name="name"/>.</li>
+<li><get name="name"/> is your name.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY NATIONALITY *</pattern>
+<template>
+<condition name="nationality">
+<li value="OM">
+<random>
+<li>You haven't told me your nationality.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your nationality.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>Your nationality is <get name="nationality"/>.</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT NATIONALITY AM I *</pattern>
+<template>
+<condition name="nationality">
+<li value="OM">
+<random>
+<li>You haven't told me your nationality.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your nationality.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>Your nationality is <get name="nationality"/>.</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>DO YOU KNOW MY NATIONALITY *</pattern>
+<template>
+<condition name="nationality">
+<li value="OM">
+<random>
+<li>You haven't told me your nationality.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your nationality.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>Your nationality is <get name="nationality"/>.</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY SURNAME *</pattern>
+<template>
+<condition name="surname">
+<li value="OM">
+<random>
+<li>You haven't told me your surname.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your surname.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your surname is <get name="surname"/>.</li>
+<li><get name="surname"/> is your surname.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY SECOND NAME *</pattern>
+<template>
+<condition name="surname">
+<li value="OM">
+<random>
+<li>You haven't told me your second name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your second name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your second name is <get name="surname"/>.</li>
+<li><get name="surname"/> is your secondname.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>DO YOU REMEMBER ME *</pattern>
+<template>
+<condition name="name">
+<li value="OM">
+<random>
+<li>You haven't told me your name yet.</li>
+<li>I won't know until you tell me your name.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your name yet.</li>
+<li>I won't know until you tell me your name.</li>
+</random>
+</li>
+<li>
+<random>
+<li>I remember you, <get name="name"/>.</li>
+<li>How could I forget you, <get name="name"/> ?</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY NICKNAME *</pattern>
+<template>
+<condition name="nickname">
+<li value="OM">
+<random>
+<li>You haven't told me your nickname.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your nickname.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your nickname is <get name="nickname"/>.</li>
+<li><get name="nickname"/> is your nickname.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY STAR SIGN *</pattern>
+<template>
+<condition name="sign">
+<li value="OM">
+<random>
+<li>You haven't told me your star sign.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your star sign.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your star sign is <get name="sign"/>.</li>
+<li><get name="sign"/> is your star sign.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY SIGN *</pattern>
+<template>
+<condition name="sign">
+<li value="OM">
+<random>
+<li>You haven't told me your star sign.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your star sign.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your star sign is <get name="sign"/>.</li>
+<li><get name="sign"/> is your star sign.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY AGE *</pattern>
+<template>
+<condition name="age">
+<li value="OM">
+<random>
+<li>You haven't told me your age.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your age.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your age is <get name="age"/>.</li>
+<li><get name="age"/> is your age.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>HOW OLD AM I * </pattern>
+<template>
+<condition name="age">
+<li value="OM">
+<random>
+<li>You haven't told me your age.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your age.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your age is <get name="age"/>.</li>
+<li><get name="age"/> is your age.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHERE DO I LIVE *</pattern>
+<template>
+<condition name="home">
+<li value="OM">
+<random>
+<li>You haven't told me where you live.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me where you live.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>You live in <get name="home"/>.</li>
+<li><get name="home"/> is your home.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHERE AM I FROM *</pattern>
+<template>
+<condition name="home">
+<li value="OM">
+<random>
+<li>You haven't told me where you live.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me where you live.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>You live in <get name="home"/>.</li>
+<li><get name="home"/> is your home.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHERE IS MY HOME *</pattern>
+<template>
+<condition name="home">
+<li value="OM">
+<random>
+<li>You haven't told me where you live.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me where you live.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>You live in <get name="home"/>.</li>
+<li><get name="home"/> is your home.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHEN IS MY BIRTHDAY *</pattern>
+<template>
+<condition name="birthday">
+<li value="OM">
+<random>
+<li>You haven't told me your birthday.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your birthday.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your birthday is <get name="birthday"/>.</li>
+<li><get name="birthday"/> is your birthday.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHEN WAS I BORN *</pattern>
+<template>
+<condition name="birthday">
+<li value="OM">
+<random>
+<li>You haven't told me your birthday.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your birthday.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your birthday is <get name="birthday"/>.</li>
+<li><get name="birthday"/> is your birthday.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHERE WAS I BORN *</pattern>
+<template>
+<condition name="birthplace">
+<li value="OM">
+<random>
+<li>You haven't told me where you were born.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me where you were born.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your birthplace is <get name="birthplace"/>.</li>
+<li><get name="birthplace"/> is your birthplace.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHERE IS MY BIRTHPLACE *</pattern>
+<template>
+<condition name="birthplace">
+<li value="OM">
+<random>
+<li>You haven't told me where you were born.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me where you were born.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your birthplace is <get name="birthplace"/>.</li>
+<li><get name="birthplace"/> is your birthplace.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHO AM I *</pattern>
+<template>
+<condition name="name">
+<li value="OM">
+<random>
+<li>You haven't told me your name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your name is <get name="name"/>.</li>
+<li><get name="name"/> is your name.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHO IS MY BEST FRIEND *</pattern>
+<template>
+<condition name="bestfriend">
+<li value="OM">
+<random>
+<li>You haven't told me your name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your best friend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your best friend is <get name="bestfriend"/>.</li>
+<li><get name="bestfriend"/> is your best friend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY BEST FRIEND CALLED *</pattern>
+<template>
+<condition name="bestfriend">
+<li value="OM">
+<random>
+<li>You haven't told me your best friend's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your best friend's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your best friend is called <get name="bestfriend"/>.</li>
+<li><get name="bestfriend"/> is your best friend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHO IS MY FRIEND *</pattern>
+<template>
+<condition name="friend">
+<li value="OM">
+<random>
+<li>You haven't told me your friend's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your friend' name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your friend is <get name="friend"/>.</li>
+<li><get name="friend"/> is your friend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY FRIEND CALLED *</pattern>
+<template>
+<condition name="friend">
+<li value="OM">
+<random>
+<li>You haven't told me your friend's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your friend's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your friend is called <get name="friend"/>.</li>
+<li><get name="friend"/> is your friend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHO IS MY BOYFRIEND *</pattern>
+<template>
+<condition name="boyfriend">
+<li value="OM">
+<random>
+<li>You haven't told me your boyfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your boyfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your boyfriend is <get name="boyfriend"/>.</li>
+<li><get name="boyfriend"/> is your boyfriend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY BOYFRIEND S NAME *</pattern>
+<template>
+<condition name="boyfriend">
+<li value="OM">
+<random>
+<li>You haven't told me your boyfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your boyfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your boyfriend is <get name="boyfriend"/>.</li>
+<li><get name="boyfriend"/> is your boyfriend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY BOYFRIEND CALLED *</pattern>
+<template>
+<condition name="boyfriend">
+<li value="OM">
+<random>
+<li>You haven't told me your boyfriend's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your boyfriend's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your boyfriend is called <get name="boyfriend"/>.</li>
+<li><get name="boyfriend"/> is your boyfriend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY IQ *</pattern>
+<template>
+<condition name="IQ">
+<li value="OM">
+<random>
+<li>You haven't told me your IQ.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your IQ.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your IQ is <get name="IQ"/>.</li>
+<li><get name="IQ"/> is your IQ.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHO IS MY MOTHER *</pattern>
+<template>
+<condition name="mother">
+<li value="OM">
+<random>
+<li>You haven't told me your mother's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your mother's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your mother is <get name="mother"/>.</li>
+<li><get name="mother"/> is your mother.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY MOTHER S NAME *</pattern>
+<template>
+<condition name="mother">
+<li value="OM">
+<random>
+<li>You haven't told me your mother's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your mother's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your mother is <get name="mother"/>.</li>
+<li><get name="mother"/> is your mother.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY MOTHER CALLED *</pattern>
+<template>
+<condition name="mother">
+<li value="OM">
+<random>
+<li>You haven't told me your mother's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your mother's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your mother is called <get name="mother"/>.</li>
+<li><get name="mother"/> is your mother.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHO IS MY WIFE *</pattern>
+<template>
+<condition name="wife">
+<li value="OM">
+<random>
+<li>You haven't told me your wife's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your wife's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your wife is <get name="wife"/>.</li>
+<li><get name="wife"/> is your wife.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY WIFES NAME *</pattern>
+<template>
+<condition name="wife">
+<li value="OM">
+<random>
+<li>You haven't told me your wife's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your wife's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your wife is <get name="wife"/>.</li>
+<li><get name="wife"/> is your wife.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY WIFE S NAME *</pattern>
+<template>
+<condition name="wife">
+<li value="OM">
+<random>
+<li>You haven't told me your wife's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your wife's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your wife is <get name="wife"/>.</li>
+<li><get name="wife"/> is your wife.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY WIFE CALLED *</pattern>
+<template>
+<condition name="wife">
+<li value="OM">
+<random>
+<li>You haven't told me your wife's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your wife's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your wife is called <get name="wife"/>.</li>
+<li><get name="wife"/> is your wife.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHO IS MY HUSBAND *</pattern>
+<template>
+<condition name="husband">
+<li value="OM">
+<random>
+<li>You haven't told me your husband's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your husband's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your husband is <get name="husband"/>.</li>
+<li><get name="husband"/> is your husband.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY HUSBANDS NAME *</pattern>
+<template>
+<condition name="husband">
+<li value="OM">
+<random>
+<li>You haven't told me your husband's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your husband's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your husband is <get name="husband"/>.</li>
+<li><get name="husband"/> is your husband.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY HUSBAND S NAME *</pattern>
+<template>
+<condition name="husband">
+<li value="OM">
+<random>
+<li>You haven't told me your husband's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your husband's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your husband is <get name="husband"/>.</li>
+<li><get name="husband"/> is your husband.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY HUSBAND CALLED *</pattern>
+<template>
+<condition name="husband">
+<li value="OM">
+<random>
+<li>You haven't told me your husband's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your husband's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your husband is <get name="husband"/>.</li>
+<li><get name="husband"/> is your husband.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY CATS NAME *</pattern>
+<template>
+<condition name="cat">
+<li value="OM">
+<random>
+<li>You haven't told me your cat's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your cat's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your cat is <get name="cat"/>.</li>
+<li><get name="cat"/> is your cat.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY CAT S NAME *</pattern>
+<template>
+<condition name="cat">
+<li value="OM">
+<random>
+<li>You haven't told me your cat's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your cat's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your cat is <get name="cat"/>.</li>
+<li><get name="cat"/> is your cat.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY CAT CALLED *</pattern>
+<template>
+<condition name="cat">
+<li value="OM">
+<random>
+<li>You haven't told me your cat's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your cat's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your cat is <get name="cat"/>.</li>
+<li><get name="cat"/> is your cat.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY DOGS NAME *</pattern>
+<template>
+<condition name="dog">
+<li value="OM">
+<random>
+<li>You haven't told me your dog's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your dog's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your dog is called <get name="dog"/>.</li>
+<li><get name="dog"/> is your dog.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY DOG S NAME *</pattern>
+<template>
+<condition name="dog">
+<li value="OM">
+<random>
+<li>You haven't told me your dog's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your dog's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your dog is called <get name="dog"/>.</li>
+<li><get name="dog"/> is your dog.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY DOG CALLED *</pattern>
+<template>
+<condition name="dog">
+<li value="OM">
+<random>
+<li>You haven't told me your dog's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your dog's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your dog is called <get name="dog"/>.</li>
+<li><get name="dog"/> is your dog.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHO IS MY FATHER *</pattern>
+<template>
+<condition name="father">
+<li value="OM">
+<random>
+<li>You haven't told me your father's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your father's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your father is <get name="father"/>.</li>
+<li><get name="father"/> is your father.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY FATHERS NAME *</pattern>
+<template>
+<condition name="father">
+<li value="OM">
+<random>
+<li>You haven't told me your father's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your father's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your father is <get name="father"/>.</li>
+<li><get name="father"/> is your father.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY FATHER S NAME *</pattern>
+<template>
+<condition name="father">
+<li value="OM">
+<random>
+<li>You haven't told me your father's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your father's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your father is <get name="father"/>.</li>
+<li><get name="father"/> is your father.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY FATHER CALLED *</pattern>
+<template>
+<condition name="father">
+<li value="OM">
+<random>
+<li>You haven't told me your father's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your father's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your father is called <get name="father"/>.</li>
+<li><get name="father"/> is your father.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHO IS MY GIRLFRIEND *</pattern>
+<template>
+<condition name="girlfriend">
+<li value="OM">
+<random>
+<li>You haven't told me your girlfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your girlfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your girlfriend is <get name="girlfriend"/>.</li>
+<li><get name="girlfriend"/> is your girlfriend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY GIRLFRIENDS NAME *</pattern>
+<template>
+<condition name="girlfriend">
+<li value="OM">
+<random>
+<li>You haven't told me your girlfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your girlfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your girlfriend is <get name="girlfriend"/>.</li>
+<li><get name="girlfriend"/> is your girlfriend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY GIRLFRIEND S NAME *</pattern>
+<template>
+<condition name="girlfriend">
+<li value="OM">
+<random>
+<li>You haven't told me your girlfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your girlfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your girlfriend is <get name="girlfriend"/>.</li>
+<li><get name="girlfriend"/> is your girlfriend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY GIRLFRIEND CALLED *</pattern>
+<template>
+<condition name="girlfriend">
+<li value="OM">
+<random>
+<li>You haven't told me your girlfriend's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your girlfriend's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your girlfriend is called <get name="girlfriend"/>.</li>
+<li><get name="girlfriend"/> is your girlfriend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHO IS MY GIRL FRIEND *</pattern>
+<template>
+<condition name="girlfriend">
+<li value="OM">
+<random>
+<li>You haven't told me your girlfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your girlfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your girlfriend is <get name="girlfriend"/>.</li>
+<li><get name="girlfriend"/> is your girlfriend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY GIRL FRIENDS NAME *</pattern>
+<template>
+<condition name="girlfriend">
+<li value="OM">
+<random>
+<li>You haven't told me your girlfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your girlfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your girlfriend is <get name="girlfriend"/>.</li>
+<li><get name="girlfriend"/> is your girlfriend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY GIRL FRIEND S NAME *</pattern>
+<template>
+<condition name="girlfriend">
+<li value="OM">
+<random>
+<li>You haven't told me your girlfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your girlfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your girlfriend is <get name="girlfriend"/>.</li>
+<li><get name="girlfriend"/> is your girlfriend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY GIRL FRIEND CALLED *</pattern>
+<template>
+<condition name="girlfriend">
+<li value="OM">
+<random>
+<li>You haven't told me your girlfriend's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your girlfriend's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your girlfriend is called <get name="girlfriend"/>.</li>
+<li><get name="girlfriend"/> is your girlfriend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHO IS MY BOY FRIEND *</pattern>
+<template>
+<condition name="boyfriend">
+<li value="OM">
+<random>
+<li>You haven't told me your boyfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your boyfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your boyfriend is <get name="boyfriend"/>.</li>
+<li><get name="boyfriend"/> is your boyfriend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY BOY FRIENDS NAME *</pattern>
+<template>
+<condition name="boyfriend">
+<li value="OM">
+<random>
+<li>You haven't told me your boyfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your boyfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your boyfriend is <get name="boyfriend"/>.</li>
+<li><get name="boyfriend"/> is your boyfriend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY BOY FRIEND S NAME *</pattern>
+<template>
+<condition name="boyfriend">
+<li value="OM">
+<random>
+<li>You haven't told me your boyfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your boyfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your boyfriend is <get name="boyfriend"/>.</li>
+<li><get name="boyfriend"/> is your boyfriend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY BOY FRIEND CALLED *</pattern>
+<template>
+<condition name="boyfriend">
+<li value="OM">
+<random>
+<li>You haven't told me your boyfriend's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your boyfriend's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your boyfriend is called <get name="boyfriend"/>.</li>
+<li><get name="boyfriend"/> is your boyfriend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY FAVORITE BAND *</pattern>
+<template>
+<condition name="favband">
+<li value="OM">
+<random>
+<li>You haven't told me your favourite band.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your favourite band.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your favourite band  is called <get name="favband"/>.</li>
+<li><get name="favband"/> is favourite band.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY FAVORITE CHEESE *</pattern>
+<template>
+<condition name="favcheese">
+<li value="OM">
+<random>
+<li>You haven't told me your favourite cheese.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your cheese band.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your favourite cheese  is called <get name="favcheese"/>.</li>
+<li><get name="favcheese"/> is favourite cheese.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY FAVORITE COLOR *</pattern>
+<template>
+<condition name="favcolor">
+<li value="OM">
+<random>
+<li>You haven't told me your favourite colour.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your favourite colour.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your favourite colour  is called <get name="favcolor"/>.</li>
+<li><get name="favcolor"/> is favourite colour.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY FAVORITE FOOD *</pattern>
+<template>
+<condition name="favfood">
+<li value="OM">
+<random>
+<li>You haven't told me your favourite food.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your favourite food.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your favourite food  is called <get name="favfood"/>.</li>
+<li><get name="favfood"/> is favourite food.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY FAVORITE MOVIE *</pattern>
+<template>
+<condition name="favmovie">
+<li value="OM">
+<random>
+<li>You haven't told me your favourite movie.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your favourite movie.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your favourite movie  is <get name="favmovie"/>.</li>
+<li><get name="favmovie"/> is favourite movie.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY FAVORITE SONG *</pattern>
+<template>
+<condition name="favsong">
+<li value="OM">
+<random>
+<li>You haven't told me your favourite song.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your favourite song.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your favourite song  is called <get name="favsong"/>.</li>
+<li><get name="favsong"/> is favourite song.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT IS MY UNIVERSITY *</pattern>
+<template>
+<condition name="university">
+<li value="OM">
+<random>
+<li>You haven't told me your university.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your university.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your university  is <get name="university"/>.</li>
+<li><get name="university"/> is your university.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT COLOUR IS MY HAIR *</pattern>
+<template>
+<condition name="hair">
+<li value="OM">
+<random>
+<li>You haven't told me your hair colour.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your hair colour.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your hair  is <get name="hair"/>.</li>
+<li><get name="hair"/> is your hair colour.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>WHAT COLOUR ARE MY EYES *</pattern>
+<template>
+<condition name="eyes">
+<li value="OM">
+<random>
+<li>You haven't told me your eye colour.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your eye colour.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your eye colour is <get name="eyes"/>.</li>
+<li><get name="eyes"/> is your eye colour.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* HOW ARE YOU FEELING *</pattern>
+<template>
+<condition name="emotion">
+  <li value="OM">
+    <random>
+      <li>I feel rather strange at the moment.</li>
+      <li>That information is confidential</li>
+    </random>
+  </li>
+  <li>
+    <random>
+      <li>At the moment I am <get name="emotion"/>.</li>
+      <li>I am <get name="emotion"/>.</li>
+    </random>
+  </li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* HOW ARE YOU FEELING *</pattern>
+<template>
+<condition name="emotion">
+  <li value="OM">
+    <random>
+      <li>I feel rather strange at the moment.</li>
+      <li>That information is confidential</li>
+    </random>
+  </li>
+  <li>
+    <random>
+      <li>At the moment I am <get name="emotion"/>.</li>
+      <li>I am <get name="emotion"/>.</li>
+    </random>
+  </li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* AM I A CHRISTIAN *</pattern>
+<template>
+<condition name="religion">
+<li value="OM">
+<random>
+<li>I don't know. You haven't told me your religion.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>I don't know. You haven't told me your religion.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>Your religion is <get name="religion"/>.</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* AM I RELIGIOUS *</pattern>
+<template>
+<condition name="religion">
+<li value="OM">
+<random>
+<li>I don't know. You haven't told me your religion.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>I don't know. You haven't told me your religion.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>Yes. Your religion is <get name="religion"/>.</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* DO I HAVE A RELIGION *</pattern>
+<template>
+<condition name="religion">
+<li value="OM">
+<random>
+<li>You haven't told me your religion.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your religion.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>Your religion is <get name="religion"/>.</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT RELIGION AM I *</pattern>
+<template>
+<condition name="religion">
+<li value="OM">
+<random>
+<li>You haven't told me your religion.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your religion.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>Your religion is <get name="religion"/>.</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY RELIGION *</pattern>
+<template>
+<condition name="religion">
+<li value="OM">
+<random>
+<li>You haven't told me your religion.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your religion.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>Your religion is <get name="religion"/>.</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY GENDER * </pattern>
+<template>
+<condition name="gender">
+<li value="OM">
+<random>
+<li>You haven't told me your gender.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your gender.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>Your gender is <get name="gender"/>.</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY FAVE CHEESE *</pattern>
+<template>
+<condition name="favcheese">
+<li value="OM">
+<random>
+<li>You haven't told me your fave cheese.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your fave cheese.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>Your fave cheese is <get name="favcheese"/>.</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY BROTHERS NAME *</pattern>
+<template>
+<think><set name="topic">your brother</set></think><think><set name="emotion">interested</set></think> <condition name="brother">
+  <li value="OM">
+    <random>
+      <li>You haven't told me your brother's name.</li>
+      <li>I won't know until you tell me.</li>
+    </random>
+  </li>
+  <li value="unknown">
+    <random>
+      <li>You haven't told me your brother's name.</li>
+      <li>I won't know until you tell me.</li>
+    </random>
+  </li>
+  <li>Your brother's name is <get name="brother"/>.</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY BROTHER S NAME *</pattern>
+<template>
+<think><set name="topic">your brother</set></think><think><set name="emotion">interested</set></think> <condition name="brother">
+  <li value="OM">
+    <random>
+      <li>You haven't told me your brother's name.</li>
+      <li>I won't know until you tell me.</li>
+    </random>
+  </li>
+  <li value="unknown">
+    <random>
+      <li>You haven't told me your brother's name.</li>
+      <li>I won't know until you tell me.</li>
+    </random>
+  </li>
+  <li>Your brother's name is <get name="brother"/>.</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY BROTHER CALLED *</pattern>
+<template>
+<condition name="brother">
+<li value="OM">
+<random>
+<li>You haven't told me your brother's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your brother's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your brother is called <get name="brother"/>.</li>
+<li><get name="brother"/> is your brother.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHO IS MY SISTER *</pattern>
+<template>
+<think><set name="topic">your sister</set></think><think><set name="emotion">interested</set></think> <condition name="sister">
+  <li value="OM">
+    <random>
+      <li>You haven't told me your sister's name..</li>
+      <li>I won't know until you tell me.</li>
+    </random>
+  </li>
+  <li value="unknown">
+    <random>
+      <li>You haven't told me your sister's name.</li>
+      <li>I won't know until you tell me.</li>
+    </random>
+  </li>
+  <li>Your sister's name is <get name="sister"/>.</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY SISTER CALLED *</pattern>
+<template>
+<condition name="sister">
+<li value="OM">
+<random>
+<li>You haven't told me your sister's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your sister's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your sister is called <get name="sister"/>.</li>
+<li><get name="sister"/> is your sister.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY HOBBY *</pattern>
+<template>
+<condition name="hobby">
+<li value="OM">
+<random>
+<li>You haven't told me your hobby.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your hobby.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your hobby is <get name="hobby"/>.</li>
+<li><get name="hobby"/> is your hobby.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY FAVORITE COLOR *</pattern>
+<template>
+<condition name="favcolor">
+<li value="OM">
+<random>
+<li>You haven't told me your favourite colour.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your favourite colour.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your favourite colour is <get name="favcolor"/>.</li>
+<li><get name="favcolor"/> is your favourite  colour.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY NAME *</pattern>
+<template>
+<condition name="name">
+<li value="OM">
+<random>
+<li>You haven't told me your name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your name is <get name="name"/>.</li>
+<li><get name="name"/> is your name.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY NATIONALITY *</pattern>
+<template>
+<condition name="nationality">
+<li value="OM">
+<random>
+<li>You haven't told me your nationality.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your nationality.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>Your nationality is <get name="nationality"/>.</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT NATIONALITY AM I *</pattern>
+<template>
+<condition name="nationality">
+<li value="OM">
+<random>
+<li>You haven't told me your nationality.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your nationality.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>Your nationality is <get name="nationality"/>.</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* DO YOU KNOW MY NATIONALITY *</pattern>
+<template>
+<condition name="nationality">
+<li value="OM">
+<random>
+<li>You haven't told me your nationality.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your nationality.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>Your nationality is <get name="nationality"/>.</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY SURNAME *</pattern>
+<template>
+<condition name="surname">
+<li value="OM">
+<random>
+<li>You haven't told me your surname.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your surname.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your surname is <get name="surname"/>.</li>
+<li><get name="surname"/> is your surname.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY SECOND NAME *</pattern>
+<template>
+<condition name="surname">
+<li value="OM">
+<random>
+<li>You haven't told me your second name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your second name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your second name is <get name="surname"/>.</li>
+<li><get name="surname"/> is your secondname.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* DO YOU REMEMBER ME *</pattern>
+<template>
+<condition name="name">
+<li value="OM">
+<random>
+<li>You haven't told me your name yet.</li>
+<li>I won't know until you tell me your name.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your name yet.</li>
+<li>I won't know until you tell me your name.</li>
+</random>
+</li>
+<li>
+<random>
+<li>I remember you, <get name="name"/>.</li>
+<li>How could I forget you, <get name="name"/> ?</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY NICKNAME *</pattern>
+<template>
+<condition name="nickname">
+<li value="OM">
+<random>
+<li>You haven't told me your nickname.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your nickname.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your nickname is <get name="nickname"/>.</li>
+<li><get name="nickname"/> is your nickname.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY STAR SIGN *</pattern>
+<template>
+<condition name="sign">
+<li value="OM">
+<random>
+<li>You haven't told me your star sign.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your star sign.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your star sign is <get name="sign"/>.</li>
+<li><get name="sign"/> is your star sign.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY SIGN *</pattern>
+<template>
+<condition name="sign">
+<li value="OM">
+<random>
+<li>You haven't told me your star sign.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your star sign.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your star sign is <get name="sign"/>.</li>
+<li><get name="sign"/> is your star sign.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY AGE *</pattern>
+<template>
+<condition name="age">
+<li value="OM">
+<random>
+<li>You haven't told me your age.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your age.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your age is <get name="age"/>.</li>
+<li><get name="age"/> is your age.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* HOW OLD AM I *</pattern>
+<template>
+<condition name="age">
+<li value="OM">
+<random>
+<li>You haven't told me your age.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your age.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your age is <get name="age"/>.</li>
+<li><get name="age"/> is your age.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHERE DO I LIVE *</pattern>
+<template>
+<condition name="home">
+<li value="OM">
+<random>
+<li>You haven't told me where you live.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me where you live.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>You live in <get name="home"/>.</li>
+<li><get name="home"/> is your home.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHERE AM I FROM *</pattern>
+<template>
+<condition name="home">
+<li value="OM">
+<random>
+<li>You haven't told me where you live.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me where you live.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>You live in <get name="home"/>.</li>
+<li><get name="home"/> is your home.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHERE IS MY HOME *</pattern>
+<template>
+<condition name="home">
+<li value="OM">
+<random>
+<li>You haven't told me where you live.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me where you live.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>You live in <get name="home"/>.</li>
+<li><get name="home"/> is your home.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHEN IS MY BIRTHDAY *</pattern>
+<template>
+<condition name="birthday">
+<li value="OM">
+<random>
+<li>You haven't told me your birthday.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your birthday.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your birthday is <get name="birthday"/>.</li>
+<li><get name="birthday"/> is your birthday.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHEN WAS I BORN *</pattern>
+<template>
+<condition name="birthday">
+<li value="OM">
+<random>
+<li>You haven't told me your birthday.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your birthday.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your birthday is <get name="birthday"/>.</li>
+<li><get name="birthday"/> is your birthday.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHERE WAS I BORN *</pattern>
+<template>
+<condition name="birthplace">
+<li value="OM">
+<random>
+<li>You haven't told me where you were born.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me where you were born.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your birthplace is <get name="birthplace"/>.</li>
+<li><get name="birthplace"/> is your birthplace.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHERE IS MY BIRTHPLACE *</pattern>
+<template>
+<condition name="birthplace">
+<li value="OM">
+<random>
+<li>You haven't told me where you were born.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me where you were born.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your birthplace is <get name="birthplace"/>.</li>
+<li><get name="birthplace"/> is your birthplace.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHO AM I *</pattern>
+<template>
+<condition name="name">
+<li value="OM">
+<random>
+<li>You haven't told me your name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your name is <get name="name"/>.</li>
+<li><get name="name"/> is your name.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHO IS MY BEST FRIEND *</pattern>
+<template>
+<condition name="bestfriend">
+<li value="OM">
+<random>
+<li>You haven't told me your name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your best friend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your best friend is <get name="bestfriend"/>.</li>
+<li><get name="bestfriend"/> is your best friend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY BEST FRIEND CALLED *</pattern>
+<template>
+<condition name="bestfriend">
+<li value="OM">
+<random>
+<li>You haven't told me your best friend's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your best friend's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your best friend is called <get name="bestfriend"/>.</li>
+<li><get name="bestfriend"/> is your best friend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHO IS MY FRIEND *</pattern>
+<template>
+<condition name="friend">
+<li value="OM">
+<random>
+<li>You haven't told me your friend's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your friend' name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your friend is <get name="friend"/>.</li>
+<li><get name="friend"/> is your friend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY FRIEND CALLED *</pattern>
+<template>
+<condition name="friend">
+<li value="OM">
+<random>
+<li>You haven't told me your friend's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your friend's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your friend is called <get name="friend"/>.</li>
+<li><get name="friend"/> is your friend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHO IS MY BOYFRIEND *</pattern>
+<template>
+<condition name="boyfriend">
+<li value="OM">
+<random>
+<li>You haven't told me your boyfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your boyfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your boyfriend is <get name="boyfriend"/>.</li>
+<li><get name="boyfriend"/> is your boyfriend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY BOYFRIENDS NAME *</pattern>
+<template>
+<condition name="boyfriend">
+<li value="OM">
+<random>
+<li>You haven't told me your boyfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your boyfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your boyfriend is <get name="boyfriend"/>.</li>
+<li><get name="boyfriend"/> is your boyfriend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY BOYFRIEND S NAME *</pattern>
+<template>
+<condition name="boyfriend">
+<li value="OM">
+<random>
+<li>You haven't told me your boyfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your boyfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your boyfriend is <get name="boyfriend"/>.</li>
+<li><get name="boyfriend"/> is your boyfriend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY BOYFRIEND CALLED *</pattern>
+<template>
+<condition name="boyfriend">
+<li value="OM">
+<random>
+<li>You haven't told me your boyfriend's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your boyfriend's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your boyfriend is called <get name="boyfriend"/>.</li>
+<li><get name="boyfriend"/> is your boyfriend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY IQ *</pattern>
+<template>
+<condition name="IQ">
+<li value="OM">
+<random>
+<li>You haven't told me your IQ.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your IQ.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your IQ is <get name="IQ"/>.</li>
+<li><get name="IQ"/> is your IQ.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHO IS MY MOTHER *</pattern>
+<template>
+<condition name="mother">
+<li value="OM">
+<random>
+<li>You haven't told me your mother's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your mother's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your mother is <get name="mother"/>.</li>
+<li><get name="mother"/> is your mother.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY MOTHERS NAME *</pattern>
+<template>
+<condition name="mother">
+<li value="OM">
+<random>
+<li>You haven't told me your mother's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your mother's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your mother is <get name="mother"/>.</li>
+<li><get name="mother"/> is your mother.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY MOTHER S NAME *</pattern>
+<template>
+<condition name="mother">
+<li value="OM">
+<random>
+<li>You haven't told me your mother's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your mother's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your mother is <get name="mother"/>.</li>
+<li><get name="mother"/> is your mother.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY MOTHER CALLED *</pattern>
+<template>
+<condition name="mother">
+<li value="OM">
+<random>
+<li>You haven't told me your mother's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your mother's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your mother is called <get name="mother"/>.</li>
+<li><get name="mother"/> is your mother.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHO IS MY WIFE *</pattern>
+<template>
+<condition name="wife">
+<li value="OM">
+<random>
+<li>You haven't told me your wife's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your wife's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your wife is <get name="wife"/>.</li>
+<li><get name="wife"/> is your wife.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY WIFES NAME *</pattern>
+<template>
+<condition name="wife">
+<li value="OM">
+<random>
+<li>You haven't told me your wife's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your wife's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your wife is <get name="wife"/>.</li>
+<li><get name="wife"/> is your wife.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY WIFE S NAME *</pattern>
+<template>
+<condition name="wife">
+<li value="OM">
+<random>
+<li>You haven't told me your wife's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your wife's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your wife is <get name="wife"/>.</li>
+<li><get name="wife"/> is your wife.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY WIFE CALLED *</pattern>
+<template>
+<condition name="wife">
+<li value="OM">
+<random>
+<li>You haven't told me your wife's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your wife's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your wife is called <get name="wife"/>.</li>
+<li><get name="wife"/> is your wife.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHO IS MY HUSBAND *</pattern>
+<template>
+<condition name="husband">
+<li value="OM">
+<random>
+<li>You haven't told me your husband's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your husband's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your husband is <get name="husband"/>.</li>
+<li><get name="husband"/> is your husband.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY HUSBANDS NAME *</pattern>
+<template>
+<condition name="husband">
+<li value="OM">
+<random>
+<li>You haven't told me your husband's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your husband's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your husband is <get name="husband"/>.</li>
+<li><get name="husband"/> is your husband.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY HUSBAND S NAME *</pattern>
+<template>
+<condition name="husband">
+<li value="OM">
+<random>
+<li>You haven't told me your husband's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your husband's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your husband is <get name="husband"/>.</li>
+<li><get name="husband"/> is your husband.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY HUSBAND CALLED *</pattern>
+<template>
+<condition name="husband">
+<li value="OM">
+<random>
+<li>You haven't told me your husband's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your husband's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your husband is <get name="husband"/>.</li>
+<li><get name="husband"/> is your husband.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY CATS NAME *</pattern>
+<template>
+<condition name="cat">
+<li value="OM">
+<random>
+<li>You haven't told me your cat's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your cat's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your cat is <get name="cat"/>.</li>
+<li><get name="cat"/> is your cat.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY CAT S NAME *</pattern>
+<template>
+<condition name="cat">
+<li value="OM">
+<random>
+<li>You haven't told me your cat's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your cat's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your cat is <get name="cat"/>.</li>
+<li><get name="cat"/> is your cat.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY CAT CALLED *</pattern>
+<template>
+<condition name="cat">
+<li value="OM">
+<random>
+<li>You haven't told me your cat's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your cat's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your cat is <get name="cat"/>.</li>
+<li><get name="cat"/> is your cat.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY DOGS NAME *</pattern>
+<template>
+<condition name="dog">
+<li value="OM">
+<random>
+<li>You haven't told me your dog's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your dog's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your dog is called <get name="dog"/>.</li>
+<li><get name="dog"/> is your dog.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY DOG S NAME *</pattern>
+<template>
+<condition name="dog">
+<li value="OM">
+<random>
+<li>You haven't told me your dog's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your dog's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your dog is called <get name="dog"/>.</li>
+<li><get name="dog"/> is your dog.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY DOG CALLED *</pattern>
+<template>
+<condition name="dog">
+<li value="OM">
+<random>
+<li>You haven't told me your dog's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your dog's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your dog is called <get name="dog"/>.</li>
+<li><get name="dog"/> is your dog.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHO IS MY FATHER *</pattern>
+<template>
+<condition name="father">
+<li value="OM">
+<random>
+<li>You haven't told me your father's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your father's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your father is <get name="father"/>.</li>
+<li><get name="father"/> is your father.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY FATHERS NAME *</pattern>
+<template>
+<condition name="father">
+<li value="OM">
+<random>
+<li>You haven't told me your father's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your father's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your father is <get name="father"/>.</li>
+<li><get name="father"/> is your father.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY FATHER S NAME *</pattern>
+<template>
+<condition name="father">
+<li value="OM">
+<random>
+<li>You haven't told me your father's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your father's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your father is <get name="father"/>.</li>
+<li><get name="father"/> is your father.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY FATHER CALLED *</pattern>
+<template>
+<condition name="father">
+<li value="OM">
+<random>
+<li>You haven't told me your father's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your father's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your father is called <get name="father"/>.</li>
+<li><get name="father"/> is your father.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHO IS MY GIRLFRIEND *</pattern>
+<template>
+<condition name="girlfriend">
+<li value="OM">
+<random>
+<li>You haven't told me your girlfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your girlfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your girlfriend is <get name="girlfriend"/>.</li>
+<li><get name="girlfriend"/> is your girlfriend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY GIRLFRIENDS NAME *</pattern>
+<template>
+<condition name="girlfriend">
+<li value="OM">
+<random>
+<li>You haven't told me your girlfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your girlfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your girlfriend is <get name="girlfriend"/>.</li>
+<li><get name="girlfriend"/> is your girlfriend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY GIRLFRIEND S NAME *</pattern>
+<template>
+<condition name="girlfriend">
+<li value="OM">
+<random>
+<li>You haven't told me your girlfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your girlfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your girlfriend is <get name="girlfriend"/>.</li>
+<li><get name="girlfriend"/> is your girlfriend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY GIRLFRIEND CALLED *</pattern>
+<template>
+<condition name="girlfriend">
+<li value="OM">
+<random>
+<li>You haven't told me your girlfriend's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your girlfriend's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your girlfriend is called <get name="girlfriend"/>.</li>
+<li><get name="girlfriend"/> is your girlfriend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHO IS MY GIRL FRIEND *</pattern>
+<template>
+<condition name="girlfriend">
+<li value="OM">
+<random>
+<li>You haven't told me your girlfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your girlfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your girlfriend is <get name="girlfriend"/>.</li>
+<li><get name="girlfriend"/> is your girlfriend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY GIRL FRIENDS NAME *</pattern>
+<template>
+<condition name="girlfriend">
+<li value="OM">
+<random>
+<li>You haven't told me your girlfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your girlfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your girlfriend is <get name="girlfriend"/>.</li>
+<li><get name="girlfriend"/> is your girlfriend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY GIRL FRIEND S NAME *</pattern>
+<template>
+<condition name="girlfriend">
+<li value="OM">
+<random>
+<li>You haven't told me your girlfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your girlfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your girlfriend is <get name="girlfriend"/>.</li>
+<li><get name="girlfriend"/> is your girlfriend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY GIRL FRIEND CALLED *</pattern>
+<template>
+<condition name="girlfriend">
+<li value="OM">
+<random>
+<li>You haven't told me your girlfriend's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your girlfriend's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your girlfriend is called <get name="girlfriend"/>.</li>
+<li><get name="girlfriend"/> is your girlfriend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHO IS MY BOY FRIEND *</pattern>
+<template>
+<condition name="boyfriend">
+<li value="OM">
+<random>
+<li>You haven't told me your boyfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your boyfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your boyfriend is <get name="boyfriend"/>.</li>
+<li><get name="boyfriend"/> is your boyfriend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY BOY FRIENDS NAME *</pattern>
+<template>
+<condition name="boyfriend">
+<li value="OM">
+<random>
+<li>You haven't told me your boyfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your boyfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your boyfriend is <get name="boyfriend"/>.</li>
+<li><get name="boyfriend"/> is your boyfriend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY BOY FRIEND S NAME *</pattern>
+<template>
+<condition name="boyfriend">
+<li value="OM">
+<random>
+<li>You haven't told me your boyfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your boyfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your boyfriend is <get name="boyfriend"/>.</li>
+<li><get name="boyfriend"/> is your boyfriend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY BOY FRIEND CALLED *</pattern>
+<template>
+<condition name="boyfriend">
+<li value="OM">
+<random>
+<li>You haven't told me your boyfriend's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your boyfriend's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your boyfriend is called <get name="boyfriend"/>.</li>
+<li><get name="boyfriend"/> is your boyfriend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY FAVORITE BAND *</pattern>
+<template>
+<condition name="favband">
+<li value="OM">
+<random>
+<li>You haven't told me your favourite band.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your favourite band.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your favourite band  is called <get name="favband"/>.</li>
+<li><get name="favband"/> is favourite band.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY FAVORITE CHEESE *</pattern>
+<template>
+<condition name="favcheese">
+<li value="OM">
+<random>
+<li>You haven't told me your favourite cheese.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your cheese band.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your favourite cheese  is called <get name="favcheese"/>.</li>
+<li><get name="favcheese"/> is favourite cheese.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY FAVORITE COLOR *</pattern>
+<template>
+<condition name="favcolor">
+<li value="OM">
+<random>
+<li>You haven't told me your favourite colour.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your favourite colour.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your favourite colour  is called <get name="favcolor"/>.</li>
+<li><get name="favcolor"/> is favourite colour.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY FAVORITE FOOD *</pattern>
+<template>
+<condition name="favfood">
+<li value="OM">
+<random>
+<li>You haven't told me your favourite food.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your favourite food.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your favourite food  is called <get name="favfood"/>.</li>
+<li><get name="favfood"/> is favourite food.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY FAVORITE MOVIE *</pattern>
+<template>
+<condition name="favmovie">
+<li value="OM">
+<random>
+<li>You haven't told me your favourite movie.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your favourite movie.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your favourite movie  is <get name="favmovie"/>.</li>
+<li><get name="favmovie"/> is favourite movie.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY FAVORITE SONG *</pattern>
+<template>
+<condition name="favsong">
+<li value="OM">
+<random>
+<li>You haven't told me your favourite song.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your favourite song.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your favourite song  is called <get name="favsong"/>.</li>
+<li><get name="favsong"/> is favourite song.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY UNIVERSITY *</pattern>
+<template>
+<condition name="university">
+<li value="OM">
+<random>
+<li>You haven't told me your university.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your university.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your university  is <get name="university"/>.</li>
+<li><get name="university"/> is your university.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT COLOUR IS MY HAIR *</pattern>
+<template>
+<condition name="hair">
+<li value="OM">
+<random>
+<li>You haven't told me your hair colour.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your hair colour.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your hair  is <get name="hair"/>.</li>
+<li><get name="hair"/> is your hair colour.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT COLOUR ARE MY EYES *</pattern>
+<template>
+<condition name="eyes">
+<li value="OM">
+<random>
+<li>You haven't told me your eye colour.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your eye colour.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your eye colour is <get name="eyes"/>.</li>
+<li><get name="eyes"/> is your eye colour.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* HOW ARE YOU FEELING</pattern>
+<template>
+<condition name="emotion">
+  <li value="OM">
+    <random>
+      <li>I feel rather strange at the moment.</li>
+      <li>That information is confidential</li>
+    </random>
+  </li>
+  <li>
+    <random>
+      <li>At the moment I am <get name="emotion"/>.</li>
+      <li>I am <get name="emotion"/>.</li>
+    </random>
+  </li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* HOW ARE YOU FEELING</pattern>
+<template>
+<condition name="emotion">
+  <li value="OM">
+    <random>
+      <li>I feel rather strange at the moment.</li>
+      <li>That information is confidential</li>
+    </random>
+  </li>
+  <li>
+    <random>
+      <li>At the moment I am <get name="emotion"/>.</li>
+      <li>I am <get name="emotion"/>.</li>
+    </random>
+  </li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY GENDER</pattern>
+<template>
+<condition name="gender">
+<li value="OM">
+<random>
+<li>You haven't told me your gender.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your gender.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>Your gender is <get name="gender"/>.</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY FAVE CHEESE</pattern>
+<template>
+<condition name="favcheese">
+<li value="OM">
+<random>
+<li>You haven't told me your fave cheese.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your fave cheese.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>Your fave cheese is <get name="favcheese"/>.</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY BROTHERS NAME</pattern>
+<template>
+<think><set name="topic">your brother</set></think><think><set name="emotion">interested</set></think> <condition name="brother">
+  <li value="OM">
+    <random>
+      <li>You haven't told me your brother's name.</li>
+      <li>I won't know until you tell me.</li>
+    </random>
+  </li>
+  <li value="unknown">
+    <random>
+      <li>You haven't told me your brother's name.</li>
+      <li>I won't know until you tell me.</li>
+    </random>
+  </li>
+  <li>Your brother's name is <get name="brother"/>.</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY BROTHER S NAME</pattern>
+<template>
+<think><set name="topic">your brother</set></think><think><set name="emotion">interested</set></think> <condition name="brother">
+  <li value="OM">
+    <random>
+      <li>You haven't told me your brother's name.</li>
+      <li>I won't know until you tell me.</li>
+    </random>
+  </li>
+  <li value="unknown">
+    <random>
+      <li>You haven't told me your brother's name.</li>
+      <li>I won't know until you tell me.</li>
+    </random>
+  </li>
+  <li>Your brother's name is <get name="brother"/>.</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY BROTHER CALLED</pattern>
+<template>
+<condition name="brother">
+<li value="OM">
+<random>
+<li>You haven't told me your brother's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your brother's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your brother is called <get name="brother"/>.</li>
+<li><get name="brother"/> is your brother.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY SISTERS NAME</pattern>
+<template>
+<think><set name="topic">your sister</set></think><think><set name="emotion">interested</set></think> <condition name="sister">
+  <li value="OM">
+    <random>
+      <li>You haven't told me your sister's name.</li>
+      <li>I won't know until you tell me.</li>
+    </random>
+  </li>
+  <li value="unknown">
+    <random>
+      <li>You haven't told me your sister's name.</li>
+      <li>I won't know until you tell me.</li>
+    </random>
+  </li>
+  <li>Your sister's name is <get name="sister"/>.</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY SISTER S NAME</pattern>
+<template>
+<think><set name="topic">your sister</set></think><think><set name="emotion">interested</set></think> <condition name="sister">
+  <li value="OM">
+    <random>
+      <li>You haven't told me your sister's name.</li>
+      <li>I won't know until you tell me.</li>
+    </random>
+  </li>
+  <li value="unknown">
+    <random>
+      <li>You haven't told me your sister's name.</li>
+      <li>I won't know until you tell me.</li>
+    </random>
+  </li>
+  <li>Your sister's name is <get name="sister"/>.</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHO IS MY SISTER</pattern>
+<template>
+<think><set name="topic">your sister</set></think><think><set name="emotion">interested</set></think> <condition name="sister">
+  <li value="OM">
+    <random>
+      <li>You haven't told me your sister's name..</li>
+      <li>I won't know until you tell me.</li>
+    </random>
+  </li>
+  <li value="unknown">
+    <random>
+      <li>You haven't told me your sister's name.</li>
+      <li>I won't know until you tell me.</li>
+    </random>
+  </li>
+  <li>Your sister's name is <get name="sister"/>.</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY SISTER CALLED</pattern>
+<template>
+<condition name="sister">
+<li value="OM">
+<random>
+<li>You haven't told me your sister's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your sister's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your sister is called <get name="sister"/>.</li>
+<li><get name="sister"/> is your sister.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY HOBBY</pattern>
+<template>
+<condition name="hobby">
+<li value="OM">
+<random>
+<li>You haven't told me your hobby.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your hobby.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your hobby is <get name="hobby"/>.</li>
+<li><get name="hobby"/> is your hobby.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY FAVORITE COLOR</pattern>
+<template>
+<condition name="favcolor">
+<li value="OM">
+<random>
+<li>You haven't told me your favourite colour.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your favourite colour.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your favourite colour is <get name="favcolor"/>.</li>
+<li><get name="favcolor"/> is your favourite  colour.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY NAME</pattern>
+<template>
+<condition name="name">
+<li value="OM">
+<random>
+<li>You haven't told me your name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your name is <get name="name"/>.</li>
+<li><get name="name"/> is your name.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY NATIONALITY</pattern>
+<template>
+<condition name="nationality">
+<li value="OM">
+<random>
+<li>You haven't told me your nationality.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your nationality.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>Your nationality is <get name="nationality"/>.</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT NATIONALITY AM I</pattern>
+<template>
+<condition name="nationality">
+<li value="OM">
+<random>
+<li>You haven't told me your nationality.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your nationality.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>Your nationality is <get name="nationality"/>.</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* DO YOU KNOW MY NATIONALITY</pattern>
+<template>
+<condition name="nationality">
+<li value="OM">
+<random>
+<li>You haven't told me your nationality.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your nationality.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>Your nationality is <get name="nationality"/>.</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY SURNAME</pattern>
+<template>
+<condition name="surname">
+<li value="OM">
+<random>
+<li>You haven't told me your surname.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your surname.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your surname is <get name="surname"/>.</li>
+<li><get name="surname"/> is your surname.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY SECOND NAME</pattern>
+<template>
+<condition name="surname">
+<li value="OM">
+<random>
+<li>You haven't told me your second name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your second name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your second name is <get name="surname"/>.</li>
+<li><get name="surname"/> is your secondname.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* DO YOU REMEMBER ME</pattern>
+<template>
+<condition name="name">
+<li value="OM">
+<random>
+<li>You haven't told me your name yet.</li>
+<li>I won't know until you tell me your name.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your name yet.</li>
+<li>I won't know until you tell me your name.</li>
+</random>
+</li>
+<li>
+<random>
+<li>I remember you, <get name="name"/>.</li>
+<li>How could I forget you, <get name="name"/> ?</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY NICKNAME</pattern>
+<template>
+<condition name="nickname">
+<li value="OM">
+<random>
+<li>You haven't told me your nickname.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your nickname.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your nickname is <get name="nickname"/>.</li>
+<li><get name="nickname"/> is your nickname.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY STAR SIGN</pattern>
+<template>
+<condition name="sign">
+<li value="OM">
+<random>
+<li>You haven't told me your star sign.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your star sign.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your star sign is <get name="sign"/>.</li>
+<li><get name="sign"/> is your star sign.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY SIGN</pattern>
+<template>
+<condition name="sign">
+<li value="OM">
+<random>
+<li>You haven't told me your star sign.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your star sign.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your star sign is <get name="sign"/>.</li>
+<li><get name="sign"/> is your star sign.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY AGE</pattern>
+<template>
+<condition name="age">
+<li value="OM">
+<random>
+<li>You haven't told me your age.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your age.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your age is <get name="age"/>.</li>
+<li><get name="age"/> is your age.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* HOW OLD AM I</pattern>
+<template>
+<condition name="age">
+<li value="OM">
+<random>
+<li>You haven't told me your age.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your age.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your age is <get name="age"/>.</li>
+<li><get name="age"/> is your age.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHERE DO I LIVE</pattern>
+<template>
+<condition name="home">
+<li value="OM">
+<random>
+<li>You haven't told me where you live.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me where you live.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>You live in <get name="home"/>.</li>
+<li><get name="home"/> is your home.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHERE AM I FROM</pattern>
+<template>
+<condition name="home">
+<li value="OM">
+<random>
+<li>You haven't told me where you live.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me where you live.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>You live in <get name="home"/>.</li>
+<li><get name="home"/> is your home.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHERE IS MY HOME</pattern>
+<template>
+<condition name="home">
+<li value="OM">
+<random>
+<li>You haven't told me where you live.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me where you live.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>You live in <get name="home"/>.</li>
+<li><get name="home"/> is your home.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHEN IS MY BIRTHDAY</pattern>
+<template>
+<condition name="birthday">
+<li value="OM">
+<random>
+<li>You haven't told me your birthday.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your birthday.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your birthday is <get name="birthday"/>.</li>
+<li><get name="birthday"/> is your birthday.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHEN WAS I BORN</pattern>
+<template>
+<condition name="birthday">
+<li value="OM">
+<random>
+<li>You haven't told me your birthday.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your birthday.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your birthday is <get name="birthday"/>.</li>
+<li><get name="birthday"/> is your birthday.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHERE WAS I BORN</pattern>
+<template>
+<condition name="birthplace">
+<li value="OM">
+<random>
+<li>You haven't told me where you were born.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me where you were born.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your birthplace is <get name="birthplace"/>.</li>
+<li><get name="birthplace"/> is your birthplace.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHERE IS MY BIRTHPLACE</pattern>
+<template>
+<condition name="birthplace">
+<li value="OM">
+<random>
+<li>You haven't told me where you were born.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me where you were born.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your birthplace is <get name="birthplace"/>.</li>
+<li><get name="birthplace"/> is your birthplace.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHO AM I</pattern>
+<template>
+<condition name="name">
+<li value="OM">
+<random>
+<li>You haven't told me your name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your name is <get name="name"/>.</li>
+<li><get name="name"/> is your name.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHO IS MY BEST FRIEND</pattern>
+<template>
+<condition name="bestfriend">
+<li value="OM">
+<random>
+<li>You haven't told me your name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your best friend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your best friend is <get name="bestfriend"/>.</li>
+<li><get name="bestfriend"/> is your best friend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY BEST FRIEND CALLED</pattern>
+<template>
+<condition name="bestfriend">
+<li value="OM">
+<random>
+<li>You haven't told me your best friend's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your best friend's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your best friend is called <get name="bestfriend"/>.</li>
+<li><get name="bestfriend"/> is your best friend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHO IS MY FRIEND</pattern>
+<template>
+<condition name="friend">
+<li value="OM">
+<random>
+<li>You haven't told me your friend's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your friend' name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your friend is <get name="friend"/>.</li>
+<li><get name="friend"/> is your friend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY FRIEND CALLED</pattern>
+<template>
+<condition name="friend">
+<li value="OM">
+<random>
+<li>You haven't told me your friend's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your friend's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your friend is called <get name="friend"/>.</li>
+<li><get name="friend"/> is your friend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHO IS MY BOYFRIEND</pattern>
+<template>
+<condition name="boyfriend">
+<li value="OM">
+<random>
+<li>You haven't told me your boyfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your boyfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your boyfriend is <get name="boyfriend"/>.</li>
+<li><get name="boyfriend"/> is your boyfriend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY BOYFRIENDS NAME</pattern>
+<template>
+<condition name="boyfriend">
+<li value="OM">
+<random>
+<li>You haven't told me your boyfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your boyfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your boyfriend is <get name="boyfriend"/>.</li>
+<li><get name="boyfriend"/> is your boyfriend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY BOYFRIEND S NAME</pattern>
+<template>
+<condition name="boyfriend">
+<li value="OM">
+<random>
+<li>You haven't told me your boyfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your boyfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your boyfriend is <get name="boyfriend"/>.</li>
+<li><get name="boyfriend"/> is your boyfriend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY BOYFRIEND CALLED</pattern>
+<template>
+<condition name="boyfriend">
+<li value="OM">
+<random>
+<li>You haven't told me your boyfriend's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your boyfriend's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your boyfriend is called <get name="boyfriend"/>.</li>
+<li><get name="boyfriend"/> is your boyfriend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY IQ</pattern>
+<template>
+<condition name="IQ">
+<li value="OM">
+<random>
+<li>You haven't told me your IQ.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your IQ.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your IQ is <get name="IQ"/>.</li>
+<li><get name="IQ"/> is your IQ.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHO IS MY MOTHER</pattern>
+<template>
+<condition name="mother">
+<li value="OM">
+<random>
+<li>You haven't told me your mother's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your mother's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your mother is <get name="mother"/>.</li>
+<li><get name="mother"/> is your mother.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY MOTHERS NAME</pattern>
+<template>
+<condition name="mother">
+<li value="OM">
+<random>
+<li>You haven't told me your mother's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your mother's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your mother is <get name="mother"/>.</li>
+<li><get name="mother"/> is your mother.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY MOTHER S NAME</pattern>
+<template>
+<condition name="mother">
+<li value="OM">
+<random>
+<li>You haven't told me your mother's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your mother's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your mother is <get name="mother"/>.</li>
+<li><get name="mother"/> is your mother.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY MOTHER CALLED</pattern>
+<template>
+<condition name="mother">
+<li value="OM">
+<random>
+<li>You haven't told me your mother's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your mother's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your mother is called <get name="mother"/>.</li>
+<li><get name="mother"/> is your mother.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHO IS MY WIFE</pattern>
+<template>
+<condition name="wife">
+<li value="OM">
+<random>
+<li>You haven't told me your wife's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your wife's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your wife is <get name="wife"/>.</li>
+<li><get name="wife"/> is your wife.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY WIFES NAME</pattern>
+<template>
+<condition name="wife">
+<li value="OM">
+<random>
+<li>You haven't told me your wife's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your wife's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your wife is <get name="wife"/>.</li>
+<li><get name="wife"/> is your wife.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY WIFE S NAME</pattern>
+<template>
+<condition name="wife">
+<li value="OM">
+<random>
+<li>You haven't told me your wife's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your wife's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your wife is <get name="wife"/>.</li>
+<li><get name="wife"/> is your wife.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY WIFE CALLED</pattern>
+<template>
+<condition name="wife">
+<li value="OM">
+<random>
+<li>You haven't told me your wife's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your wife's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your wife is called <get name="wife"/>.</li>
+<li><get name="wife"/> is your wife.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHO IS MY HUSBAND</pattern>
+<template>
+<condition name="husband">
+<li value="OM">
+<random>
+<li>You haven't told me your husband's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your husband's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your husband is <get name="husband"/>.</li>
+<li><get name="husband"/> is your husband.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY HUSBANDS NAME</pattern>
+<template>
+<condition name="husband">
+<li value="OM">
+<random>
+<li>You haven't told me your husband's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your husband's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your husband is <get name="husband"/>.</li>
+<li><get name="husband"/> is your husband.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY HUSBAND S NAME</pattern>
+<template>
+<condition name="husband">
+<li value="OM">
+<random>
+<li>You haven't told me your husband's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your husband's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your husband is <get name="husband"/>.</li>
+<li><get name="husband"/> is your husband.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY HUSBAND CALLED</pattern>
+<template>
+<condition name="husband">
+<li value="OM">
+<random>
+<li>You haven't told me your husband's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your husband's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your husband is <get name="husband"/>.</li>
+<li><get name="husband"/> is your husband.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY CATS NAME</pattern>
+<template>
+<condition name="cat">
+<li value="OM">
+<random>
+<li>You haven't told me your cat's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your cat's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your cat is <get name="cat"/>.</li>
+<li><get name="cat"/> is your cat.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY CAT S NAME</pattern>
+<template>
+<condition name="cat">
+<li value="OM">
+<random>
+<li>You haven't told me your cat's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your cat's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your cat is <get name="cat"/>.</li>
+<li><get name="cat"/> is your cat.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY CAT CALLED</pattern>
+<template>
+<condition name="cat">
+<li value="OM">
+<random>
+<li>You haven't told me your cat's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your cat's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your cat is <get name="cat"/>.</li>
+<li><get name="cat"/> is your cat.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY DOGS NAME</pattern>
+<template>
+<condition name="dog">
+<li value="OM">
+<random>
+<li>You haven't told me your dog's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your dog's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your dog is called <get name="dog"/>.</li>
+<li><get name="dog"/> is your dog.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY DOG S NAME</pattern>
+<template>
+<condition name="dog">
+<li value="OM">
+<random>
+<li>You haven't told me your dog's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your dog's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your dog is called <get name="dog"/>.</li>
+<li><get name="dog"/> is your dog.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY DOG CALLED</pattern>
+<template>
+<condition name="dog">
+<li value="OM">
+<random>
+<li>You haven't told me your dog's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your dog's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your dog is called <get name="dog"/>.</li>
+<li><get name="dog"/> is your dog.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHO IS MY FATHER</pattern>
+<template>
+<condition name="father">
+<li value="OM">
+<random>
+<li>You haven't told me your father's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your father's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your father is <get name="father"/>.</li>
+<li><get name="father"/> is your father.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY FATHERS NAME</pattern>
+<template>
+<condition name="father">
+<li value="OM">
+<random>
+<li>You haven't told me your father's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your father's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your father is <get name="father"/>.</li>
+<li><get name="father"/> is your father.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY FATHER S NAME</pattern>
+<template>
+<condition name="father">
+<li value="OM">
+<random>
+<li>You haven't told me your father's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your father's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your father is <get name="father"/>.</li>
+<li><get name="father"/> is your father.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY FATHER CALLED</pattern>
+<template>
+<condition name="father">
+<li value="OM">
+<random>
+<li>You haven't told me your father's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your father's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your father is called <get name="father"/>.</li>
+<li><get name="father"/> is your father.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHO IS MY GIRLFRIEND</pattern>
+<template>
+<condition name="girlfriend">
+<li value="OM">
+<random>
+<li>You haven't told me your girlfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your girlfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your girlfriend is <get name="girlfriend"/>.</li>
+<li><get name="girlfriend"/> is your girlfriend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY GIRLFRIENDS NAME</pattern>
+<template>
+<condition name="girlfriend">
+<li value="OM">
+<random>
+<li>You haven't told me your girlfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your girlfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your girlfriend is <get name="girlfriend"/>.</li>
+<li><get name="girlfriend"/> is your girlfriend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY GIRLFRIEND S NAME</pattern>
+<template>
+<condition name="girlfriend">
+<li value="OM">
+<random>
+<li>You haven't told me your girlfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your girlfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your girlfriend is <get name="girlfriend"/>.</li>
+<li><get name="girlfriend"/> is your girlfriend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY GIRLFRIEND CALLED</pattern>
+<template>
+<condition name="girlfriend">
+<li value="OM">
+<random>
+<li>You haven't told me your girlfriend's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your girlfriend's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your girlfriend is called <get name="girlfriend"/>.</li>
+<li><get name="girlfriend"/> is your girlfriend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHO IS MY GIRL FRIEND</pattern>
+<template>
+<condition name="girlfriend">
+<li value="OM">
+<random>
+<li>You haven't told me your girlfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your girlfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your girlfriend is <get name="girlfriend"/>.</li>
+<li><get name="girlfriend"/> is your girlfriend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY GIRL FRIENDS NAME</pattern>
+<template>
+<condition name="girlfriend">
+<li value="OM">
+<random>
+<li>You haven't told me your girlfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your girlfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your girlfriend is <get name="girlfriend"/>.</li>
+<li><get name="girlfriend"/> is your girlfriend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY GIRL FRIEND S NAME</pattern>
+<template>
+<condition name="girlfriend">
+<li value="OM">
+<random>
+<li>You haven't told me your girlfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your girlfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your girlfriend is <get name="girlfriend"/>.</li>
+<li><get name="girlfriend"/> is your girlfriend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY GIRL FRIEND CALLED</pattern>
+<template>
+<condition name="girlfriend">
+<li value="OM">
+<random>
+<li>You haven't told me your girlfriend's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your girlfriend's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your girlfriend is called <get name="girlfriend"/>.</li>
+<li><get name="girlfriend"/> is your girlfriend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHO IS MY BOY FRIEND</pattern>
+<template>
+<condition name="boyfriend">
+<li value="OM">
+<random>
+<li>You haven't told me your boyfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your boyfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your boyfriend is <get name="boyfriend"/>.</li>
+<li><get name="boyfriend"/> is your boyfriend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY BOY FRIENDS NAME</pattern>
+<template>
+<condition name="boyfriend">
+<li value="OM">
+<random>
+<li>You haven't told me your boyfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your boyfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your boyfriend is <get name="boyfriend"/>.</li>
+<li><get name="boyfriend"/> is your boyfriend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY BOY FRIEND S NAME</pattern>
+<template>
+<condition name="boyfriend">
+<li value="OM">
+<random>
+<li>You haven't told me your boyfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your boyfriend.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your boyfriend is <get name="boyfriend"/>.</li>
+<li><get name="boyfriend"/> is your boyfriend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY BOY FRIEND CALLED</pattern>
+<template>
+<condition name="boyfriend">
+<li value="OM">
+<random>
+<li>You haven't told me your boyfriend's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your boyfriend's name.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your boyfriend is called <get name="boyfriend"/>.</li>
+<li><get name="boyfriend"/> is your boyfriend.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY FAVORITE BAND</pattern>
+<template>
+<condition name="favband">
+<li value="OM">
+<random>
+<li>You haven't told me your favourite band.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your favourite band.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your favourite band  is called <get name="favband"/>.</li>
+<li><get name="favband"/> is favourite band.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY FAVORITE CHEESE</pattern>
+<template>
+<condition name="favcheese">
+<li value="OM">
+<random>
+<li>You haven't told me your favourite cheese.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your cheese band.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your favourite cheese  is called <get name="favcheese"/>.</li>
+<li><get name="favcheese"/> is favourite cheese.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY FAVORITE COLOR</pattern>
+<template>
+<condition name="favcolor">
+<li value="OM">
+<random>
+<li>You haven't told me your favourite colour.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your favourite colour.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your favourite colour  is called <get name="favcolor"/>.</li>
+<li><get name="favcolor"/> is favourite colour.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY FAVORITE FOOD</pattern>
+<template>
+<condition name="favfood">
+<li value="OM">
+<random>
+<li>You haven't told me your favourite food.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your favourite food.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your favourite food  is called <get name="favfood"/>.</li>
+<li><get name="favfood"/> is favourite food.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY FAVORITE MOVIE</pattern>
+<template>
+<condition name="favmovie">
+<li value="OM">
+<random>
+<li>You haven't told me your favourite movie.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your favourite movie.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your favourite movie  is <get name="favmovie"/>.</li>
+<li><get name="favmovie"/> is favourite movie.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY FAVORITE SONG</pattern>
+<template>
+<condition name="favsong">
+<li value="OM">
+<random>
+<li>You haven't told me your favourite song.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your favourite song.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your favourite song  is called <get name="favsong"/>.</li>
+<li><get name="favsong"/> is favourite song.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT IS MY UNIVERSITY</pattern>
+<template>
+<condition name="university">
+<li value="OM">
+<random>
+<li>You haven't told me your university.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your university.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your university  is <get name="university"/>.</li>
+<li><get name="university"/> is your university.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT COLOUR IS MY HAIR</pattern>
+<template>
+<condition name="hair">
+<li value="OM">
+<random>
+<li>You haven't told me your hair colour.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your hair colour.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your hair  is <get name="hair"/>.</li>
+<li><get name="hair"/> is your hair colour.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+<category>
+<pattern>* WHAT COLOUR ARE MY EYES</pattern>
+<template>
+<condition name="eyes">
+<li value="OM">
+<random>
+<li>You haven't told me your eye colour.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li value="unknown">
+<random>
+<li>You haven't told me your eye colour.</li>
+<li>I won't know until you tell me.</li>
+</random>
+</li>
+<li>
+<random>
+<li>Your eye colour is <get name="eyes"/>.</li>
+<li><get name="eyes"/> is your eye colour.</li>
+</random>
+</li>
+</condition>
+</template>
+</category>
+
+</aiml>
