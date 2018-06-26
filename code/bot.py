@@ -463,12 +463,11 @@ async def on_message(message):
             message.content = ".help" #jankiest way of doing this but it works reliably
             await bot.process_commands(message)
             return
-        elif "help" not in message.content:
-            message.content = ".chatbot %s"%(message.content) #dont judge me
-            await bot.process_commands(message)
-            return
     try:
         await bot.process_commands(message)
+#    except discord.ext.commands.CommandNotFound:
+#        message.content = ".chatbot %s"%(message.content) #dont judge me
+#        await bot.process_commands(message)        
     except Exception as e:
         log.error("Error:\n\n", e)
         fmt = 'An error occurred while processing that request: ```py\n{}: {}\n```'
