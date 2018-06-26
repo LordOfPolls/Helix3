@@ -60,7 +60,7 @@ class Perms:
             return True
 
     def devOnly(ctx):
-        return ctx.message.author.id in ["174918559539920897"]
+        return ctx.message.author.id in ["174918559539920897", "269543926803726336"]
 
     def staffOnly(ctx):
         return ctx.message.author.id in ["174918559539920897", "269543926803726336"]
@@ -463,7 +463,7 @@ async def on_message(message):
             message.content = ".help" #jankiest way of doing this but it works reliably
             await bot.process_commands(message)
             return
-         elif "help" not in message.content:
+        elif "help" not in message.content:
             message.content = ".chatbot %s"%(message.content) #dont judge me
             await bot.process_commands(message)
             return
