@@ -69,7 +69,7 @@ class Chatbot:
             if self.aiml_kernel.getPredicate("name", sessionId) == "":
                 self.aiml_kernel.setPredicate("name", ctx.message.author.name, sessionId)
 
-            string = ctx.message.content.replace('<@%s>'%(self.bot.user.id), '').replace('chatbot', '')
+            string = ctx.message.content.replace(self.bot.user.mention, '').replace('chatbot', '')
             #string = message.content.replace('', '')
             aiml_response = self.aiml_kernel.respond(string, sessionId)
             await self.bot.send_message(ctx.message.channel, aiml_response)
