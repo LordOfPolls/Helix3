@@ -4,6 +4,8 @@ import code.get as get
 import random
 import aiml
 import logging
+import os
+import sys
 from discord.ext import commands
 
 
@@ -12,7 +14,7 @@ log = logging.getLogger(__name__)
 class Chatbot:
     def __init__(self, bot):
         self.bot = bot
-
+        sys.stdout = open(os.devnull, 'w')
         startup_filename = "std-startup.xml"
         self.aiml_kernel = aiml.Kernel()
         self.aiml_kernel.learn(startup_filename)
@@ -75,10 +77,9 @@ class Chatbot:
 
             string = message.content.replace("<@!{}>".format(self.bot.user.id), "")
             string = string.replace(self.bot.user.mention, '').replace('chatbot', '')
+            string = string.lstrip()
 
-            log.info(string)
             aiml_response = self.aiml_kernel.respond(string, sessionId)
-            log.info(aiml_response)
             await self.bot.send_message(message.channel, aiml_response)
         except Exception as e:
             fmt = 'An error occurred while processing that request: ```py\n{}: {}\n```'
