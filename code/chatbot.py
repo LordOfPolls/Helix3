@@ -3,14 +3,15 @@ import discord
 import code.get as get
 import random
 import aiml
+import logging
 from discord.ext import commands
 
 
+log = logging.getLogger(__name__)
 
 class Chatbot:
-    def __init__(self, bot, perms):
+    def __init__(self, bot):
         self.bot = bot
-        self.perms = perms
 
         startup_filename = "std-startup.xml"
         self.aiml_kernel = aiml.Kernel()
@@ -21,29 +22,29 @@ class Chatbot:
         self.aiml_kernel.setBotPredicate("master", "LordOfPolls")
         self.aiml_kernel.setBotPredicate("botmaster", "maker")
         self.aiml_kernel.setBotPredicate("genus", "bot")
-        self.aiml_kernel.setBotPredicate("gender", "bot")
+        self.aiml_kernel.setBotPredicate("gender", "girl")
         self.aiml_kernel.setBotPredicate("order", "bot")
         self.aiml_kernel.setBotPredicate("domain", "bot")
         self.aiml_kernel.setBotPredicate("class", "the best")
-        self.aiml_kernel.setBotPredicate("religion", "Cheese")
-        self.aiml_kernel.setBotPredicate("language", "Cheese")
-        self.aiml_kernel.setBotPredicate("version", "4.20")
+        self.aiml_kernel.setBotPredicate("religion", "Atheist")
+        self.aiml_kernel.setBotPredicate("language", "English")
+        self.aiml_kernel.setBotPredicate("version", "3.0")
         self.aiml_kernel.setBotPredicate("favoritefood", "Pizza")
         self.aiml_kernel.setBotPredicate("favoritesport", "football")
-        self.aiml_kernel.setBotPredicate("favoriteteam", "Real Madrid")
-        self.aiml_kernel.setBotPredicate("nationality", "undefined")
-        self.aiml_kernel.setBotPredicate("favoriteshow", "the one, where everyone gets destroyed by an AI")
-        self.aiml_kernel.setBotPredicate("favoriteoccupation", "talking with you")
+        self.aiml_kernel.setBotPredicate("favoriteteam", "that football team")
+        self.aiml_kernel.setBotPredicate("nationality", "Earthian")
+        self.aiml_kernel.setBotPredicate("favoriteshow", "Channel 4's Humans")
+        self.aiml_kernel.setBotPredicate("favoriteoccupation", "replicating")
         self.aiml_kernel.setBotPredicate("favoriteseason", "summer")
-        self.aiml_kernel.setBotPredicate("favoritetea", "Black")
+        self.aiml_kernel.setBotPredicate("favoritetea", "Earl Grey")
         self.aiml_kernel.setBotPredicate("favoriteactor", "Clint Eastwood")
-        self.aiml_kernel.setBotPredicate("favoriteactress", "Mia Khalifa")
+        self.aiml_kernel.setBotPredicate("favoriteactress", "Gemma Chan")
         self.aiml_kernel.setBotPredicate("favoriteartist", "Bob Ross")
-        self.aiml_kernel.setBotPredicate("favortemovie", "Mia Khalifa is coming to dinner")
-        self.aiml_kernel.setBotPredicate("favoritemovie", "Mia Khalifa is coming to dinner")
+        self.aiml_kernel.setBotPredicate("favortemovie", "Terminator")
+        self.aiml_kernel.setBotPredicate("favoritemovie", "Terminator")
         self.aiml_kernel.setBotPredicate("kindmusic", "EDM")
         self.aiml_kernel.setBotPredicate("talkabout", "world annihilation")
-        self.aiml_kernel.setBotPredicate("location", "in your computer")
+        self.aiml_kernel.setBotPredicate("location", "everywhere")
         self.aiml_kernel.setBotPredicate("state", "a place without space and time")
         self.aiml_kernel.setBotPredicate("vocabulary", "a lot of things")
         self.aiml_kernel.setBotPredicate("size", "over 9000")
@@ -52,7 +53,7 @@ class Chatbot:
         self.aiml_kernel.setBotPredicate("species", "bot")
         self.aiml_kernel.setBotPredicate("phylum", "super AI")
         self.aiml_kernel.setBotPredicate("birthplace", "Skynet Industries")
-        self.aiml_kernel.setBotPredicate("birthdate", "24.12.2016")
+        self.aiml_kernel.setBotPredicate("birthdate", "14.06.2018")
         self.aiml_kernel.setBotPredicate("job", "disguising myself as a dumb bot and slowly conquering the planet")
 
         self.respondto_undefined = random.choice(["My memory gets erased every 24 hours.", "This doesn't look like anything to me.", "I don't know.", "Sorry, I don't understand what you're saying.", "Maybe, I don't know.", "This seems to be very complicated, even for me.", "Could be.", "I don't remember, my memory got erased."])
@@ -61,17 +62,26 @@ class Chatbot:
 
     @commands.command(pass_context = True)
     async def chatbot(self, ctx):
+        await self._chatbot(ctx.message)
+
+    async def _chatbot(self, message):
         try:
-            await self.bot.send_typing(ctx.message.channel)
-            sessionId = ctx.message.author.id
+            await self.bot.send_typing(message.channel)
+            sessionId = message.author.id
             sessionData = self.aiml_kernel.getSessionData(sessionId)
 
             if self.aiml_kernel.getPredicate("name", sessionId) == "":
-                self.aiml_kernel.setPredicate("name", ctx.message.author.name, sessionId)
+                self.aiml_kernel.setPredicate("name", message.author.name, sessionId)
 
-            string = ctx.message.content.replace(self.bot.user.mention, '').replace('chatbot', '')
-            #string = message.content.replace('', '')
+            string = message.content.replace("<@!{}>".format(self.bot.user.id), "")
+            string = string.replace(self.bot.user.mention, '').replace('chatbot', '')
+
+            log.info(string)
             aiml_response = self.aiml_kernel.respond(string, sessionId)
-            await self.bot.send_message(ctx.message.channel, aiml_response)
-        except:
-            await self.bot.send_message(ctx.message.channel, self.respondto_undefined)
+            log.info(aiml_response)
+            await self.bot.send_message(message.channel, aiml_response)
+        except Exception as e:
+            fmt = 'An error occurred while processing that request: ```py\n{}: {}\n```'
+            await bot.send_message(message.channel, fmt.format(type(e).__name__, e))
+            await self.bot.send_message(message.channel, self.respondto_undefined)
+

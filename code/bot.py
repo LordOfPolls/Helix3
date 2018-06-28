@@ -50,7 +50,10 @@ def getPrefix(bot, message):
                 prefix = "<@{}> ".format(bot.user.id)
         return prefix
     except:
-        return "."
+        if message.split(" ")[0][0] == ".":
+            return "."
+        else:
+            return self.bot.user.mention
 
 class Perms:
     def donatorOnly(ctx):
@@ -144,7 +147,7 @@ class Core:
             self.bot.remove_cog("Chatbot")
             importlib.reload(code.chatbot)
             from code.chatbot import Chatbot
-            self.bot.add_cog(Chatbot(bot, self.perms))
+            self.bot.add_cog(Chatbot(bot))
             await self.bot.edit_message(msg, "Reloaded Chatbot :slight_smile:")            
         await self.bot.edit_message(msg, 'Reload complete :slight_smile:')
 
@@ -316,21 +319,23 @@ import code.moderation
 import code.fun
 import code.porn
 import code.utilities
-import code.chatbot
+import code.chatbot as chatbot
 from code.moderation import Moderation
 from code.music import Music
 from code.fun import Fun
 from code.porn import Porn
-from code.chatbot import Chatbot
 from code.utilities import Utilities
-
 
 log = logging.getLogger(__name__)
 # log.setLevel(logging.DEBUG)
 bot = commands.Bot(command_prefix=getPrefix, description='Helix3.0', pm_help=True)
+global Chatbot
+Chatbot = None
+
 def Helix():
     _setup_logging(log)
-
+    global Chatbot
+    Chatbot = chatbot.Chatbot(bot)
     log.debug("Loading cogs")
     bot.add_cog(Core(bot, Perms))
     bot.add_cog(Music(bot, Perms))
@@ -338,7 +343,7 @@ def Helix():
     bot.add_cog(Fun(bot, Perms))
     bot.add_cog(Porn(bot, Perms))
     bot.add_cog(Utilities(bot, Perms))
-    bot.add_cog(Chatbot(bot, Perms))
+    bot.add_cog(Chatbot)
     log.debug("Cogs loaded")
 
     if os.path.isfile("data/token.txt"):
@@ -465,16 +470,23 @@ async def on_message(message):
             return
     try:
         await bot.process_commands(message)
-#    except discord.ext.commands.CommandNotFound:
-#        message.content = ".chatbot %s"%(message.content) #dont judge me
-#        await bot.process_commands(message)        
     except Exception as e:
         log.error("Error:\n\n", e)
         fmt = 'An error occurred while processing that request: ```py\n{}: {}\n```'
         await bot.send_message(message.channel, fmt.format(type(e).__name__, e))
+
 @bot.event
 async def on_server_join(server):
     log.info("Joined server {}".format(server.name))
+
+@bot.event
+async def on_command_error(error, ctx):
+    if "not found" in str(error):
+        # ignore this, i know its janky but it works blame raptz for making errors stupid
+        global Chatbot
+        await Chatbot._chatbot(ctx.message)
+    else:
+        log.error(error)
 
 @bot.event
 async def on_member_join(ctx):
