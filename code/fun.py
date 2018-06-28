@@ -8,10 +8,10 @@ import bs4
 import aiohttp
 import random
 import requests
-
+import imgurpython
 from bs4 import BeautifulSoup
 from discord.ext import commands
-
+from imgurpython import ImgurClient
 from code.misc_savage import savage
 from code.misc_compliment import compliment
 from code.misc_pickup import pickup
@@ -100,8 +100,16 @@ class Fun:
                 js = await r.json()
                 em = discord.Embed(colour=16711680)
                 em.set_image(url=js['file'])
-
         await self.bot.say(js['file'])
+
+    @commands.command(pass_context = True)
+    async def meme(self):
+        """Sends a meme"""
+        client = ImgurClient("clientidhere", "clientsecrethere")
+        items = client.memes_subgallery()
+        item = random.choice(items)
+        await self.bot.say(item.title)
+        await self.bot.say(item.link)
 
     @commands.command(pass_context = True)
     async def compliment(self, ctx):
