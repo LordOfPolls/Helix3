@@ -15,6 +15,7 @@ class Chatbot:
     def __init__(self, bot):
         self.bot = bot
         sys.stdout = open(os.devnull, 'w')
+        sys.stderr = open(os.devnull, 'w')
         startup_filename = "std-startup.xml"
         self.aiml_kernel = aiml.Kernel()
         self.aiml_kernel.learn(startup_filename)
