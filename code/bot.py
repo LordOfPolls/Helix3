@@ -399,6 +399,11 @@ async def rankUpdate(message):
             score = math.floor(len(message.content.split(' '))/2)
             if score >= 100:
                 score = score/2
+            try:
+                if len(message.attatchments) > 0:
+                    score = 10
+            except:
+                pass
             if lvldata[message.author.id]['LastMSG'] == message.content:
                 score = 0
             else:
@@ -407,6 +412,7 @@ async def rankUpdate(message):
                 diff = int(time.time()) - int(lvldata[message.author.id]['LastMSGTime'])
                 if diff < 4:
                     score = 0
+
             lvldata[message.author.id]['LastMSGTime'] = int(time.time())
             log.debug('Awarding {} points'.format(score))
             lvldata[message.author.id]['XP'] = int(lvldata[message.author.id]['XP']) +score
