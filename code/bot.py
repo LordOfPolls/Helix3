@@ -334,9 +334,9 @@ Chatbot = None
 
 def Helix():
     _setup_logging(log)
+    log.debug("Loading cogs")
     global Chatbot
     Chatbot = chatbot.Chatbot(bot)
-    log.debug("Loading cogs")
     bot.add_cog(Core(bot, Perms))
     bot.add_cog(Music(bot, Perms))
     bot.add_cog(Moderation(bot, Perms))
