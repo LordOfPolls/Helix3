@@ -468,7 +468,41 @@ async def on_message(message):
 
 @bot.event
 async def on_server_join(server):
-    log.info("Joined server {}".format(server.name))
+    try:
+        log.info("Joined server {}".format(server.name))
+        channel = None
+        flag = False
+        if server.default_channel is None:
+            for c in server.channels:
+                if c.name == "general" and str(c.type) == "text":
+                    channel = c
+                    flag = True
+                if str(c.type) == "text" and not flag:
+                    channel = c
+
+        else:
+            channel = server.default_channel
+
+        msg = "Hi there, Im Helix**3.0**. Mention me to see what i can do"
+        em = discord.Embed(description=msg, colour=65280)
+        em.set_author(name='I just joined :3', icon_url=(bot.user.avatar_url))
+        try:
+            await bot.send_message(channel, embed=em)
+        except:
+            await bot.send_message(channel, msg)
+        circles = [':white_circle:', ':black_circle:', ':red_circle:', ':large_blue_circle:']
+
+        await bot.send_message(channel, "Give me a second to create some files for your server :thinking:")
+        msg = await bot.send_message(channel, ' '.join(circles))
+        for x in range(5):
+            random.shuffle(circles)
+            await bot.edit_message(msg, ' '.join(circles))
+            await asyncio.sleep(0.3)
+        await bot.edit_message(msg, "Done")
+
+    except Exception as e:
+        log.error(e)
+
 
 @bot.event
 async def on_command_error(error, ctx):
