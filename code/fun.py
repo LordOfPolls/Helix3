@@ -285,8 +285,10 @@ class Fun:
     @commands.command(pass_context = True)
     async def qr(self, ctx, *args):
         """Converts text to QR code"""
-        text = '{}'.format(' '.join(args)) #Not fully done yet, need to add embeds 
+        text = '{}'.format(' '.join(args)) 
         text = str(text)
+        text = text.replace(",", "/")
+        text = text.replace(" ", "_")
         url = ("https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={}".format(text))
         if text:
             em = discord.Embed(type="rich", colour=0x260068)
