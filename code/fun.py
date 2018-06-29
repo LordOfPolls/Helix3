@@ -227,6 +227,7 @@ class Fun:
         await self.bot.say(embed=em)'''
     @commands.command(pass_context = True)   
     async def eightball(self, ctx, message):
+        """Magic eightball"""
         channel = ctx.message.channel
         choice = "123"
         choice = random.choice(choice)
@@ -283,10 +284,14 @@ class Fun:
 
     @commands.command(pass_context = True)
     async def qr(self, ctx, *args):
+        """Converts text to QR code"""
         text = '{}'.format(' '.join(args)) #Not fully done yet, need to add embeds 
         text = str(text)
         url = ("https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={}".format(text))
         if text:
-            await self.bot.say(url)
+            em = discord.Embed(type="rich", colour=0x260068)
+            em.set_author(name="QR Code", icon_url=url)
+            em.set_image(url=url)
+            await self.bot.say(embed=em)
         else:
             await self.bot.say("No text inserted")
