@@ -1,13 +1,11 @@
+devs = ["174918559539920897",
+        "269543926803726336",
+        "245994206965792780",
+        "248790930541248512",
+        "142013432403722241"]
+staff = []
+donators = []
 class Perms:
-    def __init__(self):
-        self.devs = ["174918559539920897",
-                     "269543926803726336",
-                     "245994206965792780",
-                     "248790930541248512",
-                     "142013432403722241"]
-        self.staff = []
-        self.donators = []
-
     @staticmethod
     def donatorOnly(ctx):
         if message.ctx.author.id not in []:
@@ -17,11 +15,11 @@ class Perms:
 
     @staticmethod
     def devOnly(ctx):
-        return ctx.message.author.id in self.devs
+        return ctx.message.author.id in devs
 
     @staticmethod
     def staffOnly(ctx):
-        return ctx.message.author.id in self.staff
+        return ctx.message.author.id in staff
 
     @staticmethod
     def adminOnly(ctx):
