@@ -298,68 +298,6 @@ class Utilities:
                           icon_url="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/2000px-Google_%22G%22_Logo.svg.png")
             await self.bot.send_message(channel, embed=em)
 
-    @commands.command(pass_context=True, no_pm=True)
-    async def bug(self, ctx):
-        """Report a bug"""
-        message = ctx.message
-        channel = message.channel
-        server = message.server
-        author = message.author
-
-        bug = message.content.strip().replace("{}bug".format(await get.Prefix(server)), "")
-        #checking the user actually sent a bug report
-        if len(bug) < 5:
-            if bug == " ":
-                await self.bot.say("Please specify in detail what the issue is")
-            elif len(bug) < 2:
-                await self.bot.say("You didnt explain what the issue was")
-            else:
-                await self.bot.say("Please specify in detail what the issue is")
-            return
-
-        em = discord.Embed(description="Bug", colour=(random.randint(0, 16777215)))
-        em.set_author(name=author.display_name, icon_url=author.avatar_url)
-        em.add_field(name="BUG:", value=bug, inline=False)
-        em.add_field(name="SERVER:", value=str(server.name), inline=True)
-        em.add_field(name="USER:", value=str(author.display_name), inline=True)
-        em.add_field(name="INVITE:", value=str(await self.bot.create_invite(server, max_uses=1, xkcd=True)))
-        try:
-            await self.bot.send_message(self.bugChannel, embed=em)
-            await self.bot.say("Sent a bug report... A staff member may join this server to collect more information")
-        except:
-            await self.bot.say("Uh oh... sorry, i couldnt send the bug report...")
-            await self.bot.say("Use ``{}join`` to join my server and report the bug there".format(await get.Prefix(server)))
-
-    @commands.command(pass_context=True, no_pm=True)
-    async def feature(self, ctx):
-        """Suggest a feature that should be added to the bot"""
-        message = ctx.message
-        channel = message.channel
-        server = message.server
-        author = message.author
-
-        feature = message.content.strip().replace("{}feature".format(await get.Prefix(server)), "")
-        # checking the user actually sent a bug report
-        if len(feature) < 5:
-            if feature == " ":
-                await self.bot.say("Please specify in detail what the feature is")
-            elif len(feature) < 2:
-                await self.bot.say("You didnt explain what the feature was")
-            else:
-                await self.bot.say("Please specify in detail what the feature is")
-            return
-
-        em = discord.Embed(description="Feature", colour=(random.randint(0, 16777215)))
-        em.set_author(name=author.display_name, icon_url=author.avatar_url)
-        em.add_field(name="FEATURE:", value=feature, inline=False)
-        try:
-            await self.bot.send_message(self.featureChannel, embed=em)
-            await self.bot.say("Sent a feature suggestion")
-        except:
-            await self.bot.say("Uh oh... sorry, i couldnt send the feature...")
-            await self.bot.say(
-                "Use ``{}join`` to join my server and suggest the feature there".format(await get.Prefix(server)))
-
     @commands.command(pass_context = True)
     async def join(self, ctx):
         message = ctx.message
@@ -418,6 +356,8 @@ class Utilities:
 
     @commands.command(pass_context = True)
     async def donate(self, ctx):
+        await self.bot.say("Disabled")
+        return
         await self.bot.send_typing(ctx.message.channel)
         message = "Thanks for considering donating to us, it means a lot. The servers Helix use are expensive and we need all the money we can get."
         patreon = "https://www.patreon.com/HelixBot"
@@ -433,6 +373,8 @@ class Utilities:
 
     @commands.command(pass_context = True)
     async def updatelog(self, ctx):
+        await self.bot.say("Disabled")
+        return
         channel = ctx.message.channel
         command = 'git log --name-status HEAD^..HEAD'
         pipe = subprocess.Popen(command, stdout=PIPE, shell=True)
