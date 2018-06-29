@@ -5,25 +5,37 @@ import code.get as get
 import time
 
 class Perms:
-    def adminkOnly(ctx):
-        channel = ctx.message.channel
-        author = ctx.message.author 
-        perms = author.permissions_in(channel)
-        if perms.administrator or perms.kick_members or perms.manage_server:
-            return True
+    @staticmethod
+    def adminOnly(ctx):
+        perms = ctx.message.author.permissions_in(ctx.message.channel)
+        return perms.administrator
 
-    def adminbOnly(ctx):
-        channel = ctx.message.channel
-        author = ctx.message.author
-        perms = author.permissions_in(channel)
-        if perms.administrator or perms.ban_members or perms.manage_server:
-            return True
+    @staticmethod
+    def kickOnly(ctx):
+        perms = ctx.message.author.permissions_in(ctx.message.channel)
+        return perms.kick_members
+
+    @staticmethod
+    def banOnly(ctx):
+        perms = ctx.message.author.permissions_in(ctx.message.channel)
+        return perms.ban_members
+
+    @staticmethod
+    def manageMessagesOnly(ctx):
+        perms = ctx.message.author.permissions_in(ctx.message.channel)
+        return perms.manage_messages
+
+    @staticmethod
+    def manageServerOnly(ctx):
+        perms = ctx.message.author.permissions_in(ctx.message.channel)
+        return perms.manage_server
 
 class Moderation:
     def __init__(self, bot, perms):
         self.bot = bot
         self.perms = perms
 
+    @commands.check(Perms.manageMessagesOnly)
     @commands.command(pass_context=True, no_pm=True)
     async def clean(self, ctx):
         """Cleans up all the bot messages"""
@@ -55,7 +67,7 @@ class Moderation:
                                             before=message)
             await self.bot.say('<@{}>, I cleaned up {} message{}.'.format(author.id, len(deleted), 's' * bool(deleted)))
         
-
+    @commands.check(Perms.manageMessagesOnly)
     @commands.command(pass_context=True, no_pm=True)
     async def apocalypse(self, ctx):
         """Cleans the entire channel"""
@@ -110,7 +122,7 @@ class Moderation:
                 for user in user_mentions:
                     await self.bot.kick(user)
                     await self.bot.say("<@{}>, i kicked <@{}>.".format(ctx.message.author.id, user.id))
-                if not user_mentions:
+                ifred not user_mentions:
                     await self.bot.say("No user specified".format(ctx.message.author.id, user.id))
             except:
                 await self.bot.say("Oops, I don't have the permission for that.".format(ctx.message.author.id, user.id))
@@ -118,41 +130,21 @@ class Moderation:
             await self.bot.say("No you don't".format(ctx.message.author.id, user.id))'''
 
     @commands.command(pass_context = True, no_pm=True)
-    @commands.check(Perms.adminkOnly)
+    @commands.check(Perms.kickOnly)
     async def kick(self, ctx):
-        user = ctx.message.author
         user_mentions = list(map(ctx.message.server.get_member, ctx.message.raw_mentions))
         for user in user_mentions:    
             await self.bot.kick(user)
             await self.bot.say("<@{}>, i kicked <@{}>.".format(ctx.message.author.id, user.id))
         if not user_mentions:
-            await self.bot.say("No user specified")  
-    @kick.error
-    async def kick_error(self, ctx, error):
-       if isinstance(error, commands.CheckFailure):
-          await self.bot.send_message(channel, "Welp, no")
-        
+            await self.bot.say("No user specified")
 
     @commands.command(pass_context=True, no_pm=True)
-    async def ban(self, ctx):   #Right, dont mess with ban until command.check() in kick is fixed
-        """Bans a mentioned user"""
-        author = ctx.message.author
-        user = ctx.message.author
-        channel = ctx.message.channel
-        perms = author.permissions_in(channel)
-        if perms.administrator or perms.manage_server or perms.ban_members:
-            Usage = True
-        else:
-            Usage = False
+    @commands.check(Perms.banOnly)
+    async def ban(self, ctx):
         user_mentions = list(map(ctx.message.server.get_member, ctx.message.raw_mentions))
-        if Usage is True:
-            try:
-                for user in user_mentions:
-                    await self.bot.ban(user)
-                    await self.bot.say("<@{}>, I banned <@{}>.".format(ctx.message.author.id, user.id))
-                if not user_mentions:
-                    await self.bot.say("No user specified".format(ctx.message.author.id, user.id))
-            except:
-                await self.bot.say("Oops! I don't have the permission for that.".format(ctx.message.author.id, user.id))
-        else:
-            await self.bot.say("Fuck off".format(ctx.message.author.id, user.id))
+        for user in user_mentions:
+            await self.bot.ban(user)
+            await self.bot.say("<@{}>, I banned <@{}>.".format(ctx.message.author.id, user.id))
+        if not user_mentions:
+            await self.bot.say("No user specified")

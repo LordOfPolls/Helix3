@@ -491,6 +491,8 @@ async def on_command_error(error, ctx):
         # ignore this, i know its janky but it works blame raptz for making errors stupid
         global Chatbot
         await Chatbot._chatbot(ctx.message)
+    elif "check" in str(error):
+        await bot.send_message(ctx.message.channel, "{}. Sorry you don't have the permissions to use ``{}``".format(ctx.message.author.mention, ctx.command))
     else:
         log.error(error)
 
