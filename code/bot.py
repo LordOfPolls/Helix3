@@ -65,6 +65,7 @@ class Core:
         self.session = aiohttp.ClientSession(loop=self.bot.loop)
 
     @commands.command(pass_context=True, no_pm=False)
+    @commands.check(Perms.devOnly)
     async def setpic(self, ctx):
         if ctx.message.attachments:
             pic = ctx.message.attachments[0]['url']
@@ -202,26 +203,22 @@ class Core:
         channel = message.channel
         author = message.author
         server = message.server
-        perm = author.permissions_in(channel)
-        if perm.administrator:
-            usage = True
-        else:
-            usage = False
+        usage = Perms.adminOnly(ctx)
 
-        msg = message.content.strip()
+        msg = ctx.message.content.strip()
         msg = msg.lower()
         prefix = getPrefix(bot, message)
         msg = msg.replace("rank ", "")
         msg = msg.replace(prefix, "")
         if msg == "about" or msg == "help":
-            await self.bot.send_message(channel, "Ranking is simple, you get XP for messaging. The more you message the higher your level")
-            await self.bot.send_message(channel, "The bigger your message the more XP you earn, however if you spam, you wont earn anything")
+            await self.bot.send_message(ctx.message.channel, "Ranking is simple, you get XP for messaging. The more you message the higher your level")
+            await self.bot.send_message(ctx.message.channel, "The bigger your message the more XP you earn, however if you spam, you wont earn anything")
             return
         if msg == "enable":
             if usage == True:
                 pass
             else:
-                await self.bot.send_message(channel, "You need to be server admin to disable commands")
+                await self.bot.send_message(ctx.message.channel, "You need to be server admin to disable commands")
                 return
             f = open('level_blck.txt', 'r+')
             filedata = f.read()
@@ -232,13 +229,13 @@ class Core:
             f = open('level_blck.txt', 'w')
             f.write(newdata)
             f.close()
-            await self.bot.send_message(channel, "**Ranking enabled**")
+            await self.bot.send_message(ctx.message.channel, "**Ranking enabled**")
             return
         if msg == "disable":
             if usage == True:
                 pass
             else:
-                await self.bot.send_message(channel, "You need to be server admin to disable commands")
+                await self.bot.send_message(ctx.message.channel, "You need to be server admin to disable commands")
                 return
             try:
                 f = open('level_blck.txt', 'a')
@@ -247,12 +244,12 @@ class Core:
             sid = str(server.id) + " "
             f.write(sid)
             f.close()
-            await self.bot.send_message(channel, "**Ranking disabled**")
+            await self.bot.send_message(ctx.message.channel, "**Ranking disabled**")
             return
         else:
             if os.path.isfile('level_blck.txt'):
                 if str(server.id) in open('level_blck.txt').read():
-                    await self.bot.send_message(channel, "Leveling has been disabled in this server by your admin")
+                    await self.bot.send_message(ctx.message.channel, "Leveling has been disabled in this server by your admin")
                     return
             with open("data/" + message.server.id + '/ranking.json', 'r+') as f:
                 lvldb = json.load(f)
