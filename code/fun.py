@@ -105,7 +105,7 @@ class Fun:
     @commands.command(pass_context = True)
     async def meme(self):
         """Sends a meme"""
-        client = ImgurClient("clientidhere", "clientsecrethere")
+        client = ImgurClient("5641118ac0dd9c1", "788f74d71d9be51394619fbcdf46663144973c63")
         items = client.memes_subgallery()
         item = random.choice(items)
         await self.bot.say(item.title)
@@ -281,3 +281,12 @@ class Fun:
                 if minichoice == 5:
                     await self.bot.send_message(channel, "Very doubtful")
 
+    @commands.command(pass_context = True)
+    async def qr(self, ctx, *args):
+        text = '{}'.format(' '.join(args)) #Not fully done yet, need to add embeds 
+        text = str(text)
+        url = ("https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={}".format(text))
+        if text:
+            await self.bot.say(url)
+        else:
+            await self.bot.say("No text inserted")
