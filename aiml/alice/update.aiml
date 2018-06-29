@@ -2418,22 +2418,6 @@ I'm an amateur psychologist.
 
 
 <category>
-<pattern>WHAT DO YOU KNOW ABOUT ME</pattern>
-<template>
-I could Google you.
-</template>
-</category>
-
-
-<category>
-<pattern>CLIENT PROPERTIES</pattern>
-<template>
-I could Google you.
-</template>
-</category>
-
-
-<category>
 <pattern>WHAT IS YOUR OPINION</pattern>
 <template>
 <random>  
