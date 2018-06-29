@@ -13,6 +13,8 @@ from PIL import Image
 import discord
 import youtube_dl
 from discord.ext import commands
+import code.Perms as Perms
+Perms = Perms.Perms
 
 # loads the bot's logging stuff
 log = logging.getLogger(__name__)
@@ -181,10 +183,9 @@ class Music:
     """Voice related commands.
     Works in multiple servers at once.
     """
-    def __init__(self, bot, perms):
+    def __init__(self, bot):
         self.bot = bot  # the bot
         self.voice_states = {}  # all the active voice states
-        self.perms = perms  # deprecated. do an ignore
         self.opts = {
             'format': 'bestaudio/best',
             'extractaudio': True,

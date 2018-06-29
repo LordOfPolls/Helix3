@@ -1,0 +1,49 @@
+class Perms:
+    def __init__(self):
+        self.devs = ["174918559539920897",
+                     "269543926803726336",
+                     "245994206965792780",
+                     "248790930541248512",
+                     "142013432403722241"]
+        self.staff = []
+        self.donators = []
+
+    @staticmethod
+    def donatorOnly(ctx):
+        if message.ctx.author.id not in []:
+            return staffOnly(ctx)  # staff override
+        else:
+            return True
+
+    @staticmethod
+    def devOnly(ctx):
+        return ctx.message.author.id in self.devs
+
+    @staticmethod
+    def staffOnly(ctx):
+        return ctx.message.author.id in self.staff
+
+    @staticmethod
+    def adminOnly(ctx):
+        perms = ctx.message.author.permissions_in(ctx.message.channel)
+        return perms.administrator
+
+    @staticmethod
+    def kickOnly(ctx):
+        perms = ctx.message.author.permissions_in(ctx.message.channel)
+        return perms.kick_members
+
+    @staticmethod
+    def banOnly(ctx):
+        perms = ctx.message.author.permissions_in(ctx.message.channel)
+        return perms.ban_members
+
+    @staticmethod
+    def manageMessagesOnly(ctx):
+        perms = ctx.message.author.permissions_in(ctx.message.channel)
+        return perms.manage_messages
+
+    @staticmethod
+    def manageServerOnly(ctx):
+        perms = ctx.message.author.permissions_in(ctx.message.channel)
+        return perms.manage_server

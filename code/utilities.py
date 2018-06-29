@@ -13,13 +13,14 @@ from lxml import etree
 from discord.ext import commands
 from subprocess import Popen, PIPE
 import code.get as get
+import code.Perms as Perms
+Perms = Perms.Perms
 
 class Utilities:
-    def __init__(self, bot, perms):
+    def __init__(self, bot):
         self.bot = bot
         self.bugChannel = discord.Object("457131257898205185")
         self.featureChannel = discord.Object("457131283680591873")
-        self.perms = perms
 
     async def get_google_entries(self, query):
         params = {

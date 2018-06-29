@@ -16,14 +16,14 @@ from code.misc_savage import savage
 from code.misc_compliment import compliment
 from code.misc_pickup import pickup
 from code.misc_shitpost import shitpost
-
+import code.Perms as Perms
+Perms = Perms.Perms
 
 
 class Fun:
-    def __init__(self, bot, perms):
+    def __init__(self, bot):
         self.bot = bot
-        self.perms = perms
-        
+
     @commands.command(pass_context=True)
     async def echo(self, ctx, *args):
         """echos whatever you say"""

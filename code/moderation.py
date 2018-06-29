@@ -3,37 +3,13 @@ import discord
 from discord.ext import commands
 import code.get as get
 import time
+import code.Perms as Perms
+Perms = Perms.Perms
 
-class Perms:
-    @staticmethod
-    def adminOnly(ctx):
-        perms = ctx.message.author.permissions_in(ctx.message.channel)
-        return perms.administrator
-
-    @staticmethod
-    def kickOnly(ctx):
-        perms = ctx.message.author.permissions_in(ctx.message.channel)
-        return perms.kick_members
-
-    @staticmethod
-    def banOnly(ctx):
-        perms = ctx.message.author.permissions_in(ctx.message.channel)
-        return perms.ban_members
-
-    @staticmethod
-    def manageMessagesOnly(ctx):
-        perms = ctx.message.author.permissions_in(ctx.message.channel)
-        return perms.manage_messages
-
-    @staticmethod
-    def manageServerOnly(ctx):
-        perms = ctx.message.author.permissions_in(ctx.message.channel)
-        return perms.manage_server
 
 class Moderation:
-    def __init__(self, bot, perms):
+    def __init__(self, bot):
         self.bot = bot
-        self.perms = perms
 
     @commands.check(Perms.manageMessagesOnly)
     @commands.command(pass_context=True, no_pm=True)

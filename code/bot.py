@@ -8,10 +8,12 @@ import sys
 import aiohttp
 from discord.ext import commands
 import pprint
+import code.Perms as Perms
 import logging
 import json
 import math
 import time
+Perms = Perms.Perms
 
 def _setup_logging(log):
     if len(logging.getLogger(__package__).handlers) > 1:
@@ -55,24 +57,11 @@ def getPrefix(bot, message):
         else:
             return self.bot.user.mention
 
-class Perms:
-    def donatorOnly(ctx):
-        if message.ctx.author.id not in []:
-            return staffOnly(ctx)  # staff override
-        else:
-            return True
-
-    def devOnly(ctx):
-        return ctx.message.author.id in ["174918559539920897", "269543926803726336"]
-
-    def staffOnly(ctx):
-        return ctx.message.author.id in ["174918559539920897", "269543926803726336"]
 
 
 class Core:
-    def __init__(self, bot, perms):
+    def __init__(self, bot):
         self.bot = bot
-        self.perms = perms
         self.session = aiohttp.ClientSession(loop=self.bot.loop)
 
     @commands.command(pass_context=True, no_pm=False)
@@ -107,7 +96,7 @@ class Core:
             self.bot.remove_cog("Music")
             importlib.reload(code.music)
             from code.music import Music
-            self.bot.add_cog(Music(bot, self.perms))
+            self.bot.add_cog(Music(bot))
             await self.bot.edit_message(msg, "Reloaded Music :slight_smile:")
         if "mod" in messageX or not select:
             log.debug("Reloading Moderation")
@@ -115,7 +104,7 @@ class Core:
             self.bot.remove_cog("Moderation")
             importlib.reload(code.moderation)
             from code.moderation import Moderation
-            self.bot.add_cog(Moderation(bot, self.perms))
+            self.bot.add_cog(Moderation(bot))
             await self.bot.edit_message(msg, "Reloaded Moderation :slight_smile:")
         if "fun" in messageX or not select:
             log.debug("Reloading Fun")
@@ -123,7 +112,7 @@ class Core:
             self.bot.remove_cog("Fun")
             importlib.reload(code.fun)
             from code.fun import Fun
-            self.bot.add_cog(Fun(bot, self.perms))
+            self.bot.add_cog(Fun(bot))
             await self.bot.edit_message(msg, "Reloaded Fun :slight_smile:")
         if "porn" in messageX or not select:
             log.debug("Reloading Porn")
@@ -131,7 +120,7 @@ class Core:
             self.bot.remove_cog("Porn")
             importlib.reload(code.porn)
             from code.porn import Porn
-            self.bot.add_cog(Porn(bot, self.perms))
+            self.bot.add_cog(Porn(bot))
             await self.bot.edit_message(msg, "Reloaded Porn :slight_smile:")
         if "utilities" in messageX or not select:
             log.debug("Reloading Utilites")
@@ -139,7 +128,7 @@ class Core:
             self.bot.remove_cog("Utilities")
             importlib.reload(code.utilities)
             from code.utilities import Utilities
-            self.bot.add_cog(Utilities(bot, self.perms))
+            self.bot.add_cog(Utilities(bot))
             await self.bot.edit_message(msg, "Reloaded Utilities :slight_smile:")
         if "chatbot" in messageX or not select:
             log.debug("Reloading Chatbot")
@@ -327,7 +316,6 @@ from code.porn import Porn
 from code.utilities import Utilities
 
 log = logging.getLogger(__name__)
-# log.setLevel(logging.DEBUG)
 bot = commands.Bot(command_prefix=getPrefix, description='Helix3.0', pm_help=True)
 global Chatbot
 Chatbot = None
@@ -337,12 +325,12 @@ def Helix():
     log.debug("Loading cogs")
     global Chatbot
     Chatbot = chatbot.Chatbot(bot)
-    bot.add_cog(Core(bot, Perms))
-    bot.add_cog(Music(bot, Perms))
-    bot.add_cog(Moderation(bot, Perms))
-    bot.add_cog(Fun(bot, Perms))
-    bot.add_cog(Porn(bot, Perms))
-    bot.add_cog(Utilities(bot, Perms))
+    bot.add_cog(Core(bot))
+    bot.add_cog(Music(bot))
+    bot.add_cog(Moderation(bot))
+    bot.add_cog(Fun(bot))
+    bot.add_cog(Porn(bot))
+    bot.add_cog(Utilities(bot))
     bot.add_cog(Chatbot)
     log.debug("Cogs loaded")
 
