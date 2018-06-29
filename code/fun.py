@@ -105,7 +105,7 @@ class Fun:
     @commands.command(pass_context = True)
     async def meme(self):
         """Sends a meme"""
-        client = ImgurClient("5641118ac0dd9c1", "788f74d71d9be51394619fbcdf46663144973c63")
+        client = ImgurClient("clientid", "clientsecret")
         items = client.memes_subgallery()
         item = random.choice(items)
         await self.bot.say(item.title)
