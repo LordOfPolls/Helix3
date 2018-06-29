@@ -290,7 +290,7 @@ class Fun:
         url = ("https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={}".format(text))
         if text:
             em = discord.Embed(type="rich", colour=0x260068)
-            em.set_author(name="QR Code", icon_url=url)
+            em.set_author(name="QR Code")
             em.set_image(url=url)
             await self.bot.say(embed=em)
         else:
