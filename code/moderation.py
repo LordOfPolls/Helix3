@@ -81,30 +81,6 @@ class Moderation:
         else:
             return Response("Fuck off")
 
-    '''@commands.command(pass_context=True, no_pm=True)
-    async def kick(self, ctx):
-        """Kicks a mentioned user"""
-        author = ctx.message.author
-        user = ctx.message.author
-        channel = ctx.message.channel
-        perms = author.permissions_in(channel)
-        if perms.administrator or perms.manage_server or perms.kick_members:
-            Usage = True
-        else:
-            Usage = False
-        user_mentions = list(map(ctx.message.server.get_member, ctx.message.raw_mentions))
-        if Usage is True:
-            try:
-                for user in user_mentions:
-                    await self.bot.kick(user)
-                    await self.bot.say("<@{}>, i kicked <@{}>.".format(ctx.message.author.id, user.id))
-                ifred not user_mentions:
-                    await self.bot.say("No user specified".format(ctx.message.author.id, user.id))
-            except:
-                await self.bot.say("Oops, I don't have the permission for that.".format(ctx.message.author.id, user.id))
-        else:
-            await self.bot.say("No you don't".format(ctx.message.author.id, user.id))'''
-
     @commands.command(pass_context = True, no_pm=True)
     @commands.check(Perms.kickOnly)
     async def kick(self, ctx):
