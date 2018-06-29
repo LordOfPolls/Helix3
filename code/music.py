@@ -519,7 +519,7 @@ class Music:
             await self.bot.say('But im not playing anything ;-;')
             return
         voter = ctx.message.author
-        if voter.id in ['174918559539920897']: # placeholder dev override until perms system finished
+        if Perms.devOnly(ctx):
             await self.bot.say('``Dev Override``:track_next:')
             state.skip()
         elif voter == state.current.invoker:
