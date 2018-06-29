@@ -7,6 +7,7 @@ import logging
 import os
 import sys
 from discord.ext import commands
+from code.bot import getPrefix
 import code.Perms as Perms
 Perms = Perms.Perms
 
@@ -23,7 +24,9 @@ class Chatbot:
         self.aiml_kernel.learn(startup_filename)
         self.aiml_kernel.respond("LOAD AIML B") #learns from previous interactions (in theory)
 
+        #bot predicates, add more here
         self.aiml_kernel.setBotPredicate("name", "Helix")
+        self.aiml_kernel.setBotPredicate("age", "18")
         self.aiml_kernel.setBotPredicate("master", "LordOfPolls")
         self.aiml_kernel.setBotPredicate("botmaster", "maker")
         self.aiml_kernel.setBotPredicate("genus", "bot")
@@ -79,7 +82,7 @@ class Chatbot:
                 self.aiml_kernel.setPredicate("name", message.author.name, sessionId)
 
             string = message.content.replace("<@!{}>".format(self.bot.user.id), "")
-            string = string.replace(self.bot.user.mention, '').replace('chatbot', '')
+            string = string.replace(self.bot.user.mention, '').replace('chatbot', '').replace(getPrefix(self.bot, ctx.message), '')
             string = string.lstrip()
 
             aiml_response = self.aiml_kernel.respond(string, sessionId)
