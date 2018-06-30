@@ -299,6 +299,37 @@ class Music:
         # add the ytdl task to the event loop in a seperate thread to avoid blocking
         return await loop.run_in_executor(self.thread_pool, functools.partial(ytdl.extract_info, *args, **kwargs))
 
+    async def on_voice_state_update(self, before, after):
+        """Event to handle voice changes"""
+        if after is None:
+            return
+        if after.server.id not in self.voice_states:
+            return
+        state = self.get_voice_state(after.server)
+        if not state.is_playing():
+            return
+        if before.mute != after.mute:
+            if after.mute and state.is_playing:
+                log.debug("I was muted in {}".format(after.server.name))
+                state.player.pause()
+                await self.bot.send_message(state.current.channel, "... Whyd you mute me :cry:")
+            elif not after.mute and state.is_playing:
+                log.debug("I was unmuted in {}".format(after.server.name))
+                state.player.resume()
+                await self.bot.send_message(state.current.channel, "YAY! i can sing again :notes:")
+        try:
+            membersInChannel = sum(1 for m in state.voice.channel.voice_members if not(
+                m.deaf or m.self_deaf or m.bot))
+        except:
+            return
+        if membersInChannel == 0 and state.is_playing:
+            log.debug("Bot alone in {}, pausing".format(state.current.server))
+            await self.bot.send_message(state.current.channel, "Im all alone, with noone here besiiiiide me")
+            state.player.pause()
+        if membersInChannel >= 1 and state.is_playing:
+            await asyncio.sleep(2) # gives the user time to join
+            state.player.resume()
+
     @staticmethod
     async def parseSong(data, ctx, msg):
         """For the sake of better code this is a function. It takes all the data out of youtube_dl's extracted
@@ -544,47 +575,6 @@ class Music:
     async def np(self, ctx):
         """Shows info about the currently played song."""
         state = self.get_voice_state(ctx.message.server)
-        song = state.current
-        if state.current is None:
-            await self.bot.say('Not playing anything.')
-        else:
-            thumbnail = state.player.url
-            thumbnail = thumbnail.replace("www.", "")
-            thumbnail = thumbnail.replace("https://youtube.com/watch?v=", "http://img.youtube.com/vi/")
-            thumbnail = thumbnail + "/mqdefault.jpg"
-            em = discord.Embed(description="**"+state.current.title+"**",
-                               colour=song.colour)
-            em.set_footer(text=song.webURL)
-            em.set_image(url=song.thumbnail)
-            await self.bot.send_message(ctx.message.channel, embed=em)
+        await state.announceNowPlaying()
 
-    async def on_voice_state_update(self, before, after):
-        """Event to handle voice changes"""
-        if after is None:
-            return
-        if after.server.id not in self.voice_states:
-            return
-        state = self.get_voice_state(after.server)
-        if not state.is_playing():
-            return
-        if before.mute != after.mute:
-            if after.mute and state.is_playing:
-                log.debug("I was muted in {}".format(after.server.name))
-                state.player.pause()
-                await self.bot.send_message(state.current.channel, "... Whyd you mute me :cry:")
-            elif not after.mute and state.is_playing:
-                log.debug("I was unmuted in {}".format(after.server.name))
-                state.player.resume()
-                await self.bot.send_message(state.current.channel, "YAY! i can sing again :notes:")
-        try:
-            membersInChannel = sum(1 for m in state.voice.channel.voice_members if not(
-                m.deaf or m.self_deaf or m.bot))
-        except:
-            return
-        if membersInChannel == 0 and state.is_playing:
-            log.debug("Bot alone in {}, pausing".format(state.current.server))
-            await self.bot.send_message(state.current.channel, "Im all alone, with noone here besiiiiide me")
-            state.player.pause()
-        if membersInChannel >= 1 and state.is_playing:
-            await asyncio.sleep(2) # gives the user time to join
-            state.player.resume()
+
