@@ -369,8 +369,6 @@ def Helix():
         log.fatal("Bot runtime failed")
         log.fatal(e)
 
-
-
 async def rankUpdate(message):
     try:
         if message.author == bot.user or message.author == None or message.author.bot:
@@ -426,10 +424,6 @@ async def rankUpdate(message):
         file.truncate()
     # except Exception as e:
     #     log.error("Error in rankUpdate:\n{}".format(e))
-
-
-
-
 
 @bot.event
 async def on_ready():
