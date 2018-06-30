@@ -451,7 +451,7 @@ byp = bot
 async def on_command(bot, ctx):
     try:
         log.info('{}|{}| "{}"'.format(ctx.message.server.name, ctx.message.author.display_name, ctx.message.content.replace(getPrefix(bot, ctx.message), "")))
-        if "help" in ctx.message.content:
+        if str(ctx.command) == "help":
             await byp.send_message(ctx.message.channel, ":mailbox_with_mail:")
     except:
         log.info('DM|{}| "{}"'.format(ctx.message.author.display_name, ctx.message.content))
