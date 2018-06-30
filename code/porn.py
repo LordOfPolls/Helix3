@@ -7,9 +7,12 @@ import code.get as get
 import aiohttp
 import random
 import rule34
+import logging
 
 import code.Perms as Perms
 Perms = Perms.Perms
+
+log = logging.getLogger(__name__)
 
 class Porn:
     def __init__(self, bot):
@@ -85,11 +88,10 @@ class Rule34:
         Argument: tags (string)"""
         XML = None
         with aiohttp.Timeout(10):
-            async with self.session.get(self._urlGen(tags)) as XMLData:
+            async with self.session.get(self._urlGen(tags=tags, PID=0)) as XMLData:
                 XMLData = await XMLData.read()
                 XMLData = ET.XML(XMLData)
                 XML = self.ParseXML(XMLData)
-            print(int(XML['posts']['@count']))
         return int(XML['posts']['@count'])
 
     async def _getImageURLS(self, tags):
@@ -98,9 +100,13 @@ class Rule34:
         Argument: tags (string)"""
         if await self._totalImages(tags) != 0:
             imgList = []
-            tempURL = self._urlGen(tags=tags)
+            if tags == "random":
+                tempURL = self._urlGen(PID=random.randint(0, 1000))
+
+            else:
+                tempURL = self._urlGen(tags=tags)
             with aiohttp.Timeout(10):
-                async with self.session.get(self._urlGen(tags)) as XML:
+                async with self.session.get(tempURL) as XML:
                     XML = await XML.read()
                     XML = self.ParseXML(ET.XML(XML))
                     for data in XML['posts']['post']:
