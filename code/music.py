@@ -6,6 +6,7 @@ import pprint
 import random
 import re
 import time
+import os
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor
 from PIL import Image
@@ -49,13 +50,14 @@ class Song:
         self.lastnp = np  # the last now playing message
 
         ### getting dominant colors
-        urllib.request.urlretrieve(self.thumbnail, "thumbnail.png") 
+        urllib.request.urlretrieve(self.thumbnail, "{}thumbnail.png".format(self.server.id))
         image = Image.open("thumbnail.png")
 
         image = image.resize((150, 150))
         result = image.convert('P', palette=Image.ADAPTIVE, colors=1)
         result.putalpha(1)
         colors = result.getcolors(150*150)
+        os.unlink("{}thumbnail.png".format(self.server.id))
 
         for i, col in colors:
             rgb = col[:3]
