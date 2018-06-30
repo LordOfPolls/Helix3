@@ -413,7 +413,6 @@ async def rankUpdate(message):
                     score = 0
 
             lvldata[message.author.id]['LastMSGTime'] = int(time.time())
-            log.debug('Awarding {} points'.format(score))
             lvldata[message.author.id]['XP'] = int(lvldata[message.author.id]['XP']) +score
             if lvldata[message.author.id]['XP'] >= int(lvldata[message.author.id]['Level']) *40:
                 lvldata[message.author.id]['Level'] = str(int(lvldata[message.author.id]['Level'])+1)
