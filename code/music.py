@@ -51,7 +51,7 @@ class Song:
 
         ### getting dominant colors
         urllib.request.urlretrieve(self.thumbnail, "{}thumbnail.png".format(self.server.id))
-        image = Image.open("thumbnail.png")
+        image = Image.open("{}thumbnail.png".format(self.server.id))
 
         image = image.resize((150, 150))
         result = image.convert('P', palette=Image.ADAPTIVE, colors=1)
