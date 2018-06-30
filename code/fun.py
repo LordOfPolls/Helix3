@@ -107,7 +107,7 @@ class Fun:
         """Sends a meme"""
         client = ImgurClient("clientid", "clientsecret")
         items = client.memes_subgallery()
-        item = random.choice(items)
+        item = random.choice(items)     
         await self.bot.say(item.title)
         await self.bot.say(item.link)
 
@@ -210,21 +210,7 @@ class Fun:
         text = text.replace(" ", "_")
         url = ("http://romtypo.com/helix/doge/{}".format(text))
         await self.bot.say(url)
-
-    '''@commands.command(pass_context = True)
-    async def eightball(self, ctx, *args):
-        await self.bot.send_typing(ctx.message.channel)
-        msg = '{}'.format(' '.join(args))
-        randomint = random.randint(1, 20)
-        answer = "https://www.indra.com/8ball/animatedgifs/c{}.gif".format(randomint)
-        answer = str(answer)
-        em = discord.Embed(type="rich", description=msg, colour=0x260068)
-        em.set_author(name="Magic Eightball", icon_url=answer)
-        if len(msg) < 1:
-            em.set_image(url=answer)
-        else:
-            em.set_thumbnail(url=answer)
-        await self.bot.say(embed=em)'''
+        
     @commands.command(pass_context = True)   
     async def eightball(self, ctx, message):
         """Magic eightball"""
@@ -295,5 +281,18 @@ class Fun:
             em.set_author(name="QR Code")
             em.set_image(url=url)
             await self.bot.say(embed=em)
+            await self.bot.delete_message(ctx.message)
         else:
             await self.bot.say("No text inserted")
+            await self.bot.delete_message(ctx.message)
+
+    @commands.command(pass_context = True)
+    async def quote(self, ctx):
+        """ A random quote"""
+        async with aiohttp.get('https://talaikis.com/api/quotes/random/') as r:
+            if r.status == 200:
+                js = await r.json()
+                em = discord.Embed(colour=16711680)
+                em.set_author(name=js['quote'])
+                em.set_footer(text=js['author'])
+                await self.bot.say(embed=em)
