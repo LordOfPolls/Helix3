@@ -80,6 +80,8 @@ class Chatbot:
 
     @commands.command(pass_context = True)
     async def chatbot(self, ctx):
+        """Allows you to talk to helix
+        Can also be invoked by mentioning helix"""
         await self._chatbot(ctx.message)
 
     async def _chatbot(self, message):

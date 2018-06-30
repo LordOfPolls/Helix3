@@ -300,6 +300,7 @@ class Utilities:
 
     @commands.command(pass_context = True)
     async def join(self, ctx):
+        """Invite links for the bot"""
         message = ctx.message
         author = message.author
         em = discord.Embed(title="Info", colour=(random.randint(0, 16777215)))
@@ -311,6 +312,7 @@ class Utilities:
 
     @commands.command(pass_context = True)
     async def info(self,ctx):
+        """Info on the bot"""
         await self.bot.send_typing(ctx.message.channel)
         global startTime
         try:
@@ -373,6 +375,7 @@ class Utilities:
 
     @commands.command(pass_context = True)
     async def updatelog(self, ctx):
+        """The bots update log"""
         await self.bot.say("Disabled")
         return
         channel = ctx.message.channel

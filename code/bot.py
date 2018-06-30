@@ -67,6 +67,7 @@ class Core:
     @commands.command(pass_context=True, no_pm=False)
     @commands.check(Perms.devOnly)
     async def setpic(self, ctx):
+        """Set the bots picture"""
         if ctx.message.attachments:
             pic = ctx.message.attachments[0]['url']
         else:

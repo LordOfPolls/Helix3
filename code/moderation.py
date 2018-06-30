@@ -84,6 +84,7 @@ class Moderation:
     @commands.command(pass_context = True, no_pm=True)
     @commands.check(Perms.kickOnly)
     async def kick(self, ctx):
+        """Kick a user"""
         user_mentions = list(map(ctx.message.server.get_member, ctx.message.raw_mentions))
         for user in user_mentions:    
             await self.bot.kick(user)
@@ -94,6 +95,7 @@ class Moderation:
     @commands.command(pass_context=True, no_pm=True)
     @commands.check(Perms.banOnly)
     async def ban(self, ctx):
+        """Ban a user"""
         user_mentions = list(map(ctx.message.server.get_member, ctx.message.raw_mentions))
         for user in user_mentions:
             await self.bot.ban(user)

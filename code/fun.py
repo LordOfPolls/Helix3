@@ -201,15 +201,6 @@ class Fun:
         else:
             insult = (("%s, thou art %s %s, %s %s") % (mention, article, adjective1, adjective2, noun))
         await self.bot.say(insult)
-
-    @commands.command(pass_context = True)
-    async def doge(self, ctx, *args):
-        text = '{}'.format(' '.join(args))
-        text = str(text)
-        text = text.replace(",", "/")
-        text = text.replace(" ", "_")
-        url = ("http://romtypo.com/helix/doge/{}".format(text))
-        await self.bot.say(url)
         
     @commands.command(pass_context = True)   
     async def eightball(self, ctx, message):
