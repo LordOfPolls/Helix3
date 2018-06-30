@@ -153,6 +153,8 @@ class Core:
             pass
         try:
             self.bot.remove_cog("Chatbot") # lets the chatbot save its "brain" before shutdown
+        except:
+            pass
         await self.bot.logout()
         await self.bot.close()
         exit()
