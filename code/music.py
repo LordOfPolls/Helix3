@@ -500,6 +500,90 @@ class Music:
             pass
 
     @commands.command(pass_context=True, no_pm=True)
+    async def search(self, ctx):
+        state = self.get_voice_state(ctx.message.server)
+        if state.voice is None:  # auto spawn if not already in a vc
+            success = await ctx.invoke(self.spawn)
+            if not success:
+                # how on earth did this happen
+                return
+        replyMSG = await self.bot.send_message(ctx.message.channel, "Searching... :thinking:")
+        await self.bot.send_typing(ctx.message.channel)
+        search = ctx.message.content.lower()
+        search = search.replace(".", "")
+        search = search.replace("<@{}>".format(self.bot.user.id), "") # mention
+        search = search.replace("<@!{}>".format(self.bot.user.id), "") # mention w/ nickname
+        search = search.replace("search", "")
+        search = search.strip()
+        search = "ytsearch5:" + search
+        if search == "":
+            await self.bot.edit_message(replyMSG, "Please enter a search query :confused:")
+            return
+        try:
+            info = await self.extract_info(search, download=False, process=True)
+        except Exception as e:
+            await self.bot.edit_message(replyMSG, "I couldnt find anything due to an error: {}".format(e))
+            return
+
+        await self.bot.delete_message(replyMSG)
+        replyMSG = await self.bot.send_message(ctx.message.channel, "Found something ^-^")
+        for e in info['entries']:
+            song = await self.parseSong(e, ctx, state.lastaddedmsg)
+            em = discord.Embed(
+                description="{}/{}: **{}**".format(info['entries'].index(e) + 1, len(info['entries']), song.title),
+                color=song.colour
+            )
+            if song.is_live is None:
+                sec = int(song.length)
+                mins = sec / 60
+                sec -= 60 * mins
+                em.add_field(name="Duration:", value=str(time.strftime("%M:%S", time.gmtime(int(song.length)))),
+                             inline=True)
+            if song.rating is not None:
+                em.add_field(name="Rating:", value="%.2f" % song.rating, inline=True)
+            em.set_image(url=song.thumbnail)
+            em.set_footer(text="y|n|exit")
+            await self.bot.edit_message(replyMSG, embed=em)
+            reply = None
+            reply = await self.bot.wait_for_message(timeout=20, author=ctx.message.author, channel=ctx.message.channel)
+            try:
+                if not reply:
+                    await self.bot.delete_message(replyMSG)
+                    await self.bot.send_message(ctx.message.channel, "Why ask for a song if you dont want one :cry:")
+                    return
+                elif reply.content.lower().startswith('y'):
+                    await self.bot.delete_message(replyMSG)
+                    await self.bot.delete_message(reply)
+                    await self.bot.send_message(ctx.message.channel, "{} searched for {}".format(ctx.message.author.display_name, search.replace("ytsearch5:", "")))
+                    await self.addsong(song)
+                    return
+                elif reply.content.lower().startswith('<@') or reply.content.lower().startswith("."):
+                    await self.bot.delete_message(replyMSG)
+                    await self.bot.say("Aborting search")
+                    return
+                elif reply.content.lower().startswith('n'):
+                    await self.bot.delete_message(reply)
+                elif reply.content.lower().startswith('exit'):
+                    await self.bot.delete_message(reply)
+                    await self.bot.delete_message(replyMSG)
+                    return
+            except Exception as e:
+                log.error(e)
+                await self.bot.delete_message(replyMSG)
+
+        await self.bot.delete_message(replyMSG)
+        await self.bot.send_message(ctx.message.channel, "Sorry :cry:")
+
+
+
+
+
+
+
+
+
+
+    @commands.command(pass_context=True, no_pm=True)
     async def clear(self, ctx):
         """Clears the current playlist"""
         state = self.get_voice_state(ctx.message.server)
@@ -511,7 +595,6 @@ class Music:
                 await self.bot.send_message(ctx.message.channel, "There are no songs to clear :confused:")
         else:
             await self.bot.send_message(ctx.message.channel, "But im not playing anything :confused:")
-
 
     @commands.command(pass_context=True, no_pm=True)
     async def playlist(self, ctx):
