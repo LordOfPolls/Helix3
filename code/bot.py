@@ -145,8 +145,11 @@ class Core:
     @commands.check(Perms.devOnly)
     async def shutdown(self, ctx):
         """Shuts down Helix"""
+        log.info("Shutdown command issued by {}".format(ctx.message.author.name))
         goodbyeStrings = ["ok :cry:", "please dont make me go back to the darkness :cold_sweat:", "but i dont want to :cry:", "if you say so :unamused:", "please dont, im scared of darkness, dont do this to me :scream:", "dont send me back there, its so cold and dark :sob:"]
         await self.bot.send_message(ctx.message.channel, random.choice(goodbyeStrings))
+        global shutdown
+        shutdown = True
         try:
             self.bot.remove_cog("Music") # the player HATES this line being called for pretty obvious reasons
         except:
@@ -155,7 +158,12 @@ class Core:
             self.bot.remove_cog("Chatbot") # lets the chatbot save its "brain" before shutdown
         except:
             pass
+
         await self.bot.logout()
+        await self.bot.loop.stop()
+
+        await self.bot.loop.close()
+        await self.bot.wait_closed()
         await self.bot.close()
         exit()
 
@@ -319,7 +327,9 @@ from code.utilities import Utilities
 log = logging.getLogger(__name__)
 bot = commands.Bot(command_prefix=getPrefix, description='Helix3.0', pm_help=True)
 global Chatbot
+global shutdown
 Chatbot = None
+shutdown = False
 
 def Helix():
     _setup_logging(log)
@@ -532,17 +542,23 @@ async def on_member_join(ctx):
         await byp.send_message(member.server, "{}, one of my staff members, joined your server".format(member.display_name))
 
 async def statusCycle(suspend):
-    gameList = ['music somewhere', 'with code', 'something, idk', 'some really messed up stuff', 'with /help', 'with commands', 'porn', 'VIDEO GAMES', 'Overwatch', 'MLG Pro Simulator', 'stuff', 'with too many servers', 'with life of my dev', 'dicks', 'Civ 5', 'Civ 6', 'Besiege', 'with code', 'Mass Effect', 'bangin tunes', 'with children', 'with jews', 'on a new server', '^-^', 'with something', 'the violin', 'For cuddles', 'the harmonica', 'With dicks', 'With a gas chamber', 'Nazi simulator 2K17', 'Rodina', 'Gas bills', 'Memes', 'Darkness', 'With some burnt toast', 'Jepus Crist', 'With my devs nipples', 'SOMeBODY ONCE TOLD ME', 'With Hitlers dick', 'In The Street', 'With Knives', 'ɐᴉlɐɹʇsn∀ uI', 'Shrek Is Love', 'Shrek Is Life', 'Illegal Poker', 'ACROSS THE UNIVERRRRSE', 'Kickball', 'Mah Jam', 'R2-D2 On TV', 'with fire', 'at being a real bot', 'with your fragile little mind']
-    num = 0
-    while True:
-        if not suspend and bot.is_closed == False:
-            await bot.change_presence(game=discord.Game(name=gameList[num]))
-            num += 1
-            if num > len(gameList)-1:
-                num = 0
-        if suspend:
-            log.fatal("wut")
-            num = 1
-        await asyncio.sleep(8)
-        if bot.is_closed:
-            break
+    try:
+        gameList = ['music somewhere', 'with code', 'something, idk', 'some really messed up stuff', 'with /help', 'with commands', 'porn', 'VIDEO GAMES', 'Overwatch', 'MLG Pro Simulator', 'stuff', 'with too many servers', 'with life of my dev', 'dicks', 'Civ 5', 'Civ 6', 'Besiege', 'with code', 'Mass Effect', 'bangin tunes', 'with children', 'with jews', 'on a new server', '^-^', 'with something', 'the violin', 'For cuddles', 'the harmonica', 'With dicks', 'With a gas chamber', 'Nazi simulator 2K17', 'Rodina', 'Gas bills', 'Memes', 'Darkness', 'With some burnt toast', 'Jepus Crist', 'With my devs nipples', 'SOMeBODY ONCE TOLD ME', 'With Hitlers dick', 'In The Street', 'With Knives', 'ɐᴉlɐɹʇsn∀ uI', 'Shrek Is Love', 'Shrek Is Life', 'Illegal Poker', 'ACROSS THE UNIVERRRRSE', 'Kickball', 'Mah Jam', 'R2-D2 On TV', 'with fire', 'at being a real bot', 'with your fragile little mind']
+        num = 0
+        global shutdown
+        while True and not shutdown:
+            if not suspend and bot.is_closed == False:
+                await bot.change_presence(game=discord.Game(name=gameList[num]))
+                num += 1
+                if num > len(gameList)-1:
+                    num = 0
+            if suspend:
+                log.fatal("wut")
+                num = 1
+            if not shutdown:
+                await asyncio.sleep(8)
+            if bot.is_closed:
+                break
+    except:
+        bot.loop.close()
+        return

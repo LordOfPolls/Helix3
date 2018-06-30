@@ -21,8 +21,13 @@ class Chatbot:
         startup_filename = "std-startup.xml"
         self.aiml_kernel = aiml.Kernel()
         if os.path.isfile("aiml/brain.brn"):
-            self.aiml_kernel.bootstrap("aiml/brain.brn")
-        else:
+            try:
+                self.aiml_kernel.bootstrap("aiml/brain.brn")
+            except:
+                log.error("aiml brain corrupt, deleting")
+                self.aiml_kernel.resetBrain()
+                os.unlink("aiml/brain.brn")
+        if not os.path.isfile("aiml/brain.brn"): # DO NOT MAKE THIS AN ELSE
             self.aiml_kernel.learn(startup_filename)
             self.aiml_kernel.respond("LOAD AIML B") #learns from previous interactions (in theory)
             self.aiml_kernel.setBotPredicate("name", "Helix")
