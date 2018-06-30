@@ -70,7 +70,7 @@ class Chatbot:
         self.aiml_kernel.saveBrain("aiml/brain.brn")
         self.unloading = False
         self.respondto_undefined = random.choice(["My memory gets erased every 24 hours.", "This doesn't look like anything to me.", "I don't know.", "Sorry, I don't understand what you're saying.", "Maybe, I don't know.", "This seems to be very complicated, even for me.", "Could be.", "I don't remember, my memory got erased."])
-        self.toolong_message = random.choice(["Are you trying to break me?", "Where the hell did you get that from?", "I'm too lazy to even read that.",  "Ok, so?", "What are you trying to say?"])
+        self.toolong_message = random.choice(["This doesn't look like anything to me.", "Are you trying to break me?", "Where the hell did you get that from?", "I'm too lazy to even read that.",  "Ok, so?", "What are you trying to say?"])
 
     def __unload(self):
         log.info("AIML unloading...")
@@ -80,8 +80,6 @@ class Chatbot:
 
     @commands.command(pass_context = True)
     async def chatbot(self, ctx):
-        """Allows you to talk to helix
-        Can also be invoked by mentioning helix"""
         await self._chatbot(ctx.message)
 
     async def _chatbot(self, message):
@@ -101,8 +99,12 @@ class Chatbot:
             string = string.replace(self.bot.user.mention, '').replace('chatbot', '').replace(getPrefix(self.bot, message), '')
             string = string.lstrip()
 
-            aiml_response = self.aiml_kernel.respond(string, sessionId)
-            await self.bot.send_message(message.channel, aiml_response)
+            if (len(message.content) > 150):
+                await self.bot.send_message(message.channel, self.toolong_message)
+            else:
+                aiml_response = self.aiml_kernel.respond(string, sessionId)
+                await self.bot.send_message(message.channel, aiml_response)
+            
         except Exception as e:
             fmt = 'An error occurred while processing that request: ```py\n{}: {}\n```'
             await self.bot.send_message(message.channel, fmt.format(type(e).__name__, e))
