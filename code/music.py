@@ -501,6 +501,7 @@ class Music:
 
     @commands.command(pass_context=True, no_pm=True)
     async def search(self, ctx):
+        """Searches for songs matching your search"""
         state = self.get_voice_state(ctx.message.server)
         if state.voice is None:  # auto spawn if not already in a vc
             success = await ctx.invoke(self.spawn)
@@ -573,14 +574,6 @@ class Music:
 
         await self.bot.delete_message(replyMSG)
         await self.bot.send_message(ctx.message.channel, "Sorry :cry:")
-
-
-
-
-
-
-
-
 
 
     @commands.command(pass_context=True, no_pm=True)
