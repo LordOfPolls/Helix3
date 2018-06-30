@@ -151,6 +151,8 @@ class Core:
             self.bot.remove_cog("Music") # the player HATES this line being called for pretty obvious reasons
         except:
             pass
+        try:
+            self.bot.remove_cog("Chatbot") # lets the chatbot save its "brain" before shutdown
         await self.bot.logout()
         await self.bot.close()
         exit()

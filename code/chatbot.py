@@ -17,6 +17,7 @@ log = logging.getLogger(__name__)
 class Chatbot:
     def __init__(self, bot):
         self.bot = bot
+        log.info("AIML loading...")
         startup_filename = "std-startup.xml"
         self.aiml_kernel = aiml.Kernel()
         if os.path.isfile("aiml/brain.brn"):
@@ -62,16 +63,25 @@ class Chatbot:
             self.aiml_kernel.setBotPredicate("birthdate", "14.06.2018")
             self.aiml_kernel.setBotPredicate("job", "disguising myself as a dumb bot and slowly conquering the planet")
         self.aiml_kernel.saveBrain("aiml/brain.brn")
-
+        self.unloading = False
         self.respondto_undefined = random.choice(["My memory gets erased every 24 hours.", "This doesn't look like anything to me.", "I don't know.", "Sorry, I don't understand what you're saying.", "Maybe, I don't know.", "This seems to be very complicated, even for me.", "Could be.", "I don't remember, my memory got erased."])
         self.toolong_message = random.choice(["Are you trying to break me?", "Where the hell did you get that from?", "I'm too lazy to even read that.",  "Ok, so?", "What are you trying to say?"])
 
+    def __unload(self):
+        log.info("AIML unloading...")
+        self.unloading = True
+        # updates the brain file, in case the bot learned something ¯\_(ツ)_/¯ idk
+        self.aiml_kernel.saveBrain("aiml/brain.brn")
 
     @commands.command(pass_context = True)
     async def chatbot(self, ctx):
         await self._chatbot(ctx.message)
 
     async def _chatbot(self, message):
+        if self.unloading:
+            # thanks to the wonders of async, theres a chance the cog could be in use DURING reload
+            # this simple statement helps prevent that being a problem
+            return
         try:
             await self.bot.send_typing(message.channel)
             sessionId = message.author.id
