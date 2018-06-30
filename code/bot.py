@@ -529,7 +529,7 @@ async def on_command_error(error, ctx):
     else:
         log.error(error)
         fmt = 'An error occurred while processing that request: ```py\n{}: {}\n```'
-        await bot.send_message(ctx.message.channel, fmt.format(type(e).__name__, e))
+        await bot.send_message(ctx.message.channel, fmt.format(type(error).__name__, error))
 
 @bot.event
 async def on_member_join(ctx):
