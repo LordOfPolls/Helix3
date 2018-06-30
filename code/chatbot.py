@@ -96,7 +96,7 @@ class Chatbot:
                 self.aiml_kernel.setPredicate("name", message.author.name, sessionId)
 
             string = message.content.replace("<@!{}>".format(self.bot.user.id), "")
-            string = string.replace(self.bot.user.mention, '').replace('chatbot', '').replace(getPrefix(self.bot, ctx.message), '')
+            string = string.replace(self.bot.user.mention, '').replace('chatbot', '').replace(getPrefix(self.bot, message), '')
             string = string.lstrip()
 
             aiml_response = self.aiml_kernel.respond(string, sessionId)
