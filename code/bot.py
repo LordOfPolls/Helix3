@@ -329,7 +329,10 @@ class Core:
     async def prefix(self, ctx):
         """Change the prefix in your server"""
         prefix = ctx.message.content
-        prefix = prefix.replace("{}prefix ".format(getPrefix(self.bot, ctx.message)), "")
+        prefix = prefix.replace("{}prefix ".format(getPrefix(self.bot, ctx.message)), "").strip().lstrip()
+        if len(ctx.message.content) <= len(getPrefix(self.bot, ctx.message)+"prefix") + 1:
+            await self.bot.send_message(ctx.message.channel, "Please specify a prefix")
+            return
         settings.Set().new(server=ctx.message.server, prefix=prefix)
         await self.bot.send_message(ctx.message.channel, "Your server's prefix has been set to ``{}``".format(prefix))
 
