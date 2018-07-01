@@ -89,9 +89,9 @@ class Settings:
             dir = "data/{}".format(server.id)
             if not os.path.exists(dir):
                 os.mkdir(dir)
+            dir += "/settings.json"
             if not os.path.isfile(dir):
                 self._setupJson(server)
-            dir += "/settings.json"
             r = open(dir, 'r')
             data = json.load(r)
             r.close()
@@ -106,13 +106,13 @@ class Settings:
             data = self._loadJson(server)
             if prefix != ".":
                 data['prefix'] = prefix
-            elif announcement is not None:
+            if announcement is not None:
                 data['announcement'] = announcement
-            elif welcome is not None:
+            if welcome is not None:
                 data['welcome'] = welcome
-            elif blacklist is not None:
+            if blacklist is not None:
                 data['blacklist'] = blacklist
-            elif modlog is not None:
+            if modlog is not None:
                 data['modlog'] = modlog
             r = open("data/{}/settings.json".format(server.id), "w")
             r.seek(0)

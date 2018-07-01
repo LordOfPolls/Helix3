@@ -336,6 +336,18 @@ class Core:
         settings.Set().new(server=ctx.message.server, prefix=prefix)
         await self.bot.send_message(ctx.message.channel, "Your server's prefix has been set to ``{}``".format(prefix))
 
+    @commands.command(pass_context=True, no_pm=True)
+    @commands.check(Perms.adminOnly)
+    async def setannounce(self, ctx):
+        """Change the announcement channel"""
+        channel = ctx.message.channel_mentions
+        if len(channel) != 1:
+            await self.bot.send_message(ctx.message.channel, "Please mention a channel, e.g. {}".format(ctx.message.channel.mention))
+            return
+        channel = channel[0]
+        settings.Set().new(ctx.message.server, announcement=channel.id)
+        await self.bot.send_message(ctx.message.channel, "Announcement channel set to {}".format(channel.mention))
+
 import code.music
 import code.moderation
 import code.fun
@@ -484,18 +496,18 @@ async def on_message(message):
         await rankUpdate(message)
     except:
         pass
-    if bot.user.mentioned_in(message):
+    if bot.user.mentioned_in(message) and not message.mention_everyone:
         if len(message.content) == 21 or len(message.content) == 22:
             log.info("{} mentioned me, I guess they want some help".format(message.author.name))
             message.content = ".help" #jankiest way of doing this but it works reliably
             await bot.process_commands(message)
             return
-    try:
-        await bot.process_commands(message)
-    except Exception as e:
-        log.error("Error:\n\n", e)
-        fmt = 'An error occurred while processing that request: ```py\n{}: {}\n```'
-        await bot.send_message(message.channel, fmt.format(type(e).__name__, e))
+    # try:
+    await bot.process_commands(message)
+    # except Exception as e:
+    #     log.error("Error:\n\n", e)
+    #     fmt = 'An error occurred while processing that request: ```py\n{}: {}\n```'
+    #     await bot.send_message(message.channel, fmt.format(type(e).__name__, e))
 
 @bot.event
 async def on_server_join(server):
@@ -535,18 +547,18 @@ async def on_server_join(server):
         log.error(e)
 
 
-@bot.event
-async def on_command_error(error, ctx):
-    if "not found" in str(error):
-        # ignore this, i know its janky but it works blame raptz for making errors stupid
-        global Chatbot
-        await Chatbot._chatbot(ctx.message)
-    elif "check" in str(error):
-        await bot.send_message(ctx.message.channel, "{}. Sorry you don't have the permissions to use ``{}``".format(ctx.message.author.mention, ctx.command))
-    else:
-        log.error(error)
-        fmt = 'An error occurred while processing that request: ```py\n{}: {}\n```'
-        await bot.send_message(ctx.message.channel, fmt.format(type(error).__name__, error))
+# @bot.event
+# async def on_command_error(error, ctx):
+#     if "not found" in str(error):
+#         # ignore this, i know its janky but it works blame raptz for making errors stupid
+#         global Chatbot
+#         await Chatbot._chatbot(ctx.message)
+#     elif "check" in str(error):
+#         await bot.send_message(ctx.message.channel, "{}. Sorry you don't have the permissions to use ``{}``".format(ctx.message.author.mention, ctx.command))
+#     else:
+#         log.error(error)
+#         fmt = 'An error occurred while processing that request: ```py\n{}: {}\n```'
+#         await bot.send_message(ctx.message.channel, fmt.format(type(error).__name__, error))
 
 @bot.event
 async def on_member_join(ctx):

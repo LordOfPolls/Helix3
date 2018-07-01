@@ -1,10 +1,16 @@
 import asyncio
+import discord
 import time
+import logging
 
 from discord.ext import commands
 import code.Perms as Perms
+import code.settingsBackend as settings
 
+
+settings = settings.Settings()
 Perms = Perms.Perms
+log = logging.getLogger(__name__)
 
 
 class Moderation:
@@ -102,3 +108,32 @@ class Moderation:
             await self.bot.say("<@{}>, I banned <@{}>.".format(ctx.message.author.id, user.id))
         if not user_mentions:
             await self.bot.say("No user specified")
+
+    @commands.command(pass_context=True, no_pm=True)
+    @commands.check(Perms.manageServerOnly)
+    async def announce(self, ctx):
+        await self.bot.send_typing(ctx.message.channel)
+        try:
+            await self.bot.send_typing(settings.Get().announcementChannel(ctx.message.server))
+        except:
+            await self.bot.send_message(ctx.message.channel, "Announcement channel not set, please set it with setannounce")
+            return
+        message = ctx.message.content.replace(settings.Get().prefix(ctx.message.server), "")
+        message = message.replace("<@{}> ".format(self.bot.user.id), "")
+        message = message.replace("<@!{}> ".format(self.bot.user.id), "")
+        message = message.replace("announce ", "")
+        if ctx.message.mention_everyone:
+            msg = await self.bot.send_message(settings.Get().announcementChannel(ctx.message.server), "@everyone")
+            await self.bot.delete_message(msg)
+            message = message.replace("@everyone", "").strip()
+        em = discord.Embed(description=message, color=65280)
+        em.set_footer(text=ctx.message.author.display_name, icon_url=ctx.message.author.avatar_url)
+        try:
+            await self.bot.send_message(settings.Get().announcementChannel(ctx.message.server), embed=em)
+            if ctx.message.channel.id == settings.Get().announcementChannel(ctx.message.server).id:
+                await self.bot.delete_message(ctx.message)
+            else:
+                await self.bot.send_message(ctx.message.channel, "Sent :thumbsup:")
+        except Exception as e:
+            log.error(e)
+            await self.bot.send_message(ctx.message.channel, "Announcement channel not set, please set it with setannounce")
