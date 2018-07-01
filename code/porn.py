@@ -35,14 +35,20 @@ class Porn:
             tags = tags.replace(", ", ",").replace(" ", "_")
             tags = tags.replace(",", " ")  # ignore this
             imgList = await Rule34(self.bot)._getImageURLS(tags=tags)
-
-            if imgList != None:
-                em = discord.Embed(color=16738740)
-                em.set_image(url=random.choice(imgList))
-            else:
+            try:
+                url = random.choice(imgList)
+                if imgList != None:
+                    em = discord.Embed(color=16738740)
+                    em.set_image(url=url)
+                else:
+                    em = discord.Embed(description="No results", color=16711680)
+                if ".gif" in url:
+                    await self.bot.send_message(ctx.message.channel, url)
+                else:
+                    await self.bot.send_message(ctx.message.channel, embed=em)
+            except:
                 em = discord.Embed(description="No results", color=16711680)
-            await self.bot.send_message(ctx.message.channel, embed=em)
-
+                await self.bot.send_message(ctx.message.channel, embed=em)
 
 
 
@@ -79,7 +85,7 @@ class Rule34:
         if deleted == True:
             URL += "&deleted=show"
         if PID != None or limit != None or id != None or tags != None:
-            return URL
+            return URL + "&rating:explicit"
         else:
             return None
 
@@ -98,20 +104,45 @@ class Rule34:
         """Returns a list of all images/webms/gifs it can find
         This function can take a LONG time to finish with huge tags. E.G. in my testing "gay" took 200seconds to finish (740 pages)
         Argument: tags (string)"""
-        if await self._totalImages(tags) != 0:
+        num =await self._totalImages(tags)
+        if num != 0:
             imgList = []
             if tags == "random":
                 tempURL = self._urlGen(PID=random.randint(0, 1000))
 
             else:
-                tempURL = self._urlGen(tags=tags)
-            with aiohttp.Timeout(10):
-                async with self.session.get(tempURL) as XML:
-                    XML = await XML.read()
-                    XML = self.ParseXML(ET.XML(XML))
-                    for data in XML['posts']['post']:
-                        imgList.append(str(data['@file_url']))
+                if num <= 300:
+                    pid = 0
+                else:
+                    pid = int(num/100)-3
+                    if pid > 1000:
+                        #  rule34 wont return results for a pid over 1000
+                        pid = 1000
+                    pid = random.randint(1, pid)
+                tempURL = self._urlGen(tags=tags, PID=pid)
+            try:
+                with aiohttp.Timeout(10):
+                    async with self.session.get(tempURL) as XML:
+                        XML = await XML.read()
+                        XML = self.ParseXML(ET.XML(XML))
+                        for data in XML['posts']['post']:
+                            try:
+                                if not ".webm" in data['@file_url']:
+                                    imgList.append(str(data['@file_url']))
+                            except Exception as e:
+                                log.error(e)
+                                await self.session.close()
+                                if len(imgList) >= 1:
+                                    return imgList
+                                else:
+                                    return None
+            except Exception as e:
+                log.error(e)
+                await self.session.close()
+                return None
             await self.session.close()
+            if len(imgList) == 0:
+                return None
             return imgList
         else:
             await self.session.close()
@@ -120,9 +151,6 @@ class Rule34:
     def ParseXML(self, rawXML):
         """Parses entities as well as attributes following this XML-to-JSON "specification"
         Using https://stackoverflow.com/a/10077069"""
-        if "Search error: API limited due to abuse" in str(rawXML.items()):
-            raise Rule34_Error('Rule34 rejected your request due to "API abuse"')
-
         d = {rawXML.tag: {} if rawXML.attrib else None}
         children = list(rawXML)
         if children:
