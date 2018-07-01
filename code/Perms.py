@@ -19,10 +19,12 @@ class Perms:
 
     @staticmethod
     def staffOnly(ctx):
-        return ctx.message.author.id in staff
+        return ctx.message.author.id in staff or ctx.message.author.id in devs
 
     @staticmethod
     def adminOnly(ctx):
+        if Perms.staffOnly(ctx):
+            return True
         perms = ctx.message.author.permissions_in(ctx.message.channel)
         return perms.administrator
 
