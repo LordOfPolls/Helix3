@@ -41,20 +41,13 @@ def _setup_logging(log):
 
 
 def getPrefix(bot, message):
-    try:
-        prefix = settings.Get().prefix(server=message.server)
-        if not prefix in message.content:
-            if "<@{}>".format(bot.user.id) in message.content:
-                prefix = "<@{}> ".format(bot.user.id)
-            elif "<@!{}>".format(bot.user.id) in message.content:
-                prefix = "<@!{}> ".format(bot.user.id)
-        return prefix
-    except Exception as e:
-        log.error(e)
-        if message.split(" ")[0][0] == ".":
-            return "."
-        else:
-            return self.bot.user.mention
+    prefix = settings.Get().prefix(server=message.server)
+    if not prefix in message.content:
+        if "<@{}>".format(bot.user.id) in message.content:
+            prefix = "<@{}> ".format(bot.user.id)
+        elif "<@!{}>".format(bot.user.id) in message.content:
+            prefix = "<@!{}> ".format(bot.user.id)
+    return prefix
 
 
 
@@ -502,12 +495,12 @@ async def on_message(message):
             message.content = ".help" #jankiest way of doing this but it works reliably
             await bot.process_commands(message)
             return
-    # try:
-    await bot.process_commands(message)
-    # except Exception as e:
-    #     log.error("Error:\n\n", e)
-    #     fmt = 'An error occurred while processing that request: ```py\n{}: {}\n```'
-    #     await bot.send_message(message.channel, fmt.format(type(e).__name__, e))
+    try:
+        await bot.process_commands(message)
+    except Exception as e:
+        log.error("Error:\n\n", e)
+        fmt = 'An error occurred while processing that request: ```py\n{}: {}\n```'
+        await bot.send_message(message.channel, fmt.format(type(e).__name__, e))
 
 @bot.event
 async def on_server_join(server):
