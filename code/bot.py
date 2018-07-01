@@ -570,7 +570,12 @@ async def on_member_join(ctx):
         log.info("Staff Join| {} joined {}".format(member.display_name, member.server.name))
         await byp.send_message(member.server, "{}, one of my staff members, joined your server".format(member.display_name))
 
-    await byp.send_message(member, "wassup bitches")
+    await byp.send_message(member, "Hello, I'm HelixBot 3.0. Thanks for joining our Server. \n"
+                                   "By using this server you automatically agree to allow us using your data in order "
+                                   "to provide you the services coming with this bot. \n\n"
+                                   "The data we collect are: \n"
+                                   "* Lorem \n"
+                                   "* Ipsum")
 
 async def statusCycle(suspend):
     try:
