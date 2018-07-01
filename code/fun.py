@@ -283,7 +283,7 @@ class Fun:
         async with aiohttp.get('https://talaikis.com/api/quotes/random/') as r:
             if r.status == 200:
                 js = await r.json()
-                em = discord.Embed(colour=16711680)
+                em = discord.Embed(colour=0x7EC0EE)
                 em.set_author(name=js['quote'])
                 em.set_footer(text=js['author'])
                 await self.bot.say(embed=em)
