@@ -23,8 +23,9 @@ class Chatbot:
         if os.path.isfile("aiml/brain.brn"):
             try:
                 self.aiml_kernel.bootstrap("aiml/brain.brn")
-            except:
+            except Exception as e:
                 log.error("aiml brain corrupt, deleting")
+                log.error(e)
                 self.aiml_kernel.resetBrain()
                 os.unlink("aiml/brain.brn")
         if not os.path.isfile("aiml/brain.brn"): # DO NOT MAKE THIS AN ELSE
