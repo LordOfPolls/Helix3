@@ -472,11 +472,11 @@ async def on_ready():
 byp = bot
 @bot.event
 async def on_command(bot, ctx):
+    if "help" in str(ctx.command):
+        await byp.send_message(ctx.message.channel, ":mailbox_with_mail:")
     try:
         log.info('{}|{}| "{}"'.format(ctx.message.server.name, ctx.message.author.display_name, ctx.message.content.replace(getPrefix(bot, ctx.message), "")))
-        if str(ctx.command) == "help":
-            await byp.send_message(ctx.message.channel, ":mailbox_with_mail:")
-    except:
+    except Exception as e:
         log.info('DM|{}| "{}"'.format(ctx.message.author.display_name, ctx.message.content))
 
 
