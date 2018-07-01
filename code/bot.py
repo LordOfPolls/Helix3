@@ -13,7 +13,11 @@ import logging
 import json
 import math
 import time
+import code.settingsBackend as settings
+
 Perms = Perms.Perms
+settings = settings.Settings()
+
 
 def _setup_logging(log):
     if len(logging.getLogger(__package__).handlers) > 1:
@@ -38,20 +42,15 @@ def _setup_logging(log):
 
 def getPrefix(bot, message):
     try:
-        dir = "data/" + message.server.id + ".json"
-        if not os.path.exists("data"):
-            os.mkdir("data")
-        if not os.path.isfile(dir):
-            prefix = "."
-        else:
-            with open(dir, 'r') as r:
-                data = json.load(r)
-                prefix = str(data["prefix"])
+        prefix = settings.Get().prefix(server=message.server)
         if not prefix in message.content:
             if "<@{}>".format(bot.user.id) in message.content:
                 prefix = "<@{}> ".format(bot.user.id)
+            elif "<@!{}>".format(bot.user.id) in message.content:
+                prefix = "<@!{}> ".format(bot.user.id)
         return prefix
-    except:
+    except Exception as e:
+        log.error(e)
         if message.split(" ")[0][0] == ".":
             return "."
         else:
@@ -312,6 +311,28 @@ class Core:
                 except:
                     pass
                 await self.bot.send_message(channel, embed=em)
+
+    @commands.command(pass_context=True, no_pm=True)
+    @commands.check(Perms.adminOnly)
+    async def reset(self, ctx):
+        """Resets your servers settings"""
+        msg = await self.bot.send_message(ctx.message.channel, "Reseting server...")
+        try:  # dunno how this could cause an error, but gotta be safe
+            settings.Set()._resetJson(ctx.message.server)
+        except Exception as e:
+            log.error(e)
+            await self.bot.edit_message(msg, "Reset Failed :thumbsdown:\n{}:\n{}".format(type(e).__name__, e))
+        await self.bot.edit_message(msg, "Reset :thumbsup:\nYour prefix is now ``.``")
+
+    @commands.command(pass_context=True, no_pm=True)
+    @commands.check(Perms.adminOnly)
+    async def prefix(self, ctx):
+        """Change the prefix in your server"""
+        prefix = ctx.message.content
+        prefix = prefix.replace("{}prefix ".format(getPrefix(self.bot, ctx.message)), "")
+        settings.Set().new(server=ctx.message.server, prefix=prefix)
+        await self.bot.send_message(ctx.message.channel, "Your server's prefix has been set to ``{}``".format(prefix))
+
 
 import code.music
 import code.moderation
