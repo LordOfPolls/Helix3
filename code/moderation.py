@@ -112,6 +112,7 @@ class Moderation:
     @commands.command(pass_context=True, no_pm=True)
     @commands.check(Perms.manageServerOnly)
     async def announce(self, ctx):
+        """Send an announcement to your announcement channel"""
         await self.bot.send_typing(ctx.message.channel)
         try:
             await self.bot.send_typing(settings.Get().announcementChannel(ctx.message.server))
