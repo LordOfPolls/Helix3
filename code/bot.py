@@ -547,18 +547,18 @@ async def on_server_join(server):
         log.error(e)
 
 
-# @bot.event
-# async def on_command_error(error, ctx):
-#     if "not found" in str(error):
-#         # ignore this, i know its janky but it works blame raptz for making errors stupid
-#         global Chatbot
-#         await Chatbot._chatbot(ctx.message)
-#     elif "check" in str(error):
-#         await bot.send_message(ctx.message.channel, "{}. Sorry you don't have the permissions to use ``{}``".format(ctx.message.author.mention, ctx.command))
-#     else:
-#         log.error(error)
-#         fmt = 'An error occurred while processing that request: ```py\n{}: {}\n```'
-#         await bot.send_message(ctx.message.channel, fmt.format(type(error).__name__, error))
+@bot.event
+async def on_command_error(error, ctx):
+    if "not found" in str(error):
+        # ignore this, i know its janky but it works blame raptz for making errors stupid
+        global Chatbot
+        await Chatbot._chatbot(ctx.message)
+    elif "check" in str(error):
+        await bot.send_message(ctx.message.channel, "{}. Sorry you don't have the permissions to use ``{}``".format(ctx.message.author.mention, ctx.command))
+    else:
+        log.error(error)
+        fmt = 'An error occurred while processing that request: ```py\n{}: {}\n```'
+        await bot.send_message(ctx.message.channel, fmt.format(type(error).__name__, error))
 
 @bot.event
 async def on_member_join(ctx):
