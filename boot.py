@@ -1,15 +1,13 @@
 from __future__ import print_function
-from time import gmtime, strftime
+
+import colorlog
+import logging
 import os
 import sys
-import time
-import logging
 import tempfile
-import colorlog
-import traceback
-import subprocess
-import discord
-from time import sleep
+from time import gmtime, strftime, sleep
+
+
 
 # logging utility
 tmpfile = tempfile.TemporaryFile('w+', encoding='utf8')

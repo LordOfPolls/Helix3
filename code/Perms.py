@@ -5,6 +5,7 @@ devs = ["174918559539920897",
         "142013432403722241"]
 staff = []
 donators = []
+
 class Perms:
     @staticmethod
     def donatorOnly(ctx):

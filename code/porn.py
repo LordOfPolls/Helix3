@@ -1,15 +1,14 @@
-import asyncio
-import discord
-from discord.ext import commands
-from xml.etree import cElementTree as ET
-from collections import defaultdict
-import code.get as get
 import aiohttp
-import random
-import rule34
+import discord
 import logging
+import random
+
+from collections import defaultdict
+from xml.etree import cElementTree as ET
+from discord.ext import commands
 
 import code.Perms as Perms
+
 Perms = Perms.Perms
 
 log = logging.getLogger(__name__)

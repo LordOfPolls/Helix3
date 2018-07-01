@@ -2,19 +2,20 @@ import asyncio
 import functools
 import logging
 import math
-import pprint
+import os
 import random
 import re
 import time
-import os
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor
-from PIL import Image
 
 import discord
 import youtube_dl
+from PIL import Image
 from discord.ext import commands
+
 import code.Perms as Perms
+
 Perms = Perms.Perms
 
 # loads the bot's logging stuff
