@@ -118,25 +118,21 @@ class Utilities:
         total_users = str(len(server.members))
         text_channels = len([x for x in server.channels if str(x.type) == "text"])
         voice_channels = len(server.channels) - text_channels
-
-        data = "```python\n"
-        data += "Name: {}\n".format(server.name)
-        data += "ID: {}\n".format(server.id)
-        data += "Region: {}\n".format(server.region)
-        data += "Users: {}/{}\n".format(online, total_users)
-        data += "Text channels: {}\n".format(text_channels)
-        data += "Voice channels: {}\n".format(voice_channels)
-        data += "Roles: {}\n".format(len(server.roles))
         passed = (message.timestamp - server.created_at).days
-        data += "Created: {} ({} days ago)\n".format(server.created_at, passed)
-        data += "Owner: {}\n".format(server.owner)
-        if server.icon_url != "":
-            data += "Icon:"
-            data += "```"
-            data += server.icon_url
-        else:
-            data += "```"
-        await self.bot.send_message(channel, data)
+        em = discord.Embed(colour=0x7EC0EE)
+        em.set_author(name="Server Information:")
+        em.set_thumbnail(url=server.icon_url)
+        em.add_field(name="Name", value=server.name)
+        em.add_field(name="ID", value=server.id)
+        em.add_field(name="Region", value=server.region)
+        use = "{}/{}".format(online, total_users)
+        em.add_field(name="Users", value=use)
+        em.add_field(name="Text channels", value=text_channels)
+        em.add_field(name="Voice channels", value=voice_channels)
+        em.add_field(name="Roles", value=len(server.roles))
+        em.add_field(name="Created on", value=server.created_at)
+        em.add_field(name="Owner", value=server.owner)     
+        await self.bot.say(embed=em)
 
     @commands.command(pass_context=True, no_pm=True)
     async def urban(self, ctx):
