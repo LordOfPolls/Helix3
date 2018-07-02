@@ -287,3 +287,25 @@ class Fun:
                 em.set_author(name=js['quote'])
                 em.set_footer(text=js['author'])
                 await self.bot.say(embed=em)
+
+    @commands.command(pass_context=True)
+    async def chuck(self, ctx):
+        """Sends a random Chuck Norris joke"""
+        async with aiohttp.get('https://api.chucknorris.io/jokes/random') as r:
+            if r.status ==200:
+                js = await r.json()
+                em = discord.Embed(colour=0x7EC0EE)
+                em.set_author(name=js['value'], icon_url=js['icon_url'])
+                await self.bot.say(embed = em)
+
+    @commands.command(pass_context=True)
+    async def simpson(self, ctx):
+        """Sends a random Simpsons joke"""
+        async with aiohttp.get('https://thesimpsonsquoteapi.glitch.me/quotes') as r:
+            if r.status ==200:
+                js = await r.json()
+                em = discord.Embed(colour=0x7EC0EE)
+                em.set_author(name=js[0]['quote'])
+                em.set_thumbnail(url=js[0]['image'])
+                em.set_footer(text=js[0]['character'])
+                await self.bot.say(embed = em)
