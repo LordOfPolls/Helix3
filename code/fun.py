@@ -83,8 +83,9 @@ class Fun:
         findDog()
         while "https://random.dog/[]" in pic:
             findDog()
-
-        await self.bot.say(pic)
+        em = discord.Embed(colour=0x260068)
+        em.set_image(url=pic)
+        await self.bot.say(embed=em)
 
     @commands.command(pass_context = True)
     async def orange(self):
@@ -98,9 +99,9 @@ class Fun:
         async with aiohttp.get('http://aws.random.cat/meow') as r:
             if r.status == 200:
                 js = await r.json()
-                em = discord.Embed(colour=16711680)
+                em = discord.Embed(colour=0x260068)
                 em.set_image(url=js['file'])
-        await self.bot.say(js['file'])
+                await self.bot.say(embed=em)
 
     @commands.command(pass_context = True)
     async def meme(self):
