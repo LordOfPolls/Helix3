@@ -96,12 +96,13 @@ class Fun:
     async def cat(self):
         """Sends a cat pic"""
         global image
-        async with aiohttp.get('http://aws.random.cat/meow') as r:
-            if r.status == 200:
-                js = await r.json()
-                em = discord.Embed(colour=0x260068)
-                em.set_image(url=js['file'])
-                await self.bot.say(embed=em)
+        async with aiohttp.ClientSession(loop=self.bot.loop) as session:
+            async with session.get('http://aws.random.cat/meow') as r:
+                if r.status == 200:
+                    js = await r.json()
+                    em = discord.Embed(colour=0x260068)
+                    em.set_image(url=js['file'])
+                    await self.bot.say(embed=em)
 
     @commands.command(pass_context = True)
     async def meme(self):
@@ -281,32 +282,35 @@ class Fun:
     @commands.command(pass_context = True)
     async def quote(self, ctx):
         """ A random quote"""
-        async with aiohttp.get('https://talaikis.com/api/quotes/random/') as r:
-            if r.status == 200:
-                js = await r.json()
-                em = discord.Embed(colour=0x7EC0EE)
-                em.set_author(name=js['quote'])
-                em.set_footer(text=js['author'])
-                await self.bot.say(embed=em)
+        async with aiohttp.ClientSession(loop=self.bot.loop) as session:
+            async with session.get('https://talaikis.com/api/quotes/random/') as r:
+                if r.status == 200:
+                    js = await r.json()
+                    em = discord.Embed(colour=0x7EC0EE)
+                    em.set_author(name=js['quote'])
+                    em.set_footer(text=js['author'])
+                    await self.bot.say(embed=em)
 
     @commands.command(pass_context=True)
     async def chuck(self, ctx):
         """Sends a random Chuck Norris joke"""
-        async with aiohttp.get('https://api.chucknorris.io/jokes/random') as r:
-            if r.status ==200:
-                js = await r.json()
-                em = discord.Embed(colour=0x7EC0EE)
-                em.set_author(name=js['value'], icon_url=js['icon_url'])
-                await self.bot.say(embed = em)
+        async with aiohttp.ClientSession(loop=self.bot.loop) as session:
+            async with session.get('https://api.chucknorris.io/jokes/random') as r:
+                if r.status ==200:
+                    js = await r.json()
+                    em = discord.Embed(colour=0x7EC0EE)
+                    em.set_author(name=js['value'], icon_url=js['icon_url'])
+                    await self.bot.say(embed = em)
 
     @commands.command(pass_context=True)
     async def simpson(self, ctx):
         """Sends a random Simpsons joke"""
-        async with aiohttp.get('https://thesimpsonsquoteapi.glitch.me/quotes') as r:
-            if r.status ==200:
-                js = await r.json()
-                em = discord.Embed(colour=0x7EC0EE)
-                em.set_author(name=js[0]['quote'])
-                em.set_thumbnail(url=js[0]['image'])
-                em.set_footer(text=js[0]['character'])
-                await self.bot.say(embed = em)
+        async with aiohttp.ClientSession(loop=self.bot.loop) as session:
+            async with session.get('https://thesimpsonsquoteapi.glitch.me/quotes') as r:
+                if r.status ==200: 
+                    js = await r.json()
+                    em = discord.Embed(colour=0x7EC0EE)
+                    em.set_author(name=js[0]['quote'])
+                    em.set_thumbnail(url=js[0]['image'])
+                    em.set_footer(text=js[0]['character'])
+                    await self.bot.say(embed = em)
