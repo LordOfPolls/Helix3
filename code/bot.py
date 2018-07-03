@@ -7,7 +7,7 @@ import os
 import random
 import sys
 import time
-
+import linecache
 import aiohttp
 import discord
 from discord.ext import commands
@@ -556,14 +556,22 @@ async def on_command_error(error, ctx):
 @bot.event
 async def on_member_join(ctx):
     member = ctx
-    if member.id in str(dev):
+    os.path.isfile("code/Perms.py")
+    devs = linecache.getline("code/Perms.py", 1)
+    staff = linecache.getline("code/Perms.py", 2)
+    for c in ctx.server.channels:
+        if str(c.name) == "general": #  1st preference
+            member.server=c
+        elif str(c.type) == "text": 
+            member.server=c
+    if member.id in str(devs):
         log.info("Dev Join| {} joined {}".format(member.display_name, member.server.name))
-        await byp.send_message(member.server, "{}, one of my devs, joined your server".format(member.display_name))
-    if member.id in str(staff):
+        await byp.send_message(member.server, "<@{}>, one of my devs, joined your server".format(member.id))
+    elif member.id in str(staff):
         log.info("Staff Join| {} joined {}".format(member.display_name, member.server.name))
-        await byp.send_message(member.server, "{}, one of my staff members, joined your server".format(member.display_name))
-
-    await byp.send_message(member, "Hello, I'm HelixBot 3.0. Thanks for joining our Server. \n"
+        await byp.send_message(member.server, "<@{}>, one of my staff members, joined your server".format(member.id))
+    else:
+        await byp.send_message(member, "Hello, I'm HelixBot 3.0. Thanks for joining our Server. \n"
                                    "By using this server you automatically agree to allow us using your data in order "
                                    "to provide you the services coming with this bot. \n\n"
                                    "The data we collect are: \n"
