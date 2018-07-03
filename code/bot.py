@@ -305,6 +305,87 @@ class Core:
                     pass
                 await self.bot.send_message(channel, embed=em)
 
+    @commands.command(pass_context=True)
+    async def bug(self, ctx):
+        await self.bot.say("Disabled")
+        return 
+        channel = ctx.message.channel
+        server = ctx.message.server
+        author = ctx.message.author
+        message = ctx.message 
+        await self.bot.send_typing(channel)
+        dir = "data/settings/" + message.server.id + ".json"
+        if not os.path.exists("data"):
+            os.mkdir("data")
+        if not os.path.exists("data/settings"):
+            os.mkdir("data/settings")
+        if not os.path.isfile(dir):
+            prefix = getPrefix(bot, message)
+        else:
+            with open(dir, 'r') as r:
+                data = json.load(r)
+                prefix = str(data["prefix"])
+        message = ctx.message.content.strip()
+        message = message.lower()
+        details = message.replace("bug ", "")
+        details = details.replace(prefix, "")
+        dts = message.replace(" ", "")
+        if dts == " " or dts == "" or dts == None:
+            dts = False
+            await self.bot.send_message(channel,"You didnt explain the bug, it would have been nice if you did, but it doesnt really matter. The dev will yell at you later to find out what the error is")
+            pass
+        else:
+            dts = True
+
+        print(author)
+        try:
+            bugged = open("bugged.txt", "r+")
+        except:
+            bugged = open("bugged.txt", "w")
+            print(bugged)
+            bugged.close()
+            bugged = open("bugged.txt", "r+")
+        bugger = str(bugged.read())
+
+        if server.id not in bugger:
+            try:
+                inv = await self.bot.create_invite(channel, max_uses=1, xkcd=True)
+            except:
+                await self.bot.say(
+                    "Youve removed one of my permissions. I recommend you go ask for help in my server (type /join)")
+
+            print('bug Command on Server: {}'.format(ctx.message.server.name))
+            servers = str(ctx.message.server.name)
+            inv = str(inv)
+            author = ctx.message.author.name
+            try:
+                msg = "Help Requested in " + servers + " by " + author + "\n" + "Invite:  " + inv
+            except:
+                msg = "Help Requested in " + servers + "\n Invite:  " + inv
+            if dts == True:
+                details = str(details)
+                msg = msg + " \n" + "Details: " + details
+
+            guild_id = int(ctx.message.server.id)
+            num_shards = 2
+            shard_id = (guild_id >> 22) % num_shards
+            try:
+                if shard_id == 0:
+                    await self.bot.send_message((discord.Object(id='457173906269405227')), (msg))
+                if shard_id == 1:
+                    await self.bot.send_message((discord.Object(id='457173906269405227')), (msg))
+            except:
+                await self.bot.say(
+                    " ")#"Something very bad has happened which technically shouldnt be able to happen. Type /join and join my server, mention Tech Support and say you hit **ERROR 666**")
+            text = " " + ctx.message.server.id
+            bugged.write(text)
+            print(bugged)
+            bugged.close()
+            await self.bot.say('Bug reported. A dev will join your server to help soon')
+        else:
+            await self.bot.say(
+                'Someoneone in your server has already reported a bug, you have to wait until the devs clear it.')
+
     @commands.command(pass_context=True, no_pm=True)
     @commands.check(Perms.adminOnly)
     async def reset(self, ctx):
