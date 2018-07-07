@@ -220,12 +220,11 @@ class Utilities:
         """Searches google and gives you top result."""
         server = ctx.message.server
         channel = ctx.message.channel
-        prefix = await get.Prefix(server)
         message = ctx.message.content.strip()
         message = message.lower()
         message = message.replace("google ", "")
-        message = message.replace(prefix, "")
-        query = message
+        message = message.replace(self.bot.user.mention, '')
+        query = message.replace(getPrefix(self.bot, ctx.message), '')
         try:
             entries = await self.get_google_entries(query)
         except RuntimeError as e:
