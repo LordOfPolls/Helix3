@@ -64,7 +64,7 @@ class Song:
             rgb = col[:3]
             hex = '%02x%02x%02x' % (rgb)
             self.colour = (discord.Colour(int(hex, 16))) # look, switched to UK english just for you. youre welcome
-            #maybe add exception after timeout: self.colour = random.randint(0, 16777215)        
+            #maybe add exception after timeout: self.colour = random.randint(0, 16777215)
 
 class VoiceState:
     """The servers voice state
@@ -357,7 +357,7 @@ class Music:
         if state.voice is None:
             state.voice = await self.bot.join_voice_channel(summoned_channel)  # join the vc
             await self.bot.edit_message(msg, 'Joined... ``{}``'.format(summoned_channel.name))
-            log.info('Joined "{}"|"{}"'.format(ctx.message.server, summoned_channel))
+            log.info('Joined "{}"|"{}"'.format(ctx.message.server, summoned_channel.name))
         else:
             await state.voice.move_to(summoned_channel)  # move to the new vc if we were already in another
             await self.bot.edit_message(msg, 'Moved to... ``{}``'.format(summoned_channel.name))
@@ -655,5 +655,3 @@ class Music:
         """Shows info about the currently played song."""
         state = self.get_voice_state(ctx.message.server)
         await state.announceNowPlaying()
-
-

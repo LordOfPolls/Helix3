@@ -14,6 +14,7 @@ from lxml import etree
 
 import code.Perms as Perms
 import code.get as get
+from code.bot import getPrefix
 
 Perms = Perms.Perms
 
@@ -131,19 +132,18 @@ class Utilities:
         em.add_field(name="Voice channels", value=voice_channels)
         em.add_field(name="Roles", value=len(server.roles))
         em.add_field(name="Created on", value=server.created_at)
-        em.add_field(name="Owner", value=server.owner)     
+        em.add_field(name="Owner", value=server.owner)
         await self.bot.say(embed=em)
 
     @commands.command(pass_context=True, no_pm=True)
     async def urban(self, ctx):
         """Query Urban Dictionary"""
         await self.bot.send_typing(ctx.message.channel)
-        prefix = await get.Prefix(ctx.message.server)
         message = ctx.message.content.strip()
         message = message.lower()
         messages = message.replace("urban ", "")
-        messages = messages.replace(prefix, "")
-        terms = messages
+        messages = messages.replace(self.bot.user.mention, '')
+        terms = messages.replace(getPrefix(self.bot, ctx.message), '')
         try:
             async with aiohttp.get(("http://api.urbandictionary.com/v0/define?term=" + terms)) as r:
                 if not r.status == 200:
@@ -359,7 +359,7 @@ class Utilities:
         email = ""
         while char <= closing:
             email = email + text[char]
-            char += 1            
+            char += 1
 
         text = text.replace(email, "")
         em = discord.Embed(title="", colour=(random.randint(0, 16777215)))
