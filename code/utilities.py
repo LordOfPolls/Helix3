@@ -36,11 +36,12 @@ class Utilities:
         # list of URLs
         entries = []
 
-        async with aiohttp.get('https://www.google.co.uk/search', params=params, headers=headers) as resp:
-            if resp.status != 200:
-                raise RuntimeError('Google somehow failed to respond.')
+        async with aiohttp.ClientSession(loop=self.bot.loop) as session:
+            async with session.get('https://www.google.co.uk/search', params=params, headers=headers) as resp:
+                if resp.status != 200:
+                    raise RuntimeError('Google somehow failed to respond.')
 
-            root = etree.fromstring(await resp.text(), etree.HTMLParser())
+                root = etree.fromstring(await resp.text(), etree.HTMLParser())
 
             """
             Tree looks like this.. sort of..
@@ -145,25 +146,26 @@ class Utilities:
         messages = messages.replace(self.bot.user.mention, '')
         terms = messages.replace(getPrefix(self.bot, ctx.message), '')
         try:
-            async with aiohttp.get(("http://api.urbandictionary.com/v0/define?term=" + terms)) as r:
-                if not r.status == 200:
-                    await self.bot.say("Unable to connect to Urban Dictionary")
-                else:
-                    j = await r.json()
-                    if j["result_type"] == "no_results":
-                        msg = "No results for "
-                        msg = msg + terms
-                        em = discord.Embed(description=msg, colour=16711680)
-                        em.set_author(name='Urban', icon_url="https://pilotmoon.com/popclip/extensions/icon/ud.png")
+             async with aiohttp.ClientSession(loop=self.bot.loop) as session:
+                async with session.get(("http://api.urbandictionary.com/v0/define?term=" + terms)) as r:
+                    if not r.status == 200:
+                        await self.bot.say("Unable to connect to Urban Dictionary")
+                    else:
+                        j = await r.json()
+                        if j["result_type"] == "no_results":
+                            msg = "No results for "
+                            msg = msg + terms
+                            em = discord.Embed(description=msg, colour=16711680)
+                            em.set_author(name='Urban', icon_url="https://pilotmoon.com/popclip/extensions/icon/ud.png")
+                            await self.bot.say(embed=em)
+                            return
+                        elif j["result_type"] == "exact":
+                            word = j["list"][0]
+                        definerer = (word["definition"])
+                        n = ("%s - Urban Dictionary" % word["word"])
+                        em = discord.Embed(description=definerer, colour=(random.randint(0, 16777215)))
+                        em.set_author(name=n, icon_url="https://pilotmoon.com/popclip/extensions/icon/ud.png")
                         await self.bot.say(embed=em)
-                        return
-                    elif j["result_type"] == "exact":
-                        word = j["list"][0]
-                    definerer = (word["definition"])
-                    n = ("%s - Urban Dictionary" % word["word"])
-                    em = discord.Embed(description=definerer, colour=(random.randint(0, 16777215)))
-                    em.set_author(name=n, icon_url="https://pilotmoon.com/popclip/extensions/icon/ud.png")
-                    await self.bot.say(embed=em)
         except Exception as e:
             await self.bot.say(("Unable to connect to Urban Dictionary " + str(e)))
 
