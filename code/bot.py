@@ -572,7 +572,7 @@ async def on_message(message):
         pass
     if bot.user.mentioned_in(message) and not message.mention_everyone:
         if len(message.content) == 21 or len(message.content) == 22:
-            prefix = prefix = getPrefix(bot, message)
+            prefix = getPrefix(bot, message)
             log.info("{} mentioned me, I guess they want some help".format(message.author.name))
             message.content = ("{}help".format(prefix)) 
             await bot.process_commands(message)
