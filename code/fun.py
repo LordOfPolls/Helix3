@@ -38,7 +38,8 @@ class Fun:
         mention = ""
         user_mentions = list(map(ctx.message.server.get_member, ctx.message.raw_mentions))
         for user in user_mentions:
-            mention += "<@{}>  ".format(user.id)
+            if user != self.bot.user:
+                mention += "<@{}>  ".format(user.id)
             
         message = (("%s {}").format(mention) % (message))
 
@@ -165,7 +166,8 @@ class Fun:
         mention = ""
         user_mentions = list(map(ctx.message.server.get_member, ctx.message.raw_mentions))
         for user in user_mentions:
-            mention += "<@{}>  ".format(user.id)
+            if user != self.bot.user:
+                mention += "<@{}>  ".format(user.id)
 
         if "326819697381212160" in mention:
             mention.replace("326819697381212160", ctx.message.author.id)
