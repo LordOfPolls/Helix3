@@ -433,7 +433,7 @@ from code.porn import Porn
 from code.utilities import Utilities
 
 log = logging.getLogger(__name__)
-bot = commands.Bot(command_prefix=getPrefix, description='Helix3.0', pm_help=True)
+bot = commands.Bot(command_prefix=getPrefix, description='Helix3.0', pm_help=True, case_insensitive=True)
 global Chatbot
 global shutdown
 Chatbot = None
