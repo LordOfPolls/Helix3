@@ -305,10 +305,8 @@ class Core:
                     pass
                 await self.bot.send_message(channel, embed=em)
 
-    @commands.command(pass_context=True)
+    @commands.command(pass_context=True, enabled=False)
     async def bug(self, ctx):
-        await self.bot.say("Disabled")
-        return 
         channel = ctx.message.channel
         server = ctx.message.server
         author = ctx.message.author
@@ -635,6 +633,8 @@ async def on_command_error(error, ctx):
         await Chatbot._chatbot(ctx.message)
     elif "check" in str(error):
         await bot.send_message(ctx.message.channel, "{}. Sorry you don't have the permissions to use ``{}``".format(ctx.message.author.mention, ctx.command))
+    elif "command is disabled" in str(error):
+        await bot.send_message(ctx.message.channel, "Sorry, {} has been disabled, contact the devs for more information".format(ctx.command))
     else:
         log.error(error)
         fmt = 'An error occurred while processing that request: ```py\n{}: {}\n```'
