@@ -580,6 +580,8 @@ async def on_message(message):
             message.content = ("{}help".format(prefix)) 
             await bot.process_commands(message)
             return
+    if "<@!{}>".format(bot.user.id) in message.content:
+        message.content = message.content.replace("<@!", "<@")
     try:
         await bot.process_commands(message)
     except Exception as e:
