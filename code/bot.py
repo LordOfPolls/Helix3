@@ -483,8 +483,11 @@ async def rankUpdate(message):
     try:
         if message.author == bot.user or message.author == None or message.author.bot:
             return
-        # elif str(message.server.id) in open('level_blck.txt').read():
-        #     return
+        try:
+            if str(message.server.id) in open('level_blck.txt').read():
+                return
+        except:
+            return
     except Exception as e:
         log.error("Error in rankUpdate:\n{}".format(e))
         return
