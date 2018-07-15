@@ -102,9 +102,9 @@ class Settings:
             os.unlink(dir)
             self._setupJson(server)
 
-        def new(self, server, prefix=".", announcement=None, welcome=None, blacklist=None, modlog=None):
+        def new(self, server, prefix=None, announcement=None, welcome=None, blacklist=None, modlog=None):
             data = self._loadJson(server)
-            if prefix != ".":
+            if prefix != None:
                 data['prefix'] = prefix
             if announcement is not None:
                 data['announcement'] = announcement
