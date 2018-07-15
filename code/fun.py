@@ -88,12 +88,12 @@ class Fun:
         em.set_image(url=pic)
         await self.bot.say(embed=em)
 
-    @commands.command(pass_context = True)
+    @commands.command(pass_context=True, hidden=True)
     async def orange(self):
         """"Fuck you orange"""
         await self.bot.say("Orange is an apple")
 
-    @commands.command(pass_context = True)
+    @commands.command(pass_context=True)
     async def cat(self):
         """Sends a cat pic"""
         global image
