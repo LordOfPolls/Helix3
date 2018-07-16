@@ -8,6 +8,7 @@ import bs4
 import aiohttp
 import random
 import requests
+import os
 import imgurpython
 from bs4 import BeautifulSoup
 from discord.ext import commands
