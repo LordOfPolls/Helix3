@@ -18,6 +18,7 @@ from code.misc_compliment import compliment
 from code.misc_pickup import pickup
 from code.misc_shitpost import shitpost
 import code.Perms as Perms
+from code.bot import getPrefix
 Perms = Perms.Perms
 
 
