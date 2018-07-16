@@ -298,8 +298,11 @@ class Music:
                 song_url = baseurl + 'watch?v=%s' % entry_data['id']   # get a useful link instead of the stupid playlist link
                 data = await self.extract_info(url=song_url, download=False, process=True)   # get the data of this video
                 song = await self.parseSong(data, ctx, msg)   # assign its data to the song class
-                await self.addsong(song, ctx, playlist=True, totalSongs=totalSongs, songsProcessed=songsProcessed)  # add it
-                songsProcessed += 1
+                try:
+                    await self.addsong(song, ctx, playlist=True, totalSongs=totalSongs, songsProcessed=songsProcessed)  # add it
+                    songsProcessed += 1
+                except:
+                    pass
         try:
             await self.bot.edit_message(state.lastaddedmsg, "Added {} songs ^-^".format(totalSongs))
         except:
@@ -429,11 +432,21 @@ class Music:
                 await self.addsong(song, ctx)
         else:
             song = ctx.message.content.split(" ")[1]  # get the value after the command
-            info = await self.extract_info(url=song, download=False, process=True)
+            info = await self.extract_info(url=song, download=False, process=False)
             log.debug('Processing {}'.format(info['title']))
 
             # find the appropriate way to handle the link, be it a youtube video, soundcloud song or playlist
-            if "playlist" not in info['extractor'] and "set" not in info['extractor']:
+
+            if "playlist" in info['extractor'] or "set" in info['extractor']:
+                if info['extractor'] == 'youtube:playlist':
+                    try:
+                        await self.async_process_youtube_playlist(info=info, channel=ctx.message.channel, author=ctx.message.author, msg=state.lastaddedmsg, ytdl=ytdl, ctx=ctx)
+                    except:
+                        await self.bot.send_message(ctx.message.channel, "Sorry, can you send the playlist link instead? :confounded:")
+                elif info['extractor'] == 'soundcloud:set':
+                    await self.async_process_sc_playlist(info, ctx, state.lastaddedmsg)
+            else:
+                info = await self.extract_info(url=song, download=False, process=True)
                 try:
                     thumbnail = info['thumbnail']
                 except:
@@ -457,13 +470,7 @@ class Music:
                                 webURL=info['webpage_url'], length=info['duration'], msg=state.lastaddedmsg, rating=rating)
                 await self.addsong(songData, ctx)
                 return
-            elif info['extractor'] == 'youtube:playlist':
-                try:
-                    await self.async_process_youtube_playlist(info=info, channel=ctx.message.channel, author=ctx.message.author, msg=state.lastaddedmsg, ytdl=ytdl, ctx=ctx)
-                except:
-                    await self.bot.send_message(ctx.message.channel, "Sorry, can you send the playlist link instead? :confounded:")
-            elif info['extractor'] == 'soundcloud:set':
-                await self.async_process_sc_playlist(info, ctx, state.lastaddedmsg)
+
 
 
     @commands.command(pass_context=True, no_pm=True)
