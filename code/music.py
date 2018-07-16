@@ -402,46 +402,38 @@ class Music:
             log.debug('Processing {}'.format(info['title']))
 
             # find the appropriate way to handle the link, be it a youtube video, soundcloud song or playlist
-            if info['extractor'] == 'youtube:playlist':
+            if "playlist" not in info['extractor'] and "set" not in info['extractor']:
+                try:
+                    thumbnail = info['thumbnail']
+                except:
+                    if info['extractor'] == "Newgrounds":
+                        thumbnail = "https://goo.gl/bPq9h4"
+                    else:
+                        thumbnail = "https://png.pngtree.com/element_origin_min_pic/16/07/16/23578a5176bec23.jpg"
+                try:
+                    rating = info['average_rating']
+                except KeyError:
+                    rating = None
+                try:
+                    if info['is_live']:
+                        # uh oh we have a live stream
+                        await self.bot.edit_message(state.lastaddedmsg, "Sorry live streams dont play properly right now :cry:")
+                        return
+                except KeyError:
+                    pass
+                songData = Song(url=info['url'], title=info['title'], channel=ctx.message.channel,
+                                server=ctx.message.server, author=ctx.message.author, thumbnail=thumbnail,
+                                webURL=info['webpage_url'], length=info['duration'], msg=state.lastaddedmsg, rating=rating)
+                await self.addsong(songData, ctx)
+                return
+            elif info['extractor'] == 'youtube:playlist':
                 try:
                     await self.async_process_youtube_playlist(info=info, channel=ctx.message.channel, author=ctx.message.author, msg=state.lastaddedmsg, ytdl=ytdl, ctx=ctx)
                 except:
                     await self.bot.send_message(ctx.message.channel, "Sorry, can you send the playlist link instead? :confounded:")
             elif info['extractor'] == 'soundcloud:set':
                 await self.async_process_sc_playlist(info, ctx, state.lastaddedmsg)
-            elif info['extractor'] == 'soundcloud':
-                songData = Song(url=info['url'], title=info['title'], channel=ctx.message.channel,
-                                server=ctx.message.server, author=ctx.message.author, thumbnail=info['thumbnail'],
-                                webURL=info['webpage_url'], length=info['duration'], msg=state.lastaddedmsg)
-                await self.addsong(songData, ctx)
-            elif info['extractor'] == 'youtube':
-                if info['is_live']:
-                    # uh oh we have a live stream
-                    await self.bot.edit_message(state.lastaddedmsg, "Sorry live streams dont play properly right now :cry:")
-                    return
-                else:
-                    songData = Song(url=info['url'], title=info['title'], channel=ctx.message.channel,
-                                    server=ctx.message.server, author=ctx.message.author, thumbnail=info['thumbnail'],
-                                    webURL=info['webpage_url'], length=info['duration'], msg=state.lastaddedmsg)
-                await self.addsong(songData, ctx)
-            elif info['extractor'] == 'Newgrounds':
-                songData = Song(url=info['url'], title=info['title'], length=info['duration'], channel=ctx.message.channel,
-                                server=ctx.message.server, author=ctx.message.author, thumbnail="https://goo.gl/bPq9h4",
-                                webURL=info['webpage_url'])
-                await self.addsong(songData, ctx)
-            else:
-                # try and play whatever this
-                try:
-                    try:
-                        thumbnail = info['thumbnail']
-                    except:
-                        thumbnail = "https://png.pngtree.com/element_origin_min_pic/16/07/16/23578a5176bec23.jpg"
-                    songData = Song(url=info['url'], title=info['title'], length=info['duration'], channel=ctx.message.channel,
-                                    server=ctx.message.server, author=ctx.message.author, thumbnail=thumbnail,
-                                    webURL=info['webpage_url'])
-                    await self.addsong(songData, ctx)
-                except:
-                    await self.bot.send_message(ctx.message.channel, "Sorry i cant play that yet :cry:")
+
 
     @commands.command(pass_context=True, no_pm=True)
     async def volume(self, ctx):
