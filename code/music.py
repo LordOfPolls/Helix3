@@ -430,7 +430,19 @@ class Music:
                                 webURL=info['webpage_url'])
                 await self.addsong(songData, ctx)
             else:
-                await self.bot.edit_message(state.lastaddedmsg, "Sorry, i cant play that yet :cry:")
+                # try and play whatever this
+                try:
+                    try:
+                        thumbnail = info['thumbnail']
+                    except:
+                        thumbnail = "https://png.pngtree.com/element_origin_min_pic/16/07/16/23578a5176bec23.jpg"
+                    songData = Song(url=info['url'], title=info['title'], length=info['duration'], channel=ctx.message.channel,
+                                    server=ctx.message.server, author=ctx.message.author, thumbnail=thumbnail,
+                                    webURL=info['webpage_url'])
+                    await self.addsong(songData, ctx)
+                except:
+                    await self.bot.send_message(ctx.message.channel, "Sorry i cant play that yet :cry:")
+
     @commands.command(pass_context=True, no_pm=True)
     async def volume(self, ctx):
         """Sets the volume of the currently playing song."""
