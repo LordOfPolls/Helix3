@@ -3,6 +3,7 @@ import functools
 import logging
 import math
 import os
+import pprint
 import random
 import re
 import time
@@ -388,46 +389,48 @@ class Music:
             r'^(?:http|ftp)s?://'
             r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|'
             r'(?:/?|[/?]\S+)$)', re.IGNORECASE)
-        try:
-            # that magical RE statement is used to check if there is a URL in this link without any real processing
-            if not re.match(regex, ctx.message.content.split(" ")[1]):
-                # if there is no url
-                info = await self.extract_info(url=song, download=False, process=True) # search youtube for the query and add it
-                for item in info['entries']:
-                    song = await self.parseSong(item, ctx, state.lastaddedmsg)
-                    await self.addsong(song, ctx)
-            else:
-                song = ctx.message.content.split(" ")[1]  # get the value after the command
-                info = await self.extract_info(url=song, download=False, process=False)
-                log.debug('Processing {}'.format(info['title']))
+        # that magical RE statement is used to check if there is a URL in this link without any real processing
+        if not re.match(regex, ctx.message.content.split(" ")[1]):
+            # if there is no url
+            info = await self.extract_info(url=song, download=False, process=True) # search youtube for the query and add it
+            for item in info['entries']:
+                song = await self.parseSong(item, ctx, state.lastaddedmsg)
+                await self.addsong(song, ctx)
+        else:
+            song = ctx.message.content.split(" ")[1]  # get the value after the command
+            info = await self.extract_info(url=song, download=False, process=True)
+            log.debug('Processing {}'.format(info['title']))
 
-                # find the appropriate way to handle the link, be it a youtube video, soundcloud song or playlist
-                if info['extractor'] == 'youtube:playlist':
-                    try:
-                        await self.async_process_youtube_playlist(info=info, channel=ctx.message.channel, author=ctx.message.author, msg=state.lastaddedmsg, ytdl=ytdl, ctx=ctx)
-                    except:
-                        await self.bot.send_message(ctx.message.channel, "Sorry, can you send the playlist link instead? :confounded:")
-                elif info['extractor'] == 'soundcloud:set':
-                    await self.async_process_sc_playlist(info, ctx, state.lastaddedmsg)
-                elif info['extractor'] == 'soundcloud':
+            # find the appropriate way to handle the link, be it a youtube video, soundcloud song or playlist
+            if info['extractor'] == 'youtube:playlist':
+                try:
+                    await self.async_process_youtube_playlist(info=info, channel=ctx.message.channel, author=ctx.message.author, msg=state.lastaddedmsg, ytdl=ytdl, ctx=ctx)
+                except:
+                    await self.bot.send_message(ctx.message.channel, "Sorry, can you send the playlist link instead? :confounded:")
+            elif info['extractor'] == 'soundcloud:set':
+                await self.async_process_sc_playlist(info, ctx, state.lastaddedmsg)
+            elif info['extractor'] == 'soundcloud':
+                songData = Song(url=info['url'], title=info['title'], channel=ctx.message.channel,
+                                server=ctx.message.server, author=ctx.message.author, thumbnail=info['thumbnail'],
+                                webURL=info['webpage_url'], length=info['duration'], msg=state.lastaddedmsg)
+                await self.addsong(songData, ctx)
+            elif info['extractor'] == 'youtube':
+                if info['is_live']:
+                    # uh oh we have a live stream
+                    await self.bot.edit_message(state.lastaddedmsg, "Sorry live streams dont play properly right now :cry:")
+                    return
+                else:
                     songData = Song(url=info['url'], title=info['title'], channel=ctx.message.channel,
                                     server=ctx.message.server, author=ctx.message.author, thumbnail=info['thumbnail'],
                                     webURL=info['webpage_url'], length=info['duration'], msg=state.lastaddedmsg)
-                    await self.addsong(songData, ctx)
-                elif info['extractor'] == 'youtube':
-                    if info['is_live']:
-                        # uh oh we have a live stream
-                        await self.bot.edit_message(state.lastaddedmsg, "Sorry live streams dont play properly right now :cry:")
-                        return
-                    else:
-                        songData = Song(url=info['url'], title=info['title'], channel=ctx.message.channel,
-                                        server=ctx.message.server, author=ctx.message.author, thumbnail=info['thumbnail'],
-                                        webURL=info['webpage_url'], length=info['duration'], msg=state.lastaddedmsg)
-                    await self.addsong(songData, ctx)
-                else:
-                    await self.bot.edit_message(state.lastaddedmsg, "Sorry, i cant play that yet :cry:")
-        except:
-            await self.bot.send_message(ctx.message.channel, "Sorry, a youtube error occured :cry:")
+                await self.addsong(songData, ctx)
+            elif info['extractor'] == 'Newgrounds':
+                songData = Song(url=info['url'], title=info['title'], length=info['duration'], channel=ctx.message.channel,
+                                server=ctx.message.server, author=ctx.message.author, thumbnail="https://goo.gl/bPq9h4",
+                                webURL=info['webpage_url'])
+                await self.addsong(songData, ctx)
+            else:
+                await self.bot.edit_message(state.lastaddedmsg, "Sorry, i cant play that yet :cry:")
     @commands.command(pass_context=True, no_pm=True)
     async def volume(self, ctx):
         """Sets the volume of the currently playing song."""
