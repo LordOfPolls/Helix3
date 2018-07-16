@@ -25,30 +25,42 @@ class Moderation:
         author = ctx.message.author
         server = ctx.message.server
         message = ctx.message
-        prefix = "."
+        prefix = settings.Get().prefix(ctx.message.server)
 
         search_range = 1000
         delete_invokes = True
         delete_all = channel.permissions_for(
             author).manage_messages or "174918559539920897" == author.id
 
-        def is_possible_command_invoke(entry, prefix):
+        def is_possible_command_invoke(entry, prefix, bot):
             if entry.content.startswith(prefix):
+                if entry.content.startswith("...") and prefix != "...":
+                    return False
+                return True
+            elif entry.content.startswith("<@{}>".format(bot.user.id)) or entry.content.startswith("<@!{}>".format(bot.user.id)):
                 return True
             else:
                 return False
 
         def check(message):
-            if is_possible_command_invoke(message, prefix) and delete_invokes:
+            if is_possible_command_invoke(message, prefix, self.bot) and delete_invokes:
                 return delete_all or message.author == author
             return message.author == self.bot.user
 
         await self.bot.delete_message(ctx.message)
         if channel.permissions_for(server.me).manage_messages:
-            deleted = await self.bot.purge_from(channel, check=check, limit=search_range,
-                                            before=message)
-            await self.bot.say('<@{}>, I cleaned up {} message{}.'.format(author.id, len(deleted), 's' * bool(deleted)))
-        
+            try:
+                deleted = await self.bot.purge_from(channel, check=check, limit=search_range,
+                                                before=message)
+                await self.bot.say('<@{}>, I cleaned up {} message{}.'.format(author.id, len(deleted), 's' * bool(deleted)))
+            except:
+                async for entry in self.bot.logs_from(ctx.message.channel, limit=10000):
+                    if is_possible_command_invoke(entry, prefix, self.bot):
+                        await self.bot.delete_message(entry)
+                    if entry.author == self.bot.user:
+                        await self.bot.delete_message(entry)
+                await self.bot.send_message(ctx.message.channel, "**PURGED**")
+
     @commands.check(Perms.manageMessagesOnly)
     @commands.command(pass_context=True, no_pm=True)
     async def apocalypse(self, ctx):
