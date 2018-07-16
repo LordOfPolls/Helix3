@@ -3,6 +3,7 @@ import functools
 import logging
 import math
 import os
+import pickle
 import pprint
 import random
 import re
@@ -29,7 +30,7 @@ class Song:
     """Song Data class
     Holds all the data for the selected song, including where it was requested"""
     def __init__(self, url, title, channel, server, author,
-                 file=None, thumbnail=None, player=None, webURL=None, length=None, msg=None,
+                 file=None, thumbnail=None, webURL=None, length=None, msg=None,
                  rating=None, is_live=None, id=None, extractor=None, np=None):
         ### Song data ###
         self.url = url  # url of the video itself (used by player)
@@ -47,7 +48,6 @@ class Song:
         self.channel = channel  # channel command was used in
         self.server = server  # server command was used in
         self.invoker = author  # person who asked for the song
-        self.player = player  # the audio player itself (the thing that streams music from youtube to discord)
         self.npmessage = msg  # The last added message, used by playlists
         self.lastnp = np  # the last now playing message
 
@@ -70,11 +70,11 @@ class Song:
 class VoiceState:
     """The servers voice state
     Handles the player and the now playing announcements """
-    def __init__(self, bot):
+    def __init__(self, bot, server=None):
         self.current = None  # The current playing song (Class Song)
         self.voice = None  # Discord.VoiceClient
         self.bot = bot  # The bot itself
-        self.server = None  # What server this state is for
+        self.server = server  # What server this state is for
         self.play_next_song = asyncio.Event()  # take a wild guess
         self.songs = asyncio.Queue()  # The playlist for said server
         self.skip_votes = set()  # A set of user_ids that voted
@@ -121,14 +121,40 @@ class VoiceState:
         """Plays the next song"""
         self.bot.loop.call_soon_threadsafe(self.play_next_song.set)
 
+    async def serialize(self):
+        # try:
+        if len(self.songs._queue) == 0:
+            return
+        dir = "data/{}".format(self.server.id)
+        if not os.path.exists(dir):
+            os.mkdir(dir)
+        pickle.dump(self.songs._queue, open("data/{}/SerializedPlaylist.txt".format(self.server.id), "wb"))
+        log.debug("Successfully serialised queue for {}".format(self.server.id))
+        # except Exception as e:
+        #     log.error("Failed to serialize queue for {}\n{}: {}".format(self.server.id, type(e).__name__, e))
+
+    async def deserialize(self):
+        try:
+            dir = "data/{}".format(self.server.id)
+            if not os.path.exists(dir):
+                os.mkdir(dir)
+            if os.path.isfile("data/{}/SerializedPlaylist.txt".format(self.server.id)):
+                songs = pickle.load(open("data/{}/SerializedPlaylist.txt".format(self.server.id), "rb"))
+                for song in songs:
+                    await Music(self.bot).addsong(song)
+                log.debug("Successfully deserialized queue for {}".format(self.server.id))
+        except Exception as e:
+            log.error("Failed to deserialized queue for {}\n{}: {}".format(self.server.id, type(e).__name__, e))
+
     async def audio_player_task(self):
         """The function that handles music playback for the current server
         This basically does all the heavy lifting"""
         while True:
-            self.play_next_song.clear()  # each loop, clean up after the last loop
             self.current = await self.songs.get()  # get the current song
             try:
                 # Try and create a player
+                while self.voice==None:
+                    await asyncio.sleep(0.01)
                 player = await self.voice.create_ytdl_player(self.current.url, ytdl_options=self.opts,
                                                            after=self.toggle_next)
                 self.current.player = player
@@ -143,6 +169,8 @@ class VoiceState:
             except Exception as e:
                 log.error(e)
             await self.play_next_song.wait()  # Wait for the next song to be ready
+            self.play_next_song.clear()  # each loop, clean up after the last loop
+            await self.serialize()
 
     async def announceNowPlaying(self):
         """Announces the current song in chat"""
@@ -223,7 +251,7 @@ class Music:
         """"Gets the current voice state for a specified server"""
         state = self.voice_states.get(server.id)
         if state is None:
-            state = VoiceState(self.bot)
+            state = VoiceState(self.bot, server=server)
             self.voice_states[server.id] = state
 
         return state
@@ -232,6 +260,7 @@ class Music:
         voice = await self.bot.join_voice_channel(channel)
         state = self.get_voice_state(channel.server)
         state.voice = voice
+
 
     async def addsong(self, songData, ctx=None, playlist=False, totalSongs=None, songsProcessed=None):
         state = self.get_voice_state(songData.server)
@@ -245,6 +274,7 @@ class Music:
             log.error(e)
             state.lastaddedmsg = await self.bot.send_message(songData.channel, 'Added ' + songData.title)
         await state.songs.put(songData)
+        # await state.serialize()
 
     async def async_process_youtube_playlist(self, info, ctx, msg, **meta):
         """
@@ -359,6 +389,7 @@ class Music:
             state.voice = await self.bot.join_voice_channel(summoned_channel)  # join the vc
             await self.bot.edit_message(msg, 'Joined... ``{}``'.format(summoned_channel.name))
             log.info('Joined "{}"|"{}"'.format(ctx.message.server, summoned_channel.name))
+            # await state.deserialize()
         else:
             await state.voice.move_to(summoned_channel)  # move to the new vc if we were already in another
             await self.bot.edit_message(msg, 'Moved to... ``{}``'.format(summoned_channel.name))
