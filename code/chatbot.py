@@ -105,9 +105,8 @@ class Chatbot:
             else:
                 aiml_response = self.aiml_kernel.respond(string, sessionId)
                 await self.bot.send_message(message.channel, aiml_response)
-            
+
         except Exception as e:
             fmt = 'An error occurred while processing that request: ```py\n{}: {}\n```'
             await self.bot.send_message(message.channel, fmt.format(type(e).__name__, e))
             await self.bot.send_message(message.channel, self.respondto_undefined)
-
