@@ -21,6 +21,8 @@ Oh hey, this bot is a work in progress. If you want to help out, go ahead.
 
 ``code/get.py`` is an unfinnished collection of helper functions to allow per server settings
 
+``code/chatbot.py`` a cog for helix's chatbot capability, based on A.L.I.C.E. AIML Bot
+
 Any code files prefaced with "misc_" are just files that return a random string in line with 1the name. These will be gone soon so just ignore them.
 
 ### How do i load a cog?
