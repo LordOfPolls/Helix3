@@ -188,10 +188,27 @@ class Fun:
     async def eightball(self, ctx, message):
         """Magic eightball"""
         channel = ctx.message.channel
+        server = ctx.message.server
+        await self.bot.send_typing(channel)
+        dir = "data/settings/" + ctx.message.server.id + ".json"
+        if not os.path.exists("data"):
+            os.mkdir("data")
+        if not os.path.exists("data/settings"):
+            os.mkdir("data/settings")
+        if not os.path.isfile(dir):
+            prefix = getPrefix(self.bot, ctx.message)
+        else:
+            with open(dir, 'r') as r:
+                data = json.load(r)
+                prefix = str(data["prefix"])
         choice = "123"
         choice = random.choice(choice)
+        message = ctx.message.content.strip()
+        message = message.lower()
+        message = message.replace("eightball ", "")
+        message = message.replace(prefix, "")
         length = int(len(message))
-        if length < 3:
+        if length < 6:
             await self.bot.say("You didn't ask a question")
         else:
             if choice == "1":
