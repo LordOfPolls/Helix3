@@ -52,6 +52,7 @@ Go to the appropriate cog file, go into the class and use the following:
 - `colorlog`
 - `lxml`
 - `discord`
+- `pycryptodome`
 
 ### For anything else, use the following:
 standard discord.py stuff: http://discordpy.readthedocs.io/en/latest/

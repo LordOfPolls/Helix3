@@ -7,6 +7,11 @@ import timeit
 from subprocess import PIPE
 from urllib.parse import parse_qs
 
+#Encryption Imports
+import hashlib
+from Crypto.Cipher import AES
+import base64
+
 import aiohttp
 import discord
 from discord.ext import commands
@@ -24,6 +29,94 @@ class Utilities:
         self.bugChannel = discord.Object("457131257898205185")
         self.featureChannel = discord.Object("457131283680591873")
 
+    async def store(self, key, data, filename, mode):
+        """Encrypts data
+           ==========================
+           key is a string which is the encryption key, CANNOT CONTAIN UNICODE CHARACTERS OR \ , can be any length (recommend using different key per user, maybe use user ID)
+           data is a string which is the data you want to encrypt, CANNOT CONTAIN UNICODE CHARACTERS OR \ , can be any length
+           filename is a string which is relative file you want to store it in, e.g. data/mycommanddata/userID.dat
+           mode is a string which is either a or w, w overwrites existing data and a adds to the end of the file"""
+
+
+        #Ensures the length of the data is a multiple of 16
+        if len(data) % 16 != 0:
+            extra = 16 - (len(data) % 16)
+            data = ('\\' * extra) + data
+
+
+        #Ensures the length of the key is a multiple of 16
+        if len(key) % 16 != 0:
+            extra = 16 - (len(key) % 16)
+            key = ('\\' * extra) + key
+
+
+        #Encodes data and key to be bytes
+        data = data.encode('utf-8')
+        secret_key = key.encode('utf-8')
+
+        #Encryption
+        cipher = AES.new(secret_key,AES.MODE_ECB)
+        encoded = base64.b64encode(cipher.encrypt(data))
+
+        #If file doesn't exist, create it
+        if os.path.isfile(filename) == False:
+            open(filename, 'w+')
+
+        #Checks what mode is required
+        if mode.lower() == 'w':
+            try:
+                f = open(filename, 'w')
+                f.write(str(encoded))
+                f.close()
+            except:
+                raise ValueError('Error writing to file, could be unsupported filename')
+
+        elif mode.lower() == 'a':
+            f = open(filename, 'a')
+            f.write('\n' + str(encoded))
+            f.close()
+
+
+        else:
+            raise ValueError('Invalid mode selected')
+
+    async def retrieve(self, key, filename):
+        """Decrypts data
+           =============
+           key is a string which is the key which was used to encrypt the data
+           filename is a string which is the file you want to read, e.g. data/mycommanddata/userID.dat"""
+
+        import code.bot as botfile
+
+        log = botfile.log
+
+        #Ensures the length of the key is a multiple of 16
+        if len(key) % 16 != 0:
+            extra = 16 - (len(key) % 16)
+            key = ('\\' * extra) + key
+
+        #Decrypts all lines
+        decoded = ''
+        for line in open(filename, 'r'):
+            input = line
+            input = input.replace("b'", '')
+            input = input.replace("'", '')
+
+            try:
+                key = key.encode('utf-8')
+                input = input.encode('utf-8')
+            except:
+                print('')
+
+            cipher = AES.new(key,AES.MODE_ECB)
+            decoded =  decoded + '\n' + str(cipher.decrypt(base64.b64decode(input)).strip())
+
+        decoded = str(decoded).replace('\\', '')
+        decoded = decoded.replace("b'", '')
+        decoded = decoded.replace("'", '')
+
+        return decoded
+		
     async def get_google_entries(self, query):
         params = {
             'q': query,
