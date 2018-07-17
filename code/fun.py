@@ -19,6 +19,8 @@ from code.misc_pickup import pickup
 from code.misc_shitpost import shitpost
 import code.Perms as Perms
 from code.bot import getPrefix
+from data.imgur import clientid
+from data.imgur import clientsecret
 Perms = Perms.Perms
 
 
@@ -88,7 +90,7 @@ class Fun:
     @commands.command(pass_context = True)
     async def meme(self):
         """Sends a meme"""
-        client = ImgurClient("clientid", "clientsecret")
+        client = ImgurClient(clientid, clientsecret)
         items = client.memes_subgallery()
         item = random.choice(items)     
         await self.bot.say(item.title)
