@@ -492,18 +492,6 @@ def Helix():
         log.fatal(e)
 
 async def rankUpdate(message):
-    try:
-        if message.author == bot.user or message.author == None or message.author.bot:
-            return
-        try:
-            if str(message.server.id) in open('level_blck.txt').read():
-                return
-        except:
-            return
-    except Exception as e:
-        log.error("Error in rankUpdate:\n{}".format(e))
-        return
-
     directory = "data/{}/ranking.json".format(message.server.id)
     if not os.path.exists(directory):
         os.mkdir("data/" +str(message.server.id))
@@ -526,6 +514,8 @@ async def rankUpdate(message):
                     score = 10
             except:
                 pass
+            if len(message.content.split(' ')) <= 5:
+                score = 1
             if lvldata[message.author.id]['LastMSG'] == message.content:
                 score = 0
             else:
@@ -582,10 +572,8 @@ async def on_message(message):
     # level code can be called in here
     if message.author == bot.user:
         return
-    try:
-        await rankUpdate(message)
-    except:
-        pass
+    await rankUpdate(message)
+
     if bot.user.mentioned_in(message) and not message.mention_everyone:
         if len(message.content) == 21 or len(message.content) == 22:
             prefix = getPrefix(bot, message)
