@@ -9,6 +9,7 @@ import aiohttp
 import random
 import requests
 import os
+import logging
 import imgurpython
 from bs4 import BeautifulSoup
 from discord.ext import commands
@@ -23,7 +24,7 @@ from data.imgur import clientid
 from data.imgur import clientsecret
 Perms = Perms.Perms
 
-
+log = logging.getLogger(__name__)
 class Fun:
     def __init__(self, bot):
         self.bot = bot

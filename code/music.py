@@ -216,6 +216,7 @@ class Music:
     Works in multiple servers at once.
     """
     def __init__(self, bot):
+        log.debug("Music Loading...")
         self.bot = bot  # the bot
         self.voice_states = {}  # all the active voice states
         self.opts = {

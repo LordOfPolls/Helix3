@@ -6,7 +6,7 @@ import time
 import timeit
 from subprocess import PIPE
 from urllib.parse import parse_qs
-
+import logging
 #Encryption Imports
 import hashlib
 from Crypto.Cipher import AES
@@ -22,9 +22,11 @@ import code.get as get
 from code.bot import getPrefix
 
 Perms = Perms.Perms
+log = logging.getLogger(__name__)
 
 class Utilities:
     def __init__(self, bot):
+        log.debug("Utilities Loading...")
         self.bot = bot
         self.bugChannel = discord.Object("457131257898205185")
         self.featureChannel = discord.Object("457131283680591873")

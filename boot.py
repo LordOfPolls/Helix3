@@ -5,8 +5,10 @@ import logging
 import os
 import sys
 import tempfile
+import importlib
 from time import gmtime, strftime, sleep
 
+restart = False
 
 
 # logging utility
@@ -122,21 +124,27 @@ def finalize_logging():
     dlog.addHandler(dlh) # adds this handler to discords logging
     log.debug("Log setup complete")
 
-def pyexec(pycom, *args, pycom2=None):
-    pycom2 = pycom2 or pycom
-    os.execlp(pycom, pycom2, *args)
-
-
-def restart(*args):
-    pyexec(sys.executable, *args, *sys.argv, pycom2='python')
+def restartCall():
+    global restart
+    restart = True
+    main()
 
 
 def main():
-    # calls logging function
-    finalize_logging()
-    log.info("STARTING BOT PROCESS".center(20, "="))
+    global restart
+    if len(logging.getLogger(__package__).handlers) == 0:
+        finalize_logging()
+    if not restart:
+        log.info("STARTING BOT PROCESS".center(20, "="))
+    else:
+        log.info("RESTARTING BOT PROCESS".center(20, "="))
+    try:
+        del code
+    except:
+        pass
     from code import Helix
-    h = Helix()
+    Helix()
+
 
 if __name__ == '__main__':
     try:
@@ -145,9 +153,10 @@ if __name__ == '__main__':
         log.info("HELIX3 {}".format(ver))
     except:
         log.info("HELIX3")
-    try:
-        main()
-    except Exception as e:
-        log.fatal("Bot runtime has been terminated")
-        log.fatal(e)
-        os.execl(sys.executable, sys.executable, *sys.argv)
+    log.info("By DNA, Murrax2, Orange, Semmoragge, WatchMiltan")
+    # try:
+    main()
+    # except Exception as e:
+    #     log.fatal("Bot runtime has been terminated")
+    #     log.fatal(e)
+    #     os.execl(sys.executable, sys.executable, *sys.argv)

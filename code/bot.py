@@ -37,6 +37,7 @@ def _setup_logging(log):
     logging.getLogger("player").setLevel(logging.ERROR)
     logging.getLogger("discord.gateway ").setLevel(logging.ERROR)
     logging.getLogger("discord").setLevel(logging.FATAL)
+    logging.getLogger("AIML").setLevel(logging.CRITICAL)
     logging.getLogger(__package__).setLevel(logging.DEBUG)
 
 
@@ -133,6 +134,19 @@ class Core:
             self.bot.add_cog(Chatbot(bot))
             await self.bot.edit_message(msg, "Reloaded Chatbot :slight_smile:")            
         await self.bot.edit_message(msg, 'Reload complete :slight_smile:')
+
+    @commands.command(pass_context=True)
+    @commands.check(Perms.devOnly)
+    async def restart(self, ctx):
+        log.info("Restart command issued by {}".format(ctx.message.author.name))
+        await self.bot.send_message(ctx.message.channel, "BRB :ok_hand:")
+        await self.bot.logout()
+        import boot
+        boot.restartCall()
+
+
+        # await self.bot.wait_closed()
+        # await self.bot.close()
 
     @commands.command(pass_context=True)
     @commands.check(Perms.devOnly)
@@ -441,7 +455,7 @@ shutdown = False
 
 def Helix():
     _setup_logging(log)
-    log.debug("Loading cogs")
+    log.info("Loading cogs")
     global Chatbot
     Chatbot = chatbot.Chatbot(bot)
     bot.add_cog(Core(bot))
@@ -451,7 +465,7 @@ def Helix():
     bot.add_cog(Porn(bot))
     bot.add_cog(Utilities(bot))
     bot.add_cog(Chatbot)
-    log.debug("Cogs loaded")
+    log.info("Cogs loaded")
 
     if os.path.isfile("data/token.txt"):
         token = open("data/token.txt", "r").read()
@@ -538,7 +552,8 @@ async def rankUpdate(message):
 
 @bot.event
 async def on_ready():
-    log.info('Logged in as:    {0} (ID: {0.id})'.format(bot.user))
+    log.info("Connected!")
+    log.info('Logged in as:\nUser: {0}\nID: {0.id}'.format(bot.user))
     if len(bot.servers) == 0:
         log.warning("{} is not in any servers\nInvite link: {}".format(bot.user, discord.utils.oauth_url(bot.user.id, permissions=discord.Permissions(70380544), server=None)))
     else:

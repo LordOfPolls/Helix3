@@ -15,6 +15,7 @@ log = logging.getLogger(__name__)
 
 class Moderation:
     def __init__(self, bot):
+        log.debug("Moderation Loading...")
         self.bot = bot
 
     @commands.check(Perms.manageMessagesOnly)

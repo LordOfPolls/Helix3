@@ -15,6 +15,7 @@ log = logging.getLogger(__name__)
 
 class Porn:
     def __init__(self, bot):
+        log.debug("Porn Loading...")
         self.bot = bot
 
     @commands.command(pass_context=True, no_pm=False)
