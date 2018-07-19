@@ -215,7 +215,7 @@ class Fun:
         length = int(len(message))
         if length < 6:
             await self.bot.say("You didn't ask a question")
-        elif choice in str(length):
+        else:
             if choice == "1":
                 minichoice = random.randint(1, 10)
                 if minichoice == 1:
@@ -261,9 +261,7 @@ class Fun:
                 if minichoice == 4:
                     await self.bot.send_message(channel, "Outlook not so good")
                 if minichoice == 5:
-                    await self.bot.send_message(channel, "Very doubtful")
-        else:
-            await self.bot.say("-.- Ask me something")            
+                    await self.bot.send_message(channel, "Very doubtful")      
 
     @commands.command(pass_context = True)
     async def qr(self, ctx, *args):
