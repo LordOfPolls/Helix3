@@ -190,7 +190,7 @@ class Fun:
         await self.bot.say(insult)
         
     @commands.command(pass_context = True)   
-    async def eightball(self, ctx, message):
+    async def eightball(self, ctx):
         """Magic eightball"""
         channel = ctx.message.channel
         server = ctx.message.server
@@ -215,7 +215,7 @@ class Fun:
         length = int(len(message))
         if length < 6:
             await self.bot.say("You didn't ask a question")
-        else:
+        elif choice in str(length):
             if choice == "1":
                 minichoice = random.randint(1, 10)
                 if minichoice == 1:
@@ -262,6 +262,8 @@ class Fun:
                     await self.bot.send_message(channel, "Outlook not so good")
                 if minichoice == 5:
                     await self.bot.send_message(channel, "Very doubtful")
+        else:
+            await self.bot.say("-.- Ask me something")            
 
     @commands.command(pass_context = True)
     async def qr(self, ctx, *args):
