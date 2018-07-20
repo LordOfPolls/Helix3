@@ -10,81 +10,76 @@ import re
 import time
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor
-
+import warnings
 import discord
 import youtube_dl
 from PIL import Image
 from discord.ext import commands
 
 import code.Perms as Perms
-
 Perms = Perms.Perms
-
-# loads the bot's logging stuff
 log = logging.getLogger(__name__)
 if not discord.opus.is_loaded():
     discord.opus.load_opus('opus')
 
 
 class Song:
-    """Song Data class
-    Holds all the data for the selected song, including where it was requested"""
-    def __init__(self, url, title, channel, server, author,
-                 file=None, thumbnail=None, webURL=None, length=None, msg=None,
-                 rating=None, is_live=None, id=None, extractor=None, np=None):
-        ### Song data ###
-        self.url = url  # url of the video itself (used by player)
-        self.webURL = webURL  # url of the youtube page (used by everything else)
-        self.length = length  # length of the video
-        self.title = title  # title of the video
-        self.thumbnail = thumbnail  # thumbnail of the video
-        self.file = file  # cache file, not used rn
-        self.rating = rating # rating out of 5 of the video based on like:dislike
-        self.is_live = is_live # is this a live stream?
-        self.id = id # The video ID
-        self.source = extractor # where is this video from
+    """Song Data Class
+    All the data for the song in question"""
+    def __init__(self, url, title, channel, server, author, file=None, thumbnail=None, webURL=None, duration=None,
+                 invokeMSG=None, rating=None, is_live=False, id=None, extractor=None, lastnp=None):
+        # Song Data -- required
+        self.author = author  # The person who requested the song
+        self.channel = channel  # The channel it was requested in
+        self.server = server  # The server it was requested in
+        self.title = title  # The title of the song
+        self.url = url  # The url of the video stream
 
-        ### Discord Data ###
-        self.channel = channel  # channel command was used in
-        self.server = server  # server command was used in
-        self.invoker = author  # person who asked for the song
-        self.npmessage = msg  # The last added message, used by playlists
-        self.lastnp = np  # the last now playing message
+        # Song Data -- Optional
+        self.duration = duration  # The duration of the song
+        self.extractor = extractor  # The extractor of the video
+        self.file = file  # The file of the video, if applicable
+        self.id = id  # The id of video, if applicable
+        self.invokeMSG = invokeMSG  # The message that invoked the command
+        self.is_live = is_live  # Is the video live?
+        self.lastNP = lastnp  # The last "now playing" message
+        self.rating = rating  # The rating of the video, if applicable
+        self.thumbnail = thumbnail  # The videos thumbnail
+        self.webpageURL = webURL  # The webpage URL of the video
+        self.colour = self.__getColour()  # The accent colour of the embed
 
-        ### getting dominant colors
+
+    def __getColour(self):
+        # getting dominant colors
         urllib.request.urlretrieve(self.thumbnail, "{}thumbnail.png".format(self.server.id))
         image = Image.open("{}thumbnail.png".format(self.server.id))
 
         image = image.resize((150, 150))
         result = image.convert('P', palette=Image.ADAPTIVE, colors=1)
         result.putalpha(1)
-        colors = result.getcolors(150*150)
+        colors = result.getcolors(150 * 150)
         os.unlink("{}thumbnail.png".format(self.server.id))
 
         for i, col in colors:
             rgb = col[:3]
             hex = '%02x%02x%02x' % (rgb)
-            self.colour = (discord.Colour(int(hex, 16))) # look, switched to UK english just for you. youre welcome
-            #maybe add exception after timeout: self.colour = random.randint(0, 16777215)
+            return discord.Colour(int(hex, 16))  # look, switched to UK english just for you. youre welcome
+
 
 class VoiceState:
-    """The servers voice state
-    Handles the player and the now playing announcements """
+    """The servers voice state"""
     def __init__(self, bot, server=None):
-        self.current = None  # The current playing song (Class Song)
-        self.voice = None  # Discord.VoiceClient
+        self.audio_player = bot.loop.create_task(self.audio_player_task())  # The audio player
+        self.autoplaylist = open("autoplaylist.txt", "r")  # The autoplaylist, not used yet
         self.bot = bot  # The bot itself
-        self.server = server  # What server this state is for
-        self.play_next_song = asyncio.Event()  # take a wild guess
-        self.songs = asyncio.Queue()  # The playlist for said server
-        self.skip_votes = set()  # A set of user_ids that voted
-        self.audio_player = self.bot.loop.create_task(self.audio_player_task())   # The audio player
-        self.autoplaylist = open("autoplaylist.txt", "r")   # Unused, ignore me for now ;)
-        self.opts = {
+        self.current = None  # The current song
+        self.lastaddedmsg = None  # The last "add x song" message
+        self.lastnp = None  # The last "now playing" message
+        self.opts = {  # Youtube_DL options
             'format': 'bestaudio/best',
             'extractaudio': True,
             'audioformat': 'mp3',
-            'outtmpl': '%(extractor)s-%(id)s-%(title)s.%(ext)s',
+            'outtmpl': 'data/audio_cache/%(id)s.%(ext)s',
             'restrictfilenames': True,
             'noplaylist': False,
             'nocheckcertificate': True,
@@ -94,15 +89,17 @@ class VoiceState:
             'no_warnings': True,
             'default_search': 'auto',
             'source_address': '0.0.0.0'
-        }  # yrdl's options
-        self.lastnp = None  # The last now playing message
-        self.lastaddedmsg = None # The last added message
+        }
+        self.play_next_song = asyncio.Event()  # Take a wild guess
+        self.server = server  # The server in quesiton
+        self.skipVotes = set()  # A set of users who voted
+        self.songs = asyncio.Queue()  # The playlist
+        self.voice = None  # Discord.VoiceClient
 
     def is_playing(self):
         """Is the player active?"""
         if self.voice is None or self.current is None:
-            return False  # if there is no voice channel, or no current song
-
+            return False  # if there is no voice client, or current song
         player = self.current.player
         return not player.is_done()
 
@@ -113,7 +110,7 @@ class VoiceState:
 
     def skip(self):
         """Skips the current song"""
-        self.skip_votes.clear()
+        self.skipVotes.clear()
         if self.is_playing():
             self.player.stop()
 
@@ -122,18 +119,20 @@ class VoiceState:
         self.bot.loop.call_soon_threadsafe(self.play_next_song.set)
 
     async def serialize(self):
-        # try:
-        if len(self.songs._queue) == 0:
-            return
-        dir = "data/{}".format(self.server.id)
-        if not os.path.exists(dir):
-            os.mkdir(dir)
-        pickle.dump(self.songs._queue, open("data/{}/SerializedPlaylist.txt".format(self.server.id), "wb"))
-        log.debug("Successfully serialised queue for {}".format(self.server.id))
-        # except Exception as e:
-        #     log.error("Failed to serialize queue for {}\n{}: {}".format(self.server.id, type(e).__name__, e))
+        warnings.warn("Not ready", RuntimeWarning)
+        try:
+            if len(self.songs._queue) == 0:
+                return
+            dir = "data/{}".format(self.server.id)
+            if not os.path.exists(dir):
+                os.mkdir(dir)
+            pickle.dump(self.songs._queue, open("data/{}/SerializedPlaylist.txt".format(self.server.id), "wb"))
+            log.debug("Successfully serialised queue for {}".format(self.server.id))
+        except Exception as e:
+            log.error("Failed to serialize queue for {}\n{}: {}".format(self.server.id, type(e).__name__, e))
 
     async def deserialize(self):
+        warnings.warn("Not ready", RuntimeWarning)
         try:
             dir = "data/{}".format(self.server.id)
             if not os.path.exists(dir):
@@ -150,54 +149,59 @@ class VoiceState:
         """The function that handles music playback for the current server
         This basically does all the heavy lifting"""
         while True:
-            self.current = await self.songs.get()  # get the current song
+            self.current = await self.songs.get()  # get the next song
             try:
-                # Try and create a player
                 while self.voice==None:
                     await asyncio.sleep(0.01)
-                player = await self.voice.create_ytdl_player(self.current.url, ytdl_options=self.opts,
-                                                           after=self.toggle_next)
+                if self.current.file is None:
+                    player = await self.voice.create_ytdl_player(self.current.url, ytdl_options=self.opts,
+                                                                 after=self.toggle_next)
+                else:
+                    player = self.voice.create_ffmpeg_player(self.current.file, after=self.toggle_next)
                 self.current.player = player
             except Exception as e:
                 fmt = 'An error occurred while processing this request: ```py\n{}: {}\n```'
                 await self.bot.send_message(self.current.channel, fmt.format(type(e).__name__, e))
-                log.error("Error in addsong:\n{}".format(fmt.format(type(e).__name__, e)))
+                log.error("Error in audio_player_task:\n{}".format(fmt.format(type(e).__name__, e)))
                 return
-            player.start()  # start playback
+            player.start()
             try:
-                await self.announceNowPlaying()  # Try and announce the new song
+                await self.announceNowPlaying()
             except Exception as e:
-                log.error(e)
-            await self.play_next_song.wait()  # Wait for the next song to be ready
-            self.play_next_song.clear()  # each loop, clean up after the last loop
-            await self.serialize()
+                fmt = '{}: {}`'
+                log.error("Error in announceNowPlaying:\n{}".format(fmt.format(type(e).__name__, e)))
+            await self.play_next_song.wait()
+            self.play_next_song.clear()
+            # await self.serialize()
 
     async def announceNowPlaying(self):
         """Announces the current song in chat"""
         song = self.current
         log.debug("Playing {} in {}".format(song.title, song.server))
         # Create an embed for **FANCY** outputs
-        em = discord.Embed(description="Playing **{}** from **{}**".format(song.title, song.invoker),
+        em = discord.Embed(description="Playing **{}** from **{}**".format(song.title, song.author),
                            colour=song.colour)
         if song.is_live is None:  # trying to do this with a livestream would be Very bad
             # Make a human readable duration
-            sec = int(song.length)
+            sec = int(song.duration)
             mins = sec / 60
             sec -= 60 * mins
-            em.add_field(name="Duration:", value=str(time.strftime("%M:%S", time.gmtime(int(song.length)))), inline=True)
+            em.add_field(name="Duration:", value=str(time.strftime("%M:%S", time.gmtime(int(song.duration)))),
+                         inline=True)
         if song.rating is not None:  # sometimes youtube doesnt give a rating
             # Basically, as far as im aware, a rating is based on the like:dislike ratio of a video
             # im assuming this was left over from when youtube had a 5* rating system
-            em.add_field(name="Rating:", value="%.2f" %song.rating, inline=True)
-        em.set_footer(text=song.webURL)  # maybe they want to see the source of the song
-        em.set_image(url=song.thumbnail)   # add a thumbnail
+            em.add_field(name="Rating:", value="%.2f" % song.rating, inline=True)
+        em.set_footer(text=song.webpageURL)  # maybe they want to see the source of the song
+        em.set_image(url=song.thumbnail)  # add a thumbnail
 
         # Ok so the following code cleans up after the last now playing message
-        if self.lastnp is None:   # why do this if its the first one we've ever sent
-            self.lastnp = await self.bot.send_message(self.current.channel, embed=em)  # send a np message and assign it to the var
+        if self.lastnp is None:  # why do this if its the first one we've ever sent
+            self.lastnp = await self.bot.send_message(self.current.channel,
+                                                      embed=em)  # send a np message and assign it to the var
         else:
             try:
-                data = dict(self.lastnp.embeds[0])   # get the lastnp's embed data
+                data = dict(self.lastnp.embeds[0])  # get the lastnp's embed data
                 title = str(data['description']).replace("Playing", "Played").replace("from", "for")
                 emB = discord.Embed(description=title, colour=data['color'])
                 emB.set_footer(text=str(data['footer']['text']))
@@ -206,38 +210,39 @@ class VoiceState:
                 log.error(e)
                 try:
                     await self.bot.delete_message(self.lastnp)  # if we couldnt edit for whatever reason
-                    #just delete it
+                    # just delete it
                 except:
                     pass
             self.lastnp = await self.bot.send_message(self.current.channel, embed=em)
 
+
 class Music:
-    """Voice related commands.
-    Works in multiple servers at once.
-    """
+    """Voice related commands"""
     def __init__(self, bot):
         log.debug("Music Loading...")
         self.bot = bot  # the bot
-        self.voice_states = {}  # all the active voice states
-        self.opts = {
+        self.opts = {  # Youtube_DL options
             'format': 'bestaudio/best',
             'extractaudio': True,
-            'audioformat': 'mp3',
-            'outtmpl': '%(extractor)s-%(id)s-%(title)s.%(ext)s',
+            'audioformat': 'webm',
+            'preferredcodec': 'webm',
+            'outtmpl': 'data/audio_cache/%(id)s.%(ext)s',
             'restrictfilenames': True,
             'noplaylist': False,
             'nocheckcertificate': True,
             'ignoreerrors': False,
             'logtostderr': False,
-            'quiet': True,
-            'no_warnings': True,
+            'quiet': False,
+            'no_warnings': False,
             'default_search': 'auto',
             'source_address': '0.0.0.0'
-        }  # ytdl options
+        }
         self.thread_pool = ThreadPoolExecutor(max_workers=2)  # threading stuff. shhhh
+        self.voice_states = {}  # all the active voice states
 
     def __unload(self):
-        """Called when the cog is unloaded"""
+        """Called when the cogs are unloaded"""
+        log.debug("Unloading Music...")
         for state in self.voice_states.values():
             try:
                 state.audio_player.cancel()
@@ -246,45 +251,50 @@ class Music:
             except:
                 pass
 
-    #### UTIL FUNCTIONS ####
-
+    ### UTIL FUNCTIONS ###
     def get_voice_state(self, server):
-        """"Gets the current voice state for a specified server"""
+        """Gets the current voice state for the specified server"""
         state = self.voice_states.get(server.id)
         if state is None:
             state = VoiceState(self.bot, server=server)
             self.voice_states[server.id] = state
-
         return state
 
     async def create_voice_client(self, channel):
+        """Creates a voice client and adds it to the voice state"""
+        if self.get_voice_state(channel.server) != None:
+            log.warning("Create_voice_client called when voice client already exists")
         voice = await self.bot.join_voice_channel(channel)
         state = self.get_voice_state(channel.server)
         state.voice = voice
 
-
     async def addsong(self, songData, ctx=None, playlist=False, totalSongs=None, songsProcessed=None):
         state = self.get_voice_state(songData.server)
-        # await self.create_voice_client(ctx.message.author.voice_channel)
         try:
             if totalSongs:
-                await self.bot.edit_message(state.lastaddedmsg, '{}/{}\nAdded {}'.format(songsProcessed, totalSongs, songData.title))
+                await self.bot.edit_message(state.lastaddedmsg,
+                                            '{}/{}\nAdded {}'.format(songsProcessed, totalSongs, songData.title))
             else:
                 await self.bot.edit_message(state.lastaddedmsg, 'Added ' + songData.title)
         except Exception as e:
             log.error(e)
             state.lastaddedmsg = await self.bot.send_message(songData.channel, 'Added ' + songData.title)
+        print(songData.duration)
+        if songData.duration >= 600 and songData.duration <= 1200:
+            log.debug("Downloading {} due to length".format(songData.title))
+            await self.bot.edit_message(state.lastaddedmsg, "Downloading {} due to length".format(songData.title))
+            if not os.path.exists("data/audio_cache"):
+                os.mkdir("data/audio_cache")
+            song = [songData.webpageURL]
+            await self.download(song)
+            songData.file = 'data/audio_cache/{0.id}.webm'.format(songData)
+            await self.bot.edit_message(state.lastaddedmsg,  'Added {}'.format(songData.title))
+
         await state.songs.put(songData)
         # await state.serialize()
 
-    async def async_process_youtube_playlist(self, info, ctx, msg, **meta):
-        """
-            Processes youtube playlists links from `playlist_url` in a questionable, async fashion.
-            :param playlist_url: The playlist url to be cut into individual urls and added to the playlist
-            :param meta: Any additional metadata to add to the playlist entry
-            :param ytdl: Youtube_dl object created in .play
-            :param ctx: context
-        """
+
+    async def async_process_youtube_playlist(self, info, ctx, invokeMSG, **meta):
         data = []  # creating a list simply so i can len() it
         totalSongs = 0   # how many songs are in this playlist
         songsProcessed = 1   # how mnay songs have we processed
@@ -292,7 +302,7 @@ class Music:
             totalSongs += 1
             data.append(entry_data)   # so we dont do useless processing
         state = self.get_voice_state(ctx.message.server)  # get the current voice_state
-        await self.bot.edit_message(msg, "Processing {} songs :thinking:".format(totalSongs))
+        await self.bot.edit_message(invokeMSG, "Processing {} songs :thinking:".format(totalSongs))
         for entry_data in data:
             if entry_data:  # is this data even usable?
                 baseurl = info['webpage_url'].split('playlist?list=')[0]
@@ -309,18 +319,13 @@ class Music:
         except:
             pass
 
-    async def async_process_sc_playlist(self, info, ctx, msg):
-        """
-            Processes soundcloud set and bancdamp album links from `playlist_url` in a questionable, async fashion.
-            :param playlist_url: The playlist url to be cut into individual urls and added to the playlist
-            :param meta: Any additional metadata to add to the playlist entry
-        """
+    async def async_process_sc_playlist(self, info, ctx, invokeMSG):
         for entry_data in info['entries']:
             if entry_data:
                 data = await self.extract_info(url=entry_data['url'], download=False, process=True)
                 songData = Song(url=entry_data['url'], title=data['title'], channel=ctx.message.channel,
                                 server=ctx.message.server, author=ctx.message.author, thumbnail=data['thumbnail'],
-                                webURL=entry_data['url'], length=data['duration'], msg=msg)
+                                webURL=entry_data['url'], duration=data['duration'], invokeMSG=msg)
 
                 try:
                     self.addsong(songData)
@@ -336,6 +341,13 @@ class Music:
 
         # add the ytdl task to the event loop in a seperate thread to avoid blocking
         return await loop.run_in_executor(self.thread_pool, functools.partial(ytdl.extract_info, *args, **kwargs))
+
+    async def download(self, *args, **kwargs):
+        loop = self.bot.loop  # get the bot's event loop
+        ytdl = youtube_dl.YoutubeDL(self.opts)  # get ytdl ready
+
+        # add the ytdl task to the event loop in a seperate thread to avoid blocking
+        return await loop.run_in_executor(self.thread_pool, functools.partial(ytdl.download, *args, **kwargs))
 
     async def on_voice_state_update(self, before, after):
         """Event to handle voice changes"""
@@ -373,10 +385,10 @@ class Music:
         """For the sake of better code this is a function. It takes all the data out of youtube_dl's extracted
         info and stores it in the song class"""
         return Song(url=data['url'], title=data['title'], channel=ctx.message.channel,
-                   server=ctx.message.server, author=ctx.message.author,
-                   thumbnail=data['thumbnail'], webURL=data['webpage_url'], length=data['duration'],
-                   msg=msg, id=data['id'], rating=data['average_rating'], is_live=data['is_live'],
-                   extractor=data['extractor'])
+                    server=ctx.message.server, author=ctx.message.author,
+                    thumbnail=data['thumbnail'], webURL=data['webpage_url'], duration=data['duration'],
+                    invokeMSG=msg, id=data['id'], rating=data['average_rating'], is_live=data['is_live'],
+                    extractor=data['extractor'])
 
     #### COMMANDS ###
 
@@ -441,7 +453,9 @@ class Music:
             if "playlist" in info['extractor'] or "set" in info['extractor']:
                 if info['extractor'] == 'youtube:playlist':
                     try:
-                        await self.async_process_youtube_playlist(info=info, channel=ctx.message.channel, author=ctx.message.author, msg=state.lastaddedmsg, ytdl=ytdl, ctx=ctx)
+                        await self.async_process_youtube_playlist(info=info, channel=ctx.message.channel, 
+                                                                  author=ctx.message.author, 
+                                                                  invokeMSG=state.lastaddedmsg, ytdl=ytdl, ctx=ctx)
                     except:
                         await self.bot.send_message(ctx.message.channel, "Sorry, can you send the playlist link instead? :confounded:")
                 elif info['extractor'] == 'soundcloud:set':
@@ -468,7 +482,8 @@ class Music:
                     pass
                 songData = Song(url=info['url'], title=info['title'], channel=ctx.message.channel,
                                 server=ctx.message.server, author=ctx.message.author, thumbnail=thumbnail,
-                                webURL=info['webpage_url'], length=info['duration'], msg=state.lastaddedmsg, rating=rating)
+                                webURL=info['webpage_url'], duration=info['duration'], invokeMSG=state.lastaddedmsg,
+                                rating=rating, id=info['id'])
                 await self.addsong(songData, ctx)
                 return
 
@@ -587,10 +602,10 @@ class Music:
                 color=song.colour
             )
             if song.is_live is None:
-                sec = int(song.length)
+                sec = int(song.duration)
                 mins = sec / 60
                 sec -= 60 * mins
-                em.add_field(name="Duration:", value=str(time.strftime("%M:%S", time.gmtime(int(song.length)))),
+                em.add_field(name="Duration:", value=str(time.strftime("%M:%S", time.gmtime(int(song.duration)))),
                              inline=True)
             if song.rating is not None:
                 em.add_field(name="Rating:", value="%.2f" % song.rating, inline=True)
