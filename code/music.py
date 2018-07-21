@@ -322,17 +322,37 @@ class Music:
             pass
 
     async def async_process_sc_playlist(self, info, ctx, invokeMSG):
+        data = []  # creating a list simply so i can len() it
+        totalSongs = 0  # how many songs are in this playlist
+        songsProcessed = 1  # how mnay songs have we processed
+        processedSongs = []
+        for entry_data in info['entries']:
+            totalSongs += 1
+            data.append(entry_data)  # so we dont do useless processing
+        state = self.get_voice_state(ctx.message.server)  # get the current voice_state
+
         for entry_data in info['entries']:
             if entry_data:
                 data = await self.extract_info(url=entry_data['url'], download=False, process=True)
-                songData = Song(url=entry_data['url'], title=data['title'], channel=ctx.message.channel,
+                processedSongs.append(Song(url=entry_data['url'], title=data['title'], channel=ctx.message.channel,
                                 server=ctx.message.server, author=ctx.message.author, thumbnail=data['thumbnail'],
-                                webURL=entry_data['url'], duration=data['duration'], invokeMSG=msg)
+                                webURL=entry_data['url'], duration=data['duration'], invokeMSG=invokeMSG))
 
                 try:
-                    self.addsong(songData)
-                except Exception as e:
-                    log.error("Error adding entry {}".format(entry_data['id']), exc_info=e)
+                    songsProcessed += 1
+                except:
+                    pass
+                if state.songs.qsize() < 5:
+                    # so something plays while they wait
+                    await self.addsong(processedSongs[0], playlist=True)
+                    processedSongs.remove(processedSongs[0])
+
+            for song in processedSongs:
+                await self.addsong(song, playlist=True)
+            try:
+                await self.bot.edit_message(state.lastaddedmsg, "Added {} songs ^-^".format(totalSongs))
+            except:
+                pass
 
     async def extract_info(self, *args, **kwargs):
         """
