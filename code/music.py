@@ -232,7 +232,7 @@ class Music:
             'nocheckcertificate': True,
             'ignoreerrors': False,
             'logtostderr': False,
-            'quiet': False,
+            'quiet': True,
             'no_warnings': False,
             'default_search': 'auto',
             'source_address': '0.0.0.0'
@@ -668,9 +668,9 @@ class Music:
         andmoretext = '*... and xxxxxxxxxx more*'
         await self.bot.send_message(ctx.message.channel, "There are {} songs in the queue".format(len(songs)))
         lines = []
-        lines.append("Currently Playing: **{}** added by **{}**\n".format(state.current.title, state.current.invoker.name))
+        lines.append("Currently Playing: **{}** added by **{}**\n".format(state.current.title, state.current.author.name))
         for song in songs:
-            newline = '`{}.` **{}** added by **{}**'.format(len(lines), song.title, song.invoker.name).strip()
+            newline = '`{}.` **{}** added by **{}**'.format(len(lines), song.title, song.author.name).strip()
 
             linesSum = sum(len(x) + 4 for x in lines)  # +3 is for newline chars
             if linesSum + len(newline) + len(andmoretext) > discord_char_limit:
