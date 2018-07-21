@@ -268,18 +268,13 @@ class Music:
         state = self.get_voice_state(channel.server)
         state.voice = voice
 
-    async def addsong(self, songData, ctx=None, playlist=False, totalSongs=None, songsProcessed=None):
+    async def addsong(self, songData, ctx=None, playlist=False):
         state = self.get_voice_state(songData.server)
-        try:
-            if totalSongs:
-                await self.bot.edit_message(state.lastaddedmsg,
-                                            '{}/{}\nAdded {}'.format(songsProcessed, totalSongs, songData.title))
-            else:
+        if not playlist:
+            try:
                 await self.bot.edit_message(state.lastaddedmsg, 'Added ' + songData.title)
-        except Exception as e:
-            log.error(e)
-            state.lastaddedmsg = await self.bot.send_message(songData.channel, 'Added ' + songData.title)
-        print(songData.duration)
+            except:
+                state.lastaddedmsg = await self.bot.send_message(songData.channel, 'Added ' + songData.title)
         if songData.duration >= 600 and songData.duration <= 1200:
             log.debug("Downloading {} due to length".format(songData.title))
             await self.bot.edit_message(state.lastaddedmsg, "Downloading {} due to length".format(songData.title))
@@ -303,17 +298,24 @@ class Music:
             data.append(entry_data)   # so we dont do useless processing
         state = self.get_voice_state(ctx.message.server)  # get the current voice_state
         await self.bot.edit_message(invokeMSG, "Processing {} songs :thinking:".format(totalSongs))
+        processedSongs =[]
         for entry_data in data:
             if entry_data:  # is this data even usable?
                 baseurl = info['webpage_url'].split('playlist?list=')[0]
                 song_url = baseurl + 'watch?v=%s' % entry_data['id']   # get a useful link instead of the stupid playlist link
                 data = await self.extract_info(url=song_url, download=False, process=True)   # get the data of this video
-                song = await self.parseSong(data, ctx, msg)   # assign its data to the song class
+                processedSongs.append(await self.parseSong(data, ctx, invokeMSG))   # assign its data to the song class
                 try:
-                    await self.addsong(song, ctx, playlist=True, totalSongs=totalSongs, songsProcessed=songsProcessed)  # add it
                     songsProcessed += 1
                 except:
                     pass
+                if state.songs.qsize() < 5:
+                    # so something plays while they wait
+                    await self.addsong(processedSongs[0], playlist=True)
+                    processedSongs.remove(processedSongs[0])
+
+        for song in processedSongs:
+            await self.addsong(song, playlist=True)
         try:
             await self.bot.edit_message(state.lastaddedmsg, "Added {} songs ^-^".format(totalSongs))
         except:
@@ -452,16 +454,15 @@ class Music:
 
             if "playlist" in info['extractor'] or "set" in info['extractor']:
                 if info['extractor'] == 'youtube:playlist':
-                    try:
-                        await self.async_process_youtube_playlist(info=info, channel=ctx.message.channel, 
-                                                                  author=ctx.message.author, 
-                                                                  invokeMSG=state.lastaddedmsg, ytdl=ytdl, ctx=ctx)
-                    except:
-                        await self.bot.send_message(ctx.message.channel, "Sorry, can you send the playlist link instead? :confounded:")
+                    # try:
+                    await self.async_process_youtube_playlist(info=info, channel=ctx.message.channel,
+                                                              author=ctx.message.author,
+                                                              invokeMSG=state.lastaddedmsg, ytdl=ytdl, ctx=ctx)
+                    # except:
+                        # await self.bot.send_message(ctx.message.channel, "Sorry, can you send the playlist link instead? :confounded:")
                 elif info['extractor'] == 'soundcloud:set':
                     await self.async_process_sc_playlist(info, ctx, state.lastaddedmsg)
             else:
-                info = await self.extract_info(url=song, download=False, process=True)
                 try:
                     thumbnail = info['thumbnail']
                 except:
