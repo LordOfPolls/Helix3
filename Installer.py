@@ -93,7 +93,7 @@ def main():
         requirementsDir = "requirements.txt"
 
     clear()
-    if not gitWorking:
+    if gitWorking:
         if not pull:
             if os.path.exists("Helix3"):
                 print("Error, helix3 directory already exists, please run Installer.py from that location")
