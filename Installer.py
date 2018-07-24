@@ -103,9 +103,12 @@ def main():
                 subprocess.run("git clone https://github.com/LordOfPolls/Helix3.git")
         else:
             print("Updating Helix")
-            subprocess.run("git fetch --all")
-            subprocess.run("git reset --hard")
-
+            y_n = input("Would you like to overwrite any local changes?")
+            if "y" in y_n.lower():
+                subprocess.run("git fetch --all")
+                subprocess.run("git reset --hard")
+            else:
+                subprocess.run("git pull")
     clear()
     requirements = PIP.getRequirements(requirementsDir)
     print("Installing {} modules from {}".format(len(requirements), requirementsDir))
