@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.com/LordOfPolls/Helix3.svg?branch=Stable)](https://travis-ci.com/LordOfPolls/Helix3) ![Last Commit](https://img.shields.io/github/last-commit/google/skia.svg) ![Discord](https://img.shields.io/discord/460074170475085825.svg) ![GitHub commit activity the past week, 4 weeks, year](https://img.shields.io/github/commit-activity/y/LordOfPolls/Helix3.svg)
 # Helix3
 The third iteration of Helix
 
