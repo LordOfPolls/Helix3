@@ -124,4 +124,5 @@ def main():
     print("All modules installed")
     print("Helix should now be usable")
 
-main()
+if __name__ == '__main__':
+    main()
