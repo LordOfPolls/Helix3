@@ -20,8 +20,12 @@ from code.misc_pickup import pickup
 from code.misc_shitpost import shitpost
 import code.Perms as Perms
 from code.bot import getPrefix
-from data.imgur import clientid
-from data.imgur import clientsecret
+try:
+    from data.imgur import clientid
+    from data.imgur import clientsecret
+except ImportError:
+    clientid = Npne
+    clientsecret = None
 Perms = Perms.Perms
 
 log = logging.getLogger(__name__)
