@@ -12,6 +12,7 @@ pipWorking = False
 gitWorking = False
 
 def clear():
+    os.system('cls' if os.name == 'nt' else 'clear')
 
 def checkGit():
     global gitWorking
@@ -80,6 +81,7 @@ def main():
     PIP().checkPIP()
     if not gitWorking:
         print("Unable to use git, please install git shell")
+        print("https://git-scm.com/book/en/v2/Getting-Started-Installing-Git")
     if not pipWorking:
         print("Unable to use pip, please install it manually")
 
@@ -91,17 +93,18 @@ def main():
         requirementsDir = "requirements.txt"
 
     clear()
-    if not pull:
-        if os.path.exists("Helix3"):
-            print("Error, helix3 directory already exists, please run Installer.py from that location")
-            time.sleep(3)
+    if not gitWorking:
+        if not pull:
+            if os.path.exists("Helix3"):
+                print("Error, helix3 directory already exists, please run Installer.py from that location")
+                time.sleep(3)
+            else:
+                print("Downloading Helix")
+                subprocess.run("git clone https://github.com/LordOfPolls/Helix3.git")
         else:
-            print("Downloading Helix")
-            subprocess.run("git clone https://github.com/LordOfPolls/Helix3.git")
-    else:
-        print("Updating Helix")
-        subprocess.run("git fetch --all")
-        subprocess.run("git reset --hard")
+            print("Updating Helix")
+            subprocess.run("git fetch --all")
+            subprocess.run("git reset --hard")
 
     clear()
     requirements = PIP.getRequirements(requirementsDir)
