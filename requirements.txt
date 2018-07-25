@@ -1,4 +1,3 @@
-https://github.com/LordOfPolls/Python-AIML-Logging/archive/master.zip
 discord.py[voice]
 colorlog
 pycryptodome
@@ -8,3 +7,4 @@ lxml
 pillow
 bs4
 youtube_dl
+https://github.com/LordOfPolls/Python-AIML-Logging/archive/master.zip

@@ -29,12 +29,47 @@ class PIP():
         self.gitWorking = gitWorking
 
     def checkPIP(self):
+        extraInfo = ""
         try:
             import pip
             self.pipWorking = True
+            extraInfo = "normally"
         except ImportError:
             self.pipWorking = False
             self.installPIP()
+            if os.name != "nt" and self.python_m("--version") is None:
+                try:
+                    print("\033[41mI will install it dammit >:(\033[0m")
+                    print("Updating apt...")
+                    subprocess.run("apt-get update", shell=True)
+                    print("\033[42mAttempting to install pip ^-^\033[0m")
+                    subprocess.run("apt-get install python3-pip", shell=True)
+                    if self.python_m("--version") is None:
+                        raise Exception
+                    return
+                except:
+                    clear()
+                    print("Im sorry, i cant install pip myself ;-;")
+                    print("Please google how to install pip on your OS")
+                    time.sleep(10)
+                    exit()
+            else:
+                try:
+                    import pip
+                    self.pipWorking = True
+                except:
+                    self.pipWorking = False
+                    print("Unable to use pip module, testing python -m pip")
+                    if self.python_m("--version") is None:
+                        print("PIP is not working on this machine, sorry")
+                        print("Try installing it manually")
+                        time.sleep(10)
+                        exit()
+                    else:
+                        extraInfo = "via command line only"
+        sys.stdout.write("PIP is working " + extraInfo + "\n")
+        return True
+
 
     def installPIP(self):
         clear()
@@ -46,21 +81,16 @@ class PIP():
             time.sleep(10)
             exit()
         urllib.request.urlretrieve("https://bootstrap.pypa.io/get-pip.py", "get-pip.py")
-        subprocess.run([sys.executable, 'get-pip.py'], shell=True)
+        subprocess.run(sys.executable + " get-pip.py", shell=True)
         clear()
-        os.unlink("get-pip.py""")
-        self.checkPIP()
-        if not self.pipWorking:
-            sys.stderr.write("Unable to install pip, try installing it manually")
-            time.sleep(5)
-            exit()
-        else:
-            sys.stdout.write("PIP successfully installed")
+        os.unlink("get-pip.py")
 
     @staticmethod
     def python_m(*args, **kwargs):
-        return subprocess.check_output([sys.executable, '-m', 'pip'] + list(args))
-
+        try:
+            return str(subprocess.check_output([sys.executable, '-m', 'pip'] + list(args)))
+        except subprocess.CalledProcessError:
+            return None
     def install(self, module):
         command = "install %s" % module
         self.python_m(*command.split())
@@ -76,14 +106,11 @@ def main():
         print("Helix doesnt support any version of python below 3.5, please use that 3.5 or higher")
         time.sleep(5)
         exit()
-    print("Helix3 installer")
     checkGit()
     PIP().checkPIP()
     if not gitWorking:
         print("Unable to use git, please install git shell")
         print("https://git-scm.com/book/en/v2/Getting-Started-Installing-Git")
-    if not pipWorking:
-        print("Unable to use pip, please install it manually")
 
     if not os.path.exists("code"):
         requirementsDir = "Helix3/requirements.txt"
@@ -105,17 +132,21 @@ def main():
             print("Updating Helix")
             y_n = input("Would you like to overwrite any local changes?")
             if "y" in y_n.lower():
-                subprocess.run("git fetch --all")
-                subprocess.run("git reset --hard")
+                subprocess.run("git fetch --all", shell=True)
+                subprocess.run("git reset --hard", shell=True)
             else:
-                subprocess.run("git pull")
+                subprocess.run("git pull", shell=True)
     clear()
     requirements = PIP.getRequirements(requirementsDir)
-    print("Installing {} modules from {}".format(len(requirements), requirementsDir))
+    print("Installing {} modules from {}\nMSG from the dev: This can take a **really** long time\n i suggest brewing a nice cup of tea\n\n".format(len(requirements), requirementsDir))
     for module in requirements:
+        clear()
+        print(
+            "Installing {} modules from {}\nMSG from the dev: This can take a **really** long time\n i suggest brewing a nice cup of tea\n\n".format(
+                len(requirements), requirementsDir))
         print("Installing {}".format(module))
         try:
-            subprocess.call("pip install {} --no-cache-dir --upgrade -q".format(module))
+            subprocess.call("pip install {} --no-cache-dir --upgrade".format(module), shell=True)
         except subprocess.CalledProcessError as e:
             print("Unable to install {}\n{}".format(module, e.returncode))
             time.sleep(10)
@@ -123,6 +154,8 @@ def main():
     clear()
     print("All modules installed")
     print("Helix should now be usable")
+    print("Press any 'enter' to quit")
+    input()
 
 if __name__ == '__main__':
     main()
