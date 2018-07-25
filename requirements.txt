@@ -1,5 +1,5 @@
 https://github.com/LordOfPolls/Python-AIML-Logging/archive/master.zip
-discord.py
+discord.py[voice]
 colorlog
 pycryptodome
 requests
