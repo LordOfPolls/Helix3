@@ -153,10 +153,9 @@ if __name__ == '__main__':
         ver = str(ver.read().split('|')[2]).strip()
         log.info("HELIX3 {}".format(ver))
 
-        command = "git pull --dry-run"
-        output = subprocess.run(command.split(" "), stdout=subprocess.PIPE)
+        output = subprocess.run("git remote show origin", stdout=subprocess.PIPE)
         output = str(output.stdout.decode('utf-8')).lower()
-        if output in ["", " ", None] or output == "already up to date":
+        if "local out of date" not in output:
             log.info("Code up to date")
         else:
             log.critical("Code is out of date, please run Installer.py")
