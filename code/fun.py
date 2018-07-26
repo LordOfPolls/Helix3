@@ -24,7 +24,7 @@ try:
     from data.imgur import clientid
     from data.imgur import clientsecret
 except ImportError:
-    clientid = Npne
+    clientid = None
     clientsecret = None
 Perms = Perms.Perms
 

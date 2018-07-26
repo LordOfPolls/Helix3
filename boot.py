@@ -6,6 +6,7 @@ import os
 import sys
 import tempfile
 import importlib
+import subprocess
 from time import gmtime, strftime, sleep
 
 restart = False
@@ -151,6 +152,14 @@ if __name__ == '__main__':
         ver = os.popen(r'git show -s HEAD --format="%cr|%s|%h"')
         ver = str(ver.read().split('|')[2]).strip()
         log.info("HELIX3 {}".format(ver))
+
+        command = "git pull --dry-run"
+        output = subprocess.run(command.split(" "), stdout=subprocess.PIPE)
+        output = str(output.stdout.decode('utf-8')).lower()
+        if output in ["", " ", None] or output == "already up to date":
+            log.info("Code up to date")
+        else:
+            log.critical("Code is out of date, please run Installer.py")
     except:
         log.info("HELIX3")
     log.info("By DNA, Murrax2, Orange, Semmoragge, WatchMiltan")
