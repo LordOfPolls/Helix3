@@ -32,6 +32,8 @@ log = logging.getLogger(__name__)
 class Fun:
     def __init__(self, bot):
         self.bot = bot
+        if not os.path.isfile("data/imgur.py"):
+            log.error("No imgur api token, .meme will not work")
 
     @commands.command(pass_context=True)
     async def echo(self, ctx, *args):

@@ -70,7 +70,11 @@ class VoiceState:
     """The servers voice state"""
     def __init__(self, bot, server=None):
         self.audio_player = bot.loop.create_task(self.audio_player_task())  # The audio player
-        self.autoplaylist = open("autoplaylist.txt", "r")  # The autoplaylist, not used yet
+        try:
+            self.autoplaylist = open("autoplaylist.txt", "r")  # The autoplaylist, not used yet
+        except FileNotFoundError:
+            log.debug("autoplaylist.txt not present")
+            self.autoplaylist = None
         self.bot = bot  # The bot itself
         self.current = None  # The current song
         self.lastaddedmsg = None  # The last "add x song" message
