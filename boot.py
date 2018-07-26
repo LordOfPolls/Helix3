@@ -28,14 +28,17 @@ def InitLogging():
     global tmpfile
     global tfh
     global logLevel
-    if overrideLogLevel is None:
-        data = str(subprocess.run("git branch", stdout=subprocess.PIPE).stdout.decode('utf-8'))
-        if "* master" in data:
-            logLevel = logging.DEBUG
-        elif "* Stable" in data:
-            logLevel = logging.INFO
-    else:
-        logLevel = overrideLogLevel
+    try:
+        if overrideLogLevel is None:
+            data = str(subprocess.run("git branch", stdout=subprocess.PIPE).stdout.decode('utf-8'))
+            if "* master" in data:
+                logLevel = logging.DEBUG
+            elif "* Stable" in data:
+                logLevel = logging.INFO
+        else:
+            logLevel = overrideLogLevel
+    except:
+        logLevel=logging.DEBUG
     # logging utility
     tmpfile = tempfile.TemporaryFile('w+', encoding='utf8')
     log = logging.getLogger('bootScript')
