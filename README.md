@@ -1,8 +1,13 @@
-[![Build Status](https://travis-ci.com/LordOfPolls/Helix3.svg?branch=Stable)](https://travis-ci.com/LordOfPolls/Helix3) ![Last Commit](https://img.shields.io/github/last-commit/LordOfPolls/Helix3.svg) ![Discord](https://img.shields.io/discord/460074170475085825.svg) ![GitHub commit activity the past week, 4 weeks, year](https://img.shields.io/github/commit-activity/y/LordOfPolls/Helix3.svg)
+[![](https://travis-ci.com/LordOfPolls/Helix3.svg?branch=Stable)](https://travis-ci.com/LordOfPolls/Helix3) 
+![](https://img.shields.io/github/last-commit/LordOfPolls/Helix3.svg) 
+![](https://img.shields.io/discord/460074170475085825.svg) 
+![](https://img.shields.io/github/commit-activity/y/LordOfPolls/Helix3.svg)
+![](https://img.shields.io/badge/Version-Beta-red.svg)
 # Helix3
 The third iteration of Helix
 
-Oh hey, this bot is a work in progress. If you want to help out, go ahead.
+# How do i install?
+Check the wiki, install and config guides are there
 
 ## So what does each file do?
 
@@ -48,12 +53,18 @@ Go to the appropriate cog file, go into the class and use the following:
         [code for your command]
  ```
 
-### Extra dependencies
-- `youtube_dl`
+### Dependencies
+(this list isnt always up to date, check [requirements.txt](https://raw.githubusercontent.com/LordOfPolls/Helix3/Stable/requirements.txt))
+- `discord.py[voice]`
 - `colorlog`
-- `lxml`
-- `discord`
 - `pycryptodome`
+- `requests`
+- `imgurpython`
+- `lxml`
+- `pillow`
+- `bs4`
+- `youtube_dl`
+- `https://github.com/LordOfPolls/Python-AIML-Logging/archive/master.zip`
 
 ### For anything else, use the following:
 standard discord.py stuff: http://discordpy.readthedocs.io/en/latest/
