@@ -6,36 +6,62 @@ import os
 import sys
 import tempfile
 import importlib
+import subprocess
 from time import gmtime, strftime, sleep
-
 restart = False
+log = None
+tmpfile = None
+tfh = None
+logLevel = None
+
+overrideLogLevel = None
+# change this to override the automatic log level choice
+# full logging output = logging.DEBUG
+# errors and info only = logging.INFO
+# warnings and errors only = logging.WARNING
+# errors only = logging.ERROR
+# critical errors = logging.CRITICAL
 
 
-# logging utility
-tmpfile = tempfile.TemporaryFile('w+', encoding='utf8')
-log = logging.getLogger('bootScript')
-log.setLevel(logging.DEBUG)
+def InitLogging():
+    global log
+    global tmpfile
+    global tfh
+    global logLevel
+    try:
+        if overrideLogLevel is None:
+            data = str(subprocess.run("git branch", stdout=subprocess.PIPE).stdout.decode('utf-8'))
+            if "* master" in data:
+                logLevel = logging.DEBUG
+            elif "* Stable" in data:
+                logLevel = logging.INFO
+        else:
+            logLevel = overrideLogLevel
+    except:
+        logLevel=logging.DEBUG
+    # logging utility
+    tmpfile = tempfile.TemporaryFile('w+', encoding='utf8')
+    log = logging.getLogger('bootScript')
+    log.setLevel(logLevel)
 
-# StreamHandler init
-sh = logging.StreamHandler(stream=sys.stdout)
+    # StreamHandler init
+    sh = logging.StreamHandler(stream=sys.stdout)
+    fmt = "%(log_color)s[%(levelname)s] %(name)s: %(message)s"
+    date_format = '%Y-%m-%d %H:%M:%S'
+    fmt = colorlog.ColoredFormatter(fmt, date_format,
+                                    log_colors={'DEBUG': 'cyan', 'INFO': 'reset',
+                                                'WARNING': 'bold_yellow', 'ERROR': 'bold_red',
+                                                'CRITICAL': 'bold_red'})
 
-fmt = "%(log_color)s[%(levelname)s] %(name)s: %(message)s"
-date_format = '%Y-%m-%d %H:%M:%S'
-fmt = colorlog.ColoredFormatter(fmt, date_format,
-                                log_colors={'DEBUG': 'cyan', 'INFO': 'reset',
-                                            'WARNING': 'bold_yellow', 'ERROR': 'bold_red',
-                                            'CRITICAL': 'bold_red'})
-
-sh.setFormatter(fmt)
-sh.setLevel(logging.DEBUG)
-log.addHandler(sh)
-
-tfh = logging.StreamHandler(stream=tmpfile)
-tfh.setFormatter(logging.Formatter(
-    fmt="[%(levelname)s] %(name)s: %(message)s"
-))
-tfh.setLevel(logging.DEBUG)
-log.addHandler(tfh)
+    sh.setFormatter(fmt)
+    sh.setLevel(logLevel)
+    log.addHandler(sh)
+    tfh = logging.StreamHandler(stream=tmpfile)
+    tfh.setFormatter(logging.Formatter(
+        fmt="[%(levelname)s] %(name)s: %(message)s"
+    ))
+    tfh.setLevel(logLevel)
+    log.addHandler(tfh)
 
 
 def finalize_logging():
@@ -111,7 +137,8 @@ def finalize_logging():
         # name = the file that threw the log message
         # message = the message sent via the log
     ))
-    fh.setLevel(logging.DEBUG) # https://docs.python.org/2/library/logging.html#logging.Logger.setLevel
+    global logLevel
+    fh.setLevel(logLevel) # https://docs.python.org/2/library/logging.html#logging.Logger.setLevel
     log.addHandler(fh) # add file handler (fh) to the active log, so it gets used when someone uses logging
 
     dlog = logging.getLogger('discord') # get discords logger
@@ -123,6 +150,9 @@ def finalize_logging():
     ))
     dlog.addHandler(dlh) # adds this handler to discords logging
     log.debug("Log setup complete")
+
+
+
 
 def restartCall():
     global restart
@@ -145,18 +175,62 @@ def main():
     from code import Helix
     Helix()
 
+def envCheck():
+    log.debug("Checking environment...")
+    if not os.path.isfile("ffmpeg.exe") or not os.path.isfile("ffprobe.exe"):
+        if os.name == "nt":
+            log.critical("ffmpeg files are missing, please rerun Installer and tell it to overwrite local files")
+            exit(1)
+    if not os.path.isdir("code"):
+        log.critical("Code directory is missing, please rerun Installer and tell it to overwrite local files")
+        exit(1)
+    if not os.path.isfile("code/bot.py"):
+        log.critical("Core bot file is missing, please rerun Installer and tell it to overwrite local files")
+        exit(1)
+    if sys.version_info < (3, 5):
+        # i dont know how they got this far lower than 3.5... but they did
+        log.warning("Helix isnt designed to run on lower than python3.5 you may encounter errors")
+    if sys.version_info >= (3, 7):
+        log.warning("Helix hasnt been tested on Python3.7, you may encounter errors")
+    log.debug("Environment check passed")
 
 if __name__ == '__main__':
     try:
+        InitLogging()
         ver = os.popen(r'git show -s HEAD --format="%cr|%s|%h"')
         ver = str(ver.read().split('|')[2]).strip()
         log.info("HELIX3 {}".format(ver))
+        log.info("By DNA, Murrax2, Orange, Semmoragge, WatchMiltan")
+
+        output = subprocess.run("git remote show origin", stdout=subprocess.PIPE)
+        output = str(output.stdout.decode('utf-8')).lower()
+        if "local out of date" not in output:
+            log.info("Code up to date")
+        else:
+            log.warning("Code is out of date, please run Installer.py")
+
+        envCheck()
+        levels = {
+            "50": "CRITICAL",
+            "40": "ERROR",
+            "30": "WARNING",
+            "20": "INFO",
+            "10": "DEBUG",
+            "0": "nothing"
+        }
+        levelOutput = "Log level has been set to {}".format(logLevel)
+        for word, initial in levels.items():
+            levelOutput = levelOutput.replace(word, initial)
+        log.info(levelOutput)
+
     except:
         log.info("HELIX3")
-    log.info("By DNA, Murrax2, Orange, Semmoragge, WatchMiltan")
     # try:
     main()
     # except Exception as e:
     #     log.fatal("Bot runtime has been terminated")
     #     log.fatal(e)
     #     os.execl(sys.executable, sys.executable, *sys.argv)
+else:
+    # the bot has been imported, most likely by test.py
+    InitLogging()

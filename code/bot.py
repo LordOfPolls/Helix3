@@ -38,7 +38,8 @@ def _setup_logging(log):
     logging.getLogger("discord.gateway ").setLevel(logging.ERROR)
     logging.getLogger("discord").setLevel(logging.FATAL)
     logging.getLogger("AIML").setLevel(logging.CRITICAL)
-    logging.getLogger(__package__).setLevel(logging.DEBUG)
+    from boot import logLevel
+    logging.getLogger(__package__).setLevel(logLevel)
 
 
 def getPrefix(bot, message):
@@ -445,6 +446,7 @@ from code.music import Music
 from code.fun import Fun
 from code.porn import Porn
 from code.utilities import Utilities
+
 
 log = logging.getLogger(__name__)
 bot = commands.Bot(command_prefix=getPrefix, description='Helix3.0', pm_help=True, case_insensitive=True)
