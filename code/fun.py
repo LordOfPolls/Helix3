@@ -94,6 +94,18 @@ class Fun:
                     em.set_image(url=js['file'])
                     await self.bot.say(embed=em)
 
+    @commands.command(pass_context=True)
+    async def meow(self, ctx):
+        """Get a random cat picture with custom text"""
+        prefix = getPrefix(self.bot, ctx.message)
+        message = ctx.message.content.replace(prefix, "")
+        message = message.replace("meow", "").strip()
+        message = message.replace(" ", "%20")
+        url = "https://cataas.com/cat/says/{}".format(message)
+        em = discord.Embed(colour=0x260068)
+        em.set_image(url=url)
+        await self.bot.say(embed=em)        
+
     @commands.command(pass_context = True)
     async def meme(self):
         """Sends a meme"""
